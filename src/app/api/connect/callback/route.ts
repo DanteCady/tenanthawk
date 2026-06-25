@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import { db } from "@/db";
 import { getSession } from "@/lib/session";
 import { runScan } from "@/lib/scan/runScan";
+import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
 
 export const runtime = "nodejs";
 
@@ -19,8 +20,13 @@ export async function GET(req: NextRequest) {
   const state = searchParams.get("state");
   const expectedState = req.cookies.get("th_connect_state")?.value;
 
-  const fail = (reason: string) =>
-    NextResponse.redirect(new URL(`/onboarding?connect=${reason}`, req.url));
+  const fail = (reason: string) => {
+    const res = NextResponse.redirect(
+      new URL(`/onboarding?connect=${reason}`, req.url),
+    );
+    res.cookies.delete("th_connect_state");
+    return res;
+  };
 
   if (!state || !expectedState || state !== expectedState) return fail("state");
   if (adminConsent !== "True" || !tenant) return fail("denied");
@@ -54,17 +60,24 @@ export async function GET(req: NextRequest) {
       .selectAll()
       .where("id", "=", id)
       .executeTakeFirstOrThrow();
+  } else if (conn.status !== "active") {
+    await db
+      .updateTable("connection")
+      .set({ status: "active" })
+      .where("id", "=", conn.id)
+      .execute();
   }
+
+  await enrichConnectionProfile(conn.id, tenant);
 
   try {
     await runScan(conn.id);
   } catch (err) {
     console.error("[connect/callback] initial scan failed", err);
+    return fail("scan_failed");
   }
 
-  const res = NextResponse.redirect(
-    new URL("/onboarding?step=results", req.url),
-  );
+  const res = NextResponse.redirect(new URL("/onboarding", req.url));
   res.cookies.delete("th_connect_state");
   return res;
 }

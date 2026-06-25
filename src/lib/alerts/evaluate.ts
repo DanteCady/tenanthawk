@@ -1,5 +1,10 @@
 import type { InstantAlertMode } from "@/db/types";
 import type { ScanDrift } from "@/lib/scan/drift";
+import {
+  isExpiryCheckId,
+  isUrgentExpiryFinding,
+  type ExpiryFindingLike,
+} from "@/lib/scan/expiry";
 
 export function shouldSendInstantAlert(
   mode: InstantAlertMode,
@@ -20,4 +25,25 @@ export function shouldSendInstantAlert(
     drift.changedCount > 0 ||
     (scoreDelta != null && scoreDelta !== 0)
   );
+}
+
+export function shouldSendExpiryAlert(
+  enabled: boolean,
+  previous: ExpiryFindingLike[],
+  current: ExpiryFindingLike[],
+  keyFn: (f: ExpiryFindingLike & { entity_ref?: string | null }) => string,
+): boolean {
+  if (!enabled) return false;
+
+  const prevKeys = new Set(
+    previous.filter((f) => isExpiryCheckId(f.check_id)).map(keyFn),
+  );
+
+  return current.some((f) => {
+    if (!isExpiryCheckId(f.check_id)) return false;
+    if (prevKeys.has(keyFn(f as ExpiryFindingLike & { entity_ref?: string | null }))) {
+      return false;
+    }
+    return isUrgentExpiryFinding(f);
+  });
 }

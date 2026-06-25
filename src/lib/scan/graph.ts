@@ -38,6 +38,40 @@ interface GraphPage<T> {
   "@odata.nextLink"?: string;
 }
 
+export interface TenantProfile {
+  displayName: string;
+  defaultDomain: string | null;
+}
+
+/** Resolve tenant display name and primary domain after admin consent. */
+export async function fetchTenantProfile(
+  tenantId: string,
+): Promise<TenantProfile | null> {
+  try {
+    const token = await getAppToken(tenantId);
+    const orgs = await graphGet<{
+      displayName?: string;
+      verifiedDomains?: Array<{ name: string; isDefault?: boolean }>;
+    }>(token, "/organization?$select=displayName,verifiedDomains");
+
+    const org = orgs[0];
+    if (!org) return null;
+
+    const defaultDomain =
+      org.verifiedDomains?.find((d) => d.isDefault)?.name ??
+      org.verifiedDomains?.[0]?.name ??
+      null;
+
+    return {
+      displayName: org.displayName ?? "Microsoft 365",
+      defaultDomain,
+    };
+  } catch (err) {
+    console.error("[graph] tenant profile fetch failed", err);
+    return null;
+  }
+}
+
 /** GET a Graph collection, following @odata.nextLink paging. */
 export async function graphGet<T = unknown>(
   token: string,

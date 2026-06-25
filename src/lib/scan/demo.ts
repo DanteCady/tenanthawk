@@ -11,7 +11,7 @@ export function getDemoFindings(): FindingDraft[] {
       title: "3 app secrets expire in 14 days",
       description:
         "Client secrets for 'Backup Connector', 'HR Sync', and 'Reporting API' expire within 14 days. Integrations using them will break at expiry.",
-      impact: { count: 3 },
+      impact: { count: 3, daysUntil: 14, expiresAt: new Date(Date.now() + 14 * 86_400_000).toISOString() },
       remediation:
         "Rotate the secrets in Entra → App registrations → Certificates & secrets before they expire.",
       entityRef: "Backup Connector, HR Sync, Reporting API",
@@ -23,11 +23,26 @@ export function getDemoFindings(): FindingDraft[] {
       title: "SSO signing certificate expires in 26 days",
       description:
         "The SAML signing certificate for 'Salesforce' expires in 26 days.",
-      impact: { count: 1 },
+      impact: { count: 1, daysUntil: 26, expiresAt: new Date(Date.now() + 26 * 86_400_000).toISOString() },
       remediation: "Renew the signing certificate in the enterprise app's SSO settings.",
       entityRef: "Salesforce",
     },
-    // Cost
+    {
+      category: "cost",
+      checkId: "cost.license-expiry",
+      severity: "high",
+      title: "E5 subscription renewal in 18 days",
+      description:
+        "Your Microsoft 365 E5 subscription renewal date is in 18 days. Confirm payment method and seat count before auto-renewal.",
+      impact: {
+        count: 1,
+        daysUntil: 18,
+        expiresAt: new Date(Date.now() + 18 * 86_400_000).toISOString(),
+      },
+      remediation:
+        "Review renewal terms and seat count in M365 Admin → Billing → Your products before the renewal date.",
+      entityRef: "ENTERPRISEPREMIUM",
+    },
     {
       category: "cost",
       checkId: "cost.unused-licenses",

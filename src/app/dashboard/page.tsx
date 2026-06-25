@@ -12,6 +12,8 @@ import {
 import { getPlan } from "@/lib/entitlements";
 import { summarize } from "@/lib/summary";
 import { diffScans } from "@/lib/scan/drift";
+import { getFindingStatuses, isFindingHidden } from "@/lib/findings/status";
+import { findingStatusKey } from "@/lib/findings/key";
 import { ScoreRing } from "@/components/app/ScoreRing";
 import { Sparkline } from "@/components/app/Sparkline";
 import { RescanButton } from "@/components/app/RescanButton";
@@ -44,21 +46,34 @@ export default async function DashboardPage() {
   if (!scan) redirect("/onboarding");
 
   const findings = await getFindings(scan.id);
-  const summary = summarize(findings, scan.category_scores);
   const plan = await getPlan(session.user.id);
   const isPro = plan === "pro";
+  const statuses = isPro ? await getFindingStatuses(conn.id) : new Map();
+
+  const activeFindings = findings.filter((f) => {
+    const tracking = statuses.get(findingStatusKey(f.check_id, f.entity_ref));
+    return !isFindingHidden(tracking);
+  });
+
+  const summary = summarize(activeFindings, scan.category_scores);
   const trend = await getScanTrend(conn.id);
 
-  const dtos: FindingDTO[] = findings.map((f) => ({
-    id: f.id,
-    category: f.category,
-    severity: f.severity,
-    title: f.title,
-    description: f.description,
-    impact: f.impact,
-    remediation: f.remediation,
-    entityRef: f.entity_ref,
-  }));
+  const dtos: FindingDTO[] = findings.map((f) => {
+    const tracking = statuses.get(findingStatusKey(f.check_id, f.entity_ref));
+    return {
+      id: f.id,
+      checkId: f.check_id,
+      category: f.category,
+      severity: f.severity,
+      title: f.title,
+      description: f.description,
+      impact: f.impact,
+      remediation: f.remediation,
+      entityRef: f.entity_ref,
+      tracking: tracking?.status ?? "open",
+      snoozedUntil: tracking?.snoozedUntil?.toISOString() ?? null,
+    };
+  });
 
   let drift = null;
   let history: Array<{ id: string; score: number | null; started_at: Date | string }> =

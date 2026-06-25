@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { isPro } from "@/lib/entitlements";
-import { getAlertPreferences } from "@/lib/alerts/preferences";
+import { getUserWebhooks } from "@/lib/alerts/webhooks";
 import { parseWebhookUrl } from "@/lib/webhooks/validate";
 import { sendTestWebhook } from "@/lib/webhooks/send";
 import { sendTestEmail } from "@/lib/email/send";
@@ -27,7 +27,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Pro plan required" }, { status: 403 });
   }
 
-  let body: { webhookUrl?: unknown; webhookPlatformOverride?: unknown } = {};
+  let body: {
+    webhookUrl?: unknown;
+    webhookPlatformOverride?: unknown;
+    testWebhookId?: unknown;
+  } = {};
   try {
     const raw = await req.text();
     if (raw) body = JSON.parse(raw);
@@ -35,14 +39,25 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const webhookRaw =
-    typeof body.webhookUrl === "string" ? body.webhookUrl.trim() : "";
-
   const platformOverride =
     typeof body.webhookPlatformOverride === "string" &&
     PLATFORM_OVERRIDES.has(body.webhookPlatformOverride as WebhookPlatformOverride)
       ? (body.webhookPlatformOverride as WebhookPlatformOverride)
       : "auto";
+
+  const emailOk = session.user.email
+    ? await sendTestEmail(session.user.email)
+    : false;
+
+  let webhookOk: boolean | null = null;
+  let webhookPlatform = null;
+
+  const savedWebhooks = await getUserWebhooks(session.user.id);
+  const testWebhookId =
+    typeof body.testWebhookId === "string" ? body.testWebhookId : null;
+
+  const webhookRaw =
+    typeof body.webhookUrl === "string" ? body.webhookUrl.trim() : "";
 
   if (webhookRaw) {
     const parsed = parseWebhookUrl(webhookRaw);
@@ -55,36 +70,34 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
+    webhookPlatform = resolveWebhookPlatform(parsed, platformOverride);
+    webhookOk = await sendTestWebhook(parsed, webhookPlatform);
+  } else if (testWebhookId) {
+    const hook = savedWebhooks.find((w) => w.id === testWebhookId);
+    if (!hook) {
+      return NextResponse.json({ error: "Webhook not found" }, { status: 404 });
+    }
+    webhookPlatform = hook.platform;
+    webhookOk = await sendTestWebhook(hook.url, hook.platform);
+  } else if (savedWebhooks.length > 0) {
+    for (const hook of savedWebhooks) {
+      const ok = await sendTestWebhook(hook.url, hook.platform);
+      if (ok) {
+        webhookOk = true;
+        webhookPlatform = hook.platform;
+      } else if (webhookOk === null) {
+        webhookOk = false;
+      }
+    }
   }
 
-  const prefs = await getAlertPreferences(session.user.id);
-  const webhookTarget =
-    (webhookRaw ? parseWebhookUrl(webhookRaw) : null) ?? prefs.webhookUrl;
-
-  const webhookPlatform = webhookTarget
-    ? resolveWebhookPlatform(webhookTarget, platformOverride)
-    : null;
-
-  const emailOk = session.user.email
-    ? await sendTestEmail(session.user.email)
-    : false;
-
-  let webhookOk: boolean | null = null;
-  if (webhookTarget) {
-    webhookOk = await sendTestWebhook(webhookTarget, webhookPlatform);
-  }
-
-  const failures: string[] = [];
-  if (!emailOk) failures.push("email");
-  if (webhookOk === false) failures.push("webhook");
-
-  if (failures.length > 0 && !emailOk && webhookOk !== true) {
+  if (!emailOk && webhookOk !== true) {
     return NextResponse.json(
       {
         error:
-          failures.length === 1 && failures[0] === "webhook"
+          webhookOk === false
             ? "Webhook delivery failed. Check the URL and try again."
-            : "Test alert could not be delivered. Check your email and webhook settings.",
+            : "Test alert could not be delivered.",
         email: emailOk,
         webhook: webhookOk,
       },
@@ -95,7 +108,7 @@ export async function POST(req: Request) {
   if (webhookOk === false) {
     return NextResponse.json(
       {
-        error: "Email sent, but webhook delivery failed. Check the URL.",
+        error: "Email sent, but webhook delivery failed.",
         email: emailOk,
         webhook: false,
       },
@@ -108,5 +121,6 @@ export async function POST(req: Request) {
     email: emailOk,
     webhook: webhookOk,
     webhookPlatform,
+    webhooksSent: webhookOk ? savedWebhooks.length || (webhookRaw ? 1 : 0) : 0,
   });
 }

@@ -17,6 +17,7 @@ import { PlanBadge } from "@/components/app/PlanBadge";
 import { DisconnectTenantButton } from "@/components/app/DisconnectTenantButton";
 import { AlertPreferencesForm } from "@/components/app/AlertPreferencesForm";
 import { getAlertPreferences } from "@/lib/alerts/preferences";
+import { isLiveConfigured } from "@/lib/scan/graph";
 import { timeAgo } from "@/lib/time";
 
 function SettingsSection({
@@ -70,7 +71,7 @@ export default async function SettingsPage() {
   const alertPrefs = await getAlertPreferences(session.user.id);
   const connections = await getConnections(session.user.id);
   const connection = connections[0];
-  const liveConfigured = Boolean(process.env.MS_CLIENT_ID);
+  const liveConfigured = isLiveConfigured();
 
   const tenantLabel =
     connection?.tenant_domain ??
@@ -185,8 +186,7 @@ export default async function SettingsPage() {
           userEmail={session.user.email}
           initialInstantAlerts={alertPrefs.instantAlerts}
           initialWeeklyDigest={alertPrefs.weeklyDigest}
-          initialWebhookUrl={alertPrefs.webhookUrl}
-          initialWebhookPlatform={alertPrefs.webhookPlatform}
+          initialExpiryAlerts={alertPrefs.expiryAlerts}
         />
       </SettingsSection>
 

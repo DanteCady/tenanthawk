@@ -1,21 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronDown, Lock, Wrench } from "lucide-react";
-import type { Category, Severity } from "@/db/types";
+import type { Category, FindingTrackingStatus, Severity } from "@/db/types";
 import { CATEGORY_META } from "./categories";
 import { SeverityBadge } from "./SeverityBadge";
 import { UpgradeButton } from "./UpgradeButton";
+import { FindingActions } from "./FindingActions";
+import { isExpiryCheckId } from "@/lib/scan/expiry";
 
 export interface FindingDTO {
   id: string;
+  checkId: string;
   category: Category;
   severity: Severity;
   title: string;
   description: string;
-  impact: { usd?: number; count?: number } | null;
+  impact: { usd?: number; count?: number; daysUntil?: number } | null;
   remediation: string;
   entityRef: string | null;
+  tracking: FindingTrackingStatus | "open";
+  snoozedUntil?: string | null;
 }
 
 const FILTERS: Array<{ key: "all" | Severity; label: string }> = [
@@ -60,6 +66,12 @@ function LockedTable({ count }: { count: number }) {
   );
 }
 
+function trackingLabel(f: FindingDTO): string | null {
+  if (f.tracking === "resolved") return "Resolved";
+  if (f.tracking === "snoozed") return "Snoozed";
+  return null;
+}
+
 export function FindingsTable({
   findings,
   lockedCount,
@@ -67,18 +79,27 @@ export function FindingsTable({
   findings?: FindingDTO[];
   lockedCount?: number;
 }) {
+  const router = useRouter();
   const [filter, setFilter] = useState<"all" | Severity>("all");
   const [open, setOpen] = useState<string | null>(null);
+  const [showHandled, setShowHandled] = useState(false);
 
   if (!findings) return <LockedTable count={lockedCount ?? 0} />;
 
-  const rows = findings
+  const visible = findings.filter((f) => {
+    if (showHandled) return true;
+    return f.tracking === "open";
+  });
+
+  const rows = visible
     .filter((f) => filter === "all" || f.severity === filter)
     .sort((a, b) => SEV_RANK[a.severity] - SEV_RANK[b.severity]);
 
+  const handledCount = findings.filter((f) => f.tracking !== "open").length;
+
   return (
     <div>
-      <div className="mb-3 flex items-center gap-2">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
         {FILTERS.map((f) => (
           <button
             key={f.key}
@@ -92,6 +113,19 @@ export function FindingsTable({
             {f.label}
           </button>
         ))}
+        {handledCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setShowHandled((v) => !v)}
+            className={`ml-auto rounded-lg px-3 py-1.5 text-sm transition-colors ${
+              showHandled
+                ? "bg-slate-200 text-slate-800"
+                : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            {showHandled ? "Hide" : "Show"} resolved & snoozed ({handledCount})
+          </button>
+        )}
       </div>
 
       <div className="divide-y divide-slate-100 overflow-hidden surface-card">
@@ -99,15 +133,28 @@ export function FindingsTable({
           const meta = CATEGORY_META[f.category];
           const Icon = meta.icon;
           const isOpen = open === f.id;
+          const badge = trackingLabel(f);
           return (
-            <div key={f.id}>
+            <div key={f.id} className={f.tracking !== "open" ? "opacity-75" : ""}>
               <button
                 onClick={() => setOpen(isOpen ? null : f.id)}
                 className="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-slate-50"
               >
                 <SeverityBadge severity={f.severity} />
                 <Icon className="h-4 w-4 shrink-0 text-slate-500" />
-                <span className="flex-1 text-sm text-slate-900">{f.title}</span>
+                <span className="flex min-w-0 flex-1 items-center gap-2">
+                  <span className="truncate text-sm text-slate-900">{f.title}</span>
+                  {isExpiryCheckId(f.checkId) && f.impact?.daysUntil != null && (
+                    <span className="shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-[0.65rem] font-medium text-amber-800">
+                      {f.impact.daysUntil <= 0 ? "Expired" : `${f.impact.daysUntil}d`}
+                    </span>
+                  )}
+                  {badge && (
+                    <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[0.65rem] font-medium text-slate-600">
+                      {badge}
+                    </span>
+                  )}
+                </span>
                 {f.impact?.usd ? (
                   <span className="hidden text-sm font-medium text-blue-700 sm:inline">
                     ${f.impact.usd.toLocaleString()}/mo
@@ -127,6 +174,12 @@ export function FindingsTable({
                     <Wrench className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
                     <p className="text-sm text-slate-800">{f.remediation}</p>
                   </div>
+                  <FindingActions
+                    checkId={f.checkId}
+                    entityRef={f.entityRef}
+                    tracking={f.tracking}
+                    onUpdated={() => router.refresh()}
+                  />
                 </div>
               )}
             </div>
@@ -134,7 +187,7 @@ export function FindingsTable({
         })}
         {rows.length === 0 && (
           <p className="px-5 py-8 text-center text-sm text-slate-500">
-            No {filter !== "all" ? filter : ""} findings. 🎉
+            No active {filter !== "all" ? filter : ""} findings. 🎉
           </p>
         )}
       </div>

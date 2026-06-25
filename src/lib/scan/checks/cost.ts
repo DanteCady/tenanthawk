@@ -2,74 +2,70 @@ import { graphGet } from "../graph";
 import type { Check, FindingDraft } from "../types";
 
 interface SubscribedSku {
-  skuId: string;
-  skuPartNumber: string;
+  skuPartNumber?: string;
+  capabilityStatus?: string;
+  appliesTo?: string;
   prepaidUnits?: { enabled?: number };
-  consumedUnits?: number;
-}
-interface AssignedLicense {
-  skuId: string;
-}
-interface GraphUser {
-  displayName?: string;
-  accountEnabled?: boolean;
-  assignedLicenses?: AssignedLicense[];
-  signInActivity?: { lastSignInDateTime?: string };
+  consumedUnits?: { enabled?: number };
 }
 
-// Approx monthly list price (USD) by SKU part number — used to estimate waste.
-const SKU_PRICE: Record<string, number> = {
-  ENTERPRISEPREMIUM: 57, // E5
-  SPE_E5: 57,
-  ENTERPRISEPACK: 36, // E3
-  SPE_E3: 36,
-  O365_BUSINESS_PREMIUM: 22,
-  SPB: 22,
-  EXCHANGESTANDARD: 4,
-  FLOW_FREE: 0,
-};
-
-function price(part: string): number {
-  return SKU_PRICE[part] ?? 20;
-}
-
+/** Surfaces prepaid license seats that are assigned but unused. */
 export const unusedLicenses: Check = {
   id: "cost.unused-licenses",
   category: "cost",
   async run({ token }) {
+    const skus = await graphGet<SubscribedSku>(token, "/subscribedSkus");
     const findings: FindingDraft[] = [];
 
-    const skus = await graphGet<SubscribedSku>(token, "/subscribedSkus");
-    const skuById = new Map(skus.map((s) => [s.skuId, s]));
+    for (const sku of skus) {
+      if (sku.capabilityStatus && sku.capabilityStatus !== "Enabled") continue;
 
-    const users = await graphGet<GraphUser>(
-      token,
-      "/users?$select=displayName,accountEnabled,assignedLicenses,signInActivity&$top=999",
-    );
+      const enabled = sku.prepaidUnits?.enabled ?? 0;
+      const consumed = sku.consumedUnits?.enabled ?? 0;
+      const unused = enabled - consumed;
+      if (unused < 3) continue;
 
-    let disabledWaste = 0;
-    let disabledCount = 0;
-    for (const u of users) {
-      const licenses = u.assignedLicenses ?? [];
-      if (u.accountEnabled === false && licenses.length > 0) {
-        disabledCount++;
-        for (const l of licenses) {
-          const sku = skuById.get(l.skuId);
-          if (sku) disabledWaste += price(sku.skuPartNumber);
-        }
-      }
-    }
-
-    if (disabledCount > 0) {
+      const name = sku.skuPartNumber ?? "Unknown SKU";
       findings.push({
         category: "cost",
         checkId: unusedLicenses.id,
-        severity: disabledWaste >= 200 ? "high" : "medium",
-        title: `${disabledCount} disabled users still hold licenses`,
-        description: `${disabledCount} disabled accounts are still assigned paid licenses — roughly $${disabledWaste}/mo wasted.`,
-        impact: { usd: disabledWaste, count: disabledCount },
+        severity: unused >= 10 ? "high" : "medium",
+        title: `${unused} unused ${name} license${unused === 1 ? "" : "s"}`,
+        description: `${enabled} ${name} seats are prepaid but only ${consumed} are assigned — ${unused} appear unused.`,
         remediation:
-          "Remove licenses from disabled accounts (or convert mailboxes to shared) in M365 Admin → Users.",
+          "Review license assignments in M365 Admin → Users → Active users, or reduce prepaid seats in Billing.",
+        entityRef: name,
+        impact: { count: unused },
+      });
+    }
+
+    return findings;
+  },
+};
+
+/** Flags subscription SKUs in warning/suspended state (renewal / billing risk). */
+export const licenseExpiry: Check = {
+  id: "cost.license-expiry",
+  category: "cost",
+  async run({ token }) {
+    const skus = await graphGet<SubscribedSku>(token, "/subscribedSkus");
+    const findings: FindingDraft[] = [];
+
+    for (const sku of skus) {
+      const status = sku.capabilityStatus ?? "Enabled";
+      if (status === "Enabled") continue;
+
+      const name = sku.skuPartNumber ?? "Unknown SKU";
+      findings.push({
+        category: "cost",
+        checkId: licenseExpiry.id,
+        severity: status === "Suspended" ? "high" : "medium",
+        title: `License SKU ${name} is ${status.toLowerCase()}`,
+        description: `Subscribed SKU ${name} reports capability status "${status}" — renewal or billing action may be required.`,
+        remediation:
+          "Review subscription status in M365 Admin → Billing → Your products, or Microsoft 365 admin center → Billing.",
+        entityRef: name,
+        impact: { count: 1, daysUntil: 0 },
       });
     }
 

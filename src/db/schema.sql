@@ -43,11 +43,39 @@ CREATE TABLE IF NOT EXISTS finding (
 
 CREATE INDEX IF NOT EXISTS finding_scan_id_idx ON finding (scan_id);
 
+-- Per-connection remediation state (survives rescans).
+CREATE TABLE IF NOT EXISTS finding_status (
+  id              text PRIMARY KEY,
+  connection_id   text NOT NULL REFERENCES connection(id) ON DELETE CASCADE,
+  check_id        text NOT NULL,
+  entity_ref      text NOT NULL DEFAULT '',
+  status          text NOT NULL,
+  snoozed_until   timestamptz,
+  note            text,
+  updated_at      timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (connection_id, check_id, entity_ref)
+);
+
+CREATE INDEX IF NOT EXISTS finding_status_connection_id_idx ON finding_status (connection_id);
+
+-- Multiple chat webhooks per user (Slack, Teams, Discord).
+CREATE TABLE IF NOT EXISTS alert_webhook (
+  id          text PRIMARY KEY,
+  user_id     text NOT NULL,
+  label       text NOT NULL DEFAULT 'Webhook',
+  url         text NOT NULL,
+  platform    text NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS alert_webhook_user_id_idx ON alert_webhook (user_id);
+
 -- Pro monitoring: per-user alert preferences (defaults applied in app when row missing).
 CREATE TABLE IF NOT EXISTS alert_preferences (
   user_id         text PRIMARY KEY,
   instant_alerts  text NOT NULL DEFAULT 'high',
   weekly_digest   boolean NOT NULL DEFAULT true,
+  expiry_alerts   boolean NOT NULL DEFAULT true,
   webhook_url     text,
   webhook_platform text,
   updated_at      timestamptz NOT NULL DEFAULT now()
@@ -59,3 +87,4 @@ ALTER TABLE scan ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'manual';
 -- Slack / Teams webhook (added after initial alert_preferences table).
 ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS webhook_url text;
 ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS webhook_platform text;
+ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS expiry_alerts boolean NOT NULL DEFAULT true;

@@ -13,6 +13,8 @@
     "@better-auth/stripe": "^1.6.20",
     "better-auth": "^1.6.20",
     "framer-motion": "^12.41.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "kysely": "^0.29.2",
     "lucide-react": "^1.21.0",
     "next": "16.2.9",

@@ -1,7 +1,9 @@
 import "server-only";
 import { db } from "@/db";
 import { getAlertPreferences } from "@/lib/alerts/preferences";
-import { shouldSendInstantAlert } from "@/lib/alerts/evaluate";
+import { shouldSendInstantAlert, shouldSendExpiryAlert } from "@/lib/alerts/evaluate";
+import { getUserWebhooks } from "@/lib/alerts/webhooks";
+import { findingStatusKey } from "@/lib/findings/key";
 import { sendEmail } from "@/lib/email/send";
 import { driftAlertEmail, weeklyDigestEmail } from "@/lib/email/templates";
 import { sendWebhook } from "@/lib/webhooks/send";
@@ -100,7 +102,15 @@ export async function runScheduledScans(): Promise<{
           ? currScan.score - prevScan.score
           : null;
 
-      if (!shouldSendInstantAlert(prefs.instantAlerts, drift, scoreDelta)) {
+      if (
+        !shouldSendInstantAlert(prefs.instantAlerts, drift, scoreDelta) &&
+        !shouldSendExpiryAlert(
+          prefs.expiryAlerts,
+          prevFindings,
+          currFindings,
+          (f) => findingStatusKey(f.check_id, f.entity_ref ?? null),
+        )
+      ) {
         continue;
       }
 
@@ -117,10 +127,11 @@ export async function runScheduledScans(): Promise<{
       if (user?.email) {
         delivered = await sendEmail({ to: user.email, ...mail });
       }
-      if (prefs.webhookUrl) {
+      const webhooks = await getUserWebhooks(conn.user_id);
+      for (const hook of webhooks) {
         const webhookOk = await sendWebhook({
-          url: prefs.webhookUrl,
-          platform: prefs.webhookPlatform,
+          url: hook.url,
+          platform: hook.platform,
           title: mail.subject,
           text: mail.text,
         });
@@ -209,10 +220,11 @@ export async function sendWeeklyDigests(): Promise<{ sent: number }> {
       if (user?.email) {
         delivered = await sendEmail({ to: user.email, ...mail });
       }
-      if (prefs.webhookUrl) {
+      const webhooks = await getUserWebhooks(conn.user_id);
+      for (const hook of webhooks) {
         const webhookOk = await sendWebhook({
-          url: prefs.webhookUrl,
-          platform: prefs.webhookPlatform,
+          url: hook.url,
+          platform: hook.platform,
           title: mail.subject,
           text: mail.text,
         });

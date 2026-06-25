@@ -41,6 +41,10 @@ export const expiringSecrets: Check = {
             description: `A ${c.kind} expired ${Math.abs(days)} days ago and may already be breaking sign-in or integrations.`,
             remediation: `Rotate the ${c.kind} in Entra → App registrations → ${name} → Certificates & secrets.`,
             entityRef: name,
+            impact: {
+              daysUntil: days,
+              expiresAt: c.endDateTime,
+            },
           });
         } else if (days <= 30) {
           findings.push({
@@ -49,7 +53,11 @@ export const expiringSecrets: Check = {
             severity: days <= 7 ? "high" : "medium",
             title: `${c.kind} on ${name} expires in ${days}d`,
             description: `A ${c.kind} for ${name} expires in ${days} days. Integrations using it will fail at expiry.`,
-            impact: { count: 1 },
+            impact: {
+              count: 1,
+              daysUntil: days,
+              expiresAt: c.endDateTime,
+            },
             remediation: `Rotate the ${c.kind} before it expires in Entra → App registrations → ${name}.`,
             entityRef: name,
           });

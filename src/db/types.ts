@@ -5,7 +5,14 @@ export type Severity = "low" | "medium" | "high";
 export type ScanStatus = "running" | "complete" | "failed";
 
 export type CategoryScores = Record<Category, number>;
-export type FindingImpact = { usd?: number; count?: number } | null;
+export type FindingImpact = {
+  usd?: number;
+  count?: number;
+  expiresAt?: string;
+  daysUntil?: number;
+} | null;
+
+export type FindingTrackingStatus = "resolved" | "snoozed";
 
 // Nullable column with optional insert / nullable update.
 type Nullable<T> = ColumnType<T | null, T | null | undefined, T | null>;
@@ -77,6 +84,25 @@ export type InstantAlertMode = "high" | "any" | "off";
 
 export type { WebhookPlatform };
 
+export interface FindingStatusTable {
+  id: string;
+  connection_id: string;
+  check_id: string;
+  entity_ref: ColumnType<string, string | undefined, string>;
+  status: FindingTrackingStatus;
+  snoozed_until: TimestampNullable;
+  note: Nullable<string>;
+  updated_at: ColumnType<Date, string | undefined, string>;
+}
+
+export interface AlertWebhookTable {
+  id: string;
+  user_id: string;
+  label: ColumnType<string, string | undefined, string>;
+  url: string;
+  platform: WebhookPlatform;
+  created_at: CreatedAt;
+}
 export interface AlertPreferencesTable {
   user_id: string;
   instant_alerts: ColumnType<
@@ -85,6 +111,7 @@ export interface AlertPreferencesTable {
     InstantAlertMode
   >;
   weekly_digest: ColumnType<boolean, boolean | undefined, boolean>;
+  expiry_alerts: ColumnType<boolean, boolean | undefined, boolean>;
   webhook_url: Nullable<string>;
   webhook_platform: Nullable<WebhookPlatform>;
   updated_at: ColumnType<Date, string | undefined, string>;
@@ -101,7 +128,9 @@ export interface Database {
   connection: ConnectionTable;
   scan: ScanTable;
   finding: FindingTable;
+  finding_status: FindingStatusTable;
   subscription: SubscriptionTable;
   alert_preferences: AlertPreferencesTable;
+  alert_webhook: AlertWebhookTable;
   user: UserTable;
 }
