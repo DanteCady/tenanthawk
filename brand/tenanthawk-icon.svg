@@ -1,0 +1,15 @@
+<svg width="512" height="512" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1a2438"/><stop offset="1" stop-color="#070b14"/>
+    </linearGradient>
+    <linearGradient id="th-hawk" x1="12" y1="12" x2="56" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fcd34d"/><stop offset="0.55" stop-color="#f59e0b"/><stop offset="1" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#tile)" stroke="#2a3650"/>
+  <g transform="translate(2 4) scale(0.92)">
+    <path d="M 15 24 C 16 16 26 12 36 16 C 41 18 44 20 46 23 C 50 24 54 27 56 33 L 57 39 L 49 36 C 52 33 49 32 45 32 L 41 33 C 38 40 32 45 26 44 C 22 43 18 40 17 35 C 14 33 13 30 15 24 Z" fill="url(#th-hawk)"/>
+    <path d="M 36 24 C 39 22 43 23 45 25 C 42 27 38 26 36 24 Z" fill="#0b1120"/>
+  </g>
+</svg>

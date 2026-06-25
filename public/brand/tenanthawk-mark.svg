@@ -1,0 +1,30 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hawk" x1="24" y1="24" x2="104" y2="104" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fcd34d"/>
+      <stop offset="0.5" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+
+  <!-- hawk head, profile facing left -->
+  <path d="
+    M 20 60
+    C 24 50 30 44 40 42
+    C 46 40 50 38 54 34
+    C 64 26 76 24 90 30
+    L 82 40
+    C 90 40 98 44 102 52
+    L 90 54
+    C 96 60 98 70 94 80
+    C 90 92 78 98 66 94
+    C 60 92 54 90 50 84
+    L 56 76
+    C 50 78 44 76 40 72
+    L 26 70
+    C 20 68 16 64 20 60
+    Z" fill="url(#hawk)"/>
+
+  <!-- fierce eye -->
+  <path d="M 44 56 C 48 53 54 53 58 55 C 54 59 48 60 44 58 Z" fill="#1f2937"/>
+</svg>
