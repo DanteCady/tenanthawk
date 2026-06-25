@@ -4,6 +4,7 @@ import { getAlertPreferences } from "@/lib/alerts/preferences";
 import { shouldSendInstantAlert } from "@/lib/alerts/evaluate";
 import { sendEmail } from "@/lib/email/send";
 import { driftAlertEmail, weeklyDigestEmail } from "@/lib/email/templates";
+import { sendWebhook } from "@/lib/webhooks/send";
 import { getFindings, getPreviousScan } from "@/lib/queries";
 import { summarize } from "@/lib/summary";
 import { diffScans } from "@/lib/scan/drift";
@@ -103,9 +104,6 @@ export async function runScheduledScans(): Promise<{
         continue;
       }
 
-      const user = await getUserEmail(conn.user_id);
-      if (!user?.email) continue;
-
       const mail = driftAlertEmail({
         tenantName: tenantLabel(conn),
         score: currScan.score,
@@ -113,11 +111,21 @@ export async function runScheduledScans(): Promise<{
         drift,
       });
 
-      const sent = await sendEmail({
-        to: user.email,
-        ...mail,
-      });
-      if (sent) alerted++;
+      const user = await getUserEmail(conn.user_id);
+
+      let delivered = false;
+      if (user?.email) {
+        delivered = await sendEmail({ to: user.email, ...mail });
+      }
+      if (prefs.webhookUrl) {
+        const webhookOk = await sendWebhook({
+          url: prefs.webhookUrl,
+          title: mail.subject,
+          text: mail.text,
+        });
+        if (webhookOk) delivered = true;
+      }
+      if (delivered) alerted++;
     } catch (err) {
       console.error(`[cron] scheduled scan failed for ${conn.id}`, err);
     }
@@ -185,9 +193,6 @@ export async function sendWeeklyDigests(): Promise<{ sent: number }> {
         }
       }
 
-      const user = await getUserEmail(conn.user_id);
-      if (!user?.email) continue;
-
       const mail = weeklyDigestEmail({
         tenantName: tenantLabel(conn),
         score: latestScan.score,
@@ -197,8 +202,21 @@ export async function sendWeeklyDigests(): Promise<{ sent: number }> {
         highIssues: summary.high,
       });
 
-      const ok = await sendEmail({ to: user.email, ...mail });
-      if (ok) sent++;
+      const user = await getUserEmail(conn.user_id);
+
+      let delivered = false;
+      if (user?.email) {
+        delivered = await sendEmail({ to: user.email, ...mail });
+      }
+      if (prefs.webhookUrl) {
+        const webhookOk = await sendWebhook({
+          url: prefs.webhookUrl,
+          title: mail.subject,
+          text: mail.text,
+        });
+        if (webhookOk) delivered = true;
+      }
+      if (delivered) sent++;
     } catch (err) {
       console.error(`[cron] weekly digest failed for ${conn.id}`, err);
     }

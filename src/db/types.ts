@@ -81,6 +81,7 @@ export interface AlertPreferencesTable {
     InstantAlertMode
   >;
   weekly_digest: ColumnType<boolean, boolean | undefined, boolean>;
+  webhook_url: Nullable<string>;
   updated_at: ColumnType<Date, string | undefined, string>;
 }
 

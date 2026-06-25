@@ -48,8 +48,12 @@ CREATE TABLE IF NOT EXISTS alert_preferences (
   user_id         text PRIMARY KEY,
   instant_alerts  text NOT NULL DEFAULT 'high',
   weekly_digest   boolean NOT NULL DEFAULT true,
+  webhook_url     text,
   updated_at      timestamptz NOT NULL DEFAULT now()
 );
 
 -- Distinguish manual rescans from scheduled cron scans.
 ALTER TABLE scan ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'manual';
+
+-- Slack / Teams webhook (added after initial alert_preferences table).
+ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS webhook_url text;
