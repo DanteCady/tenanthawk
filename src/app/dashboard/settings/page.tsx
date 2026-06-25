@@ -178,13 +178,15 @@ export default async function SettingsPage() {
 
       <SettingsSection
         title="Monitoring & alerts"
-        description="Pro includes daily automated scans. Choose when we alert you by email or Slack/Teams webhook."
+        description="Pro includes daily automated scans. Choose when we alert you by email or Slack, Teams, or Discord webhook."
       >
         <AlertPreferencesForm
           isPro={isPro}
+          userEmail={session.user.email}
           initialInstantAlerts={alertPrefs.instantAlerts}
           initialWeeklyDigest={alertPrefs.weeklyDigest}
           initialWebhookUrl={alertPrefs.webhookUrl}
+          initialWebhookPlatform={alertPrefs.webhookPlatform}
         />
       </SettingsSection>
 

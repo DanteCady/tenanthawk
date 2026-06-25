@@ -11,7 +11,7 @@ const PRO_FEATURES = [
   "Full findings with severity & dollar impact",
   "Step-by-step remediation for every issue",
   "Daily scans + drift & expiry alerts",
-  "Slack / Teams webhook alerts",
+  "Slack / Teams / Discord webhook alerts",
   "Export reports",
   "All four scan categories",
 ];

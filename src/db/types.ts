@@ -71,7 +71,11 @@ export interface SubscriptionTable {
   periodEnd: ColumnType<Date | null, string | null, string | null>;
 }
 
+import type { WebhookPlatform } from "@/lib/webhooks/platform";
+
 export type InstantAlertMode = "high" | "any" | "off";
+
+export type { WebhookPlatform };
 
 export interface AlertPreferencesTable {
   user_id: string;
@@ -82,6 +86,7 @@ export interface AlertPreferencesTable {
   >;
   weekly_digest: ColumnType<boolean, boolean | undefined, boolean>;
   webhook_url: Nullable<string>;
+  webhook_platform: Nullable<WebhookPlatform>;
   updated_at: ColumnType<Date, string | undefined, string>;
 }
 

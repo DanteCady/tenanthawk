@@ -1,41 +1,104 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
-import type { InstantAlertMode } from "@/db/types";
+import { ChevronDown, Loader2, Send } from "lucide-react";
+import type { InstantAlertMode, WebhookPlatform } from "@/db/types";
+import {
+  detectWebhookPlatform,
+  platformBadgeClass,
+  platformLabel,
+  resolveWebhookPlatform,
+  WEBHOOK_PLATFORM_OPTIONS,
+  type WebhookPlatformOverride,
+} from "@/lib/webhooks/platform";
+
+function testResultMessage(
+  email: boolean,
+  webhook: boolean | null,
+  userEmail: string,
+  platform: WebhookPlatform | null,
+): string {
+  const webhookTarget = platform ? platformLabel(platform) : "your webhook";
+
+  if (email && webhook) {
+    return `Test sent to ${userEmail} and ${webhookTarget}.`;
+  }
+  if (email) {
+    return `Test sent to ${userEmail}.`;
+  }
+  if (webhook) {
+    return `Test sent to ${webhookTarget}.`;
+  }
+  return "Test sent.";
+}
+
+function initialPlatformOverride(
+  webhookUrl: string | null,
+  storedPlatform: WebhookPlatform | null,
+): WebhookPlatformOverride {
+  if (!webhookUrl?.trim() || !storedPlatform) return "auto";
+  const detected = detectWebhookPlatform(webhookUrl);
+  if (!detected || detected === storedPlatform) return "auto";
+  return storedPlatform;
+}
 
 export function AlertPreferencesForm({
   isPro,
+  userEmail,
   initialInstantAlerts,
   initialWeeklyDigest,
   initialWebhookUrl,
+  initialWebhookPlatform,
 }: {
   isPro: boolean;
+  userEmail: string;
   initialInstantAlerts: InstantAlertMode;
   initialWeeklyDigest: boolean;
   initialWebhookUrl: string | null;
+  initialWebhookPlatform: WebhookPlatform | null;
 }) {
   const [instantAlerts, setInstantAlerts] =
     useState<InstantAlertMode>(initialInstantAlerts);
   const [weeklyDigest, setWeeklyDigest] = useState(initialWeeklyDigest);
   const [webhookUrl, setWebhookUrl] = useState(initialWebhookUrl ?? "");
+  const [platformOverride, setPlatformOverride] = useState<WebhookPlatformOverride>(
+    () => initialPlatformOverride(initialWebhookUrl, initialWebhookPlatform),
+  );
+  const [advancedOpen, setAdvancedOpen] = useState(
+    () => initialPlatformOverride(initialWebhookUrl, initialWebhookPlatform) !== "auto",
+  );
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [testOk, setTestOk] = useState(false);
+  const [testMessage, setTestMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const detectedPlatform = useMemo(
+    () => (webhookUrl.trim() ? detectWebhookPlatform(webhookUrl) : null),
+    [webhookUrl],
+  );
+
+  const effectivePlatform = useMemo(() => {
+    if (!webhookUrl.trim()) return null;
+    return resolveWebhookPlatform(webhookUrl, platformOverride);
+  }, [webhookUrl, platformOverride]);
 
   async function save() {
     setSaving(true);
     setError(null);
     setSaved(false);
-    setTestOk(false);
+    setTestMessage(null);
     try {
       const res = await fetch("/api/settings/alerts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ instantAlerts, weeklyDigest, webhookUrl }),
+        body: JSON.stringify({
+          instantAlerts,
+          weeklyDigest,
+          webhookUrl,
+          webhookPlatformOverride: platformOverride,
+        }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -48,22 +111,39 @@ export function AlertPreferencesForm({
     }
   }
 
-  async function testWebhook() {
+  async function sendTestAlert() {
     setTesting(true);
     setError(null);
-    setTestOk(false);
+    setTestMessage(null);
     try {
       const res = await fetch("/api/settings/alerts/test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ webhookUrl }),
+        body: JSON.stringify({ webhookUrl, webhookPlatformOverride: platformOverride }),
       });
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         setError(data.error ?? "Test failed");
+        if (data.email || data.webhook) {
+          setTestMessage(
+            testResultMessage(
+              Boolean(data.email),
+              data.webhook ?? null,
+              userEmail,
+              data.webhookPlatform ?? effectivePlatform,
+            ),
+          );
+        }
         return;
       }
-      setTestOk(true);
+      setTestMessage(
+        testResultMessage(
+          Boolean(data.email),
+          data.webhook ?? null,
+          userEmail,
+          data.webhookPlatform ?? effectivePlatform,
+        ),
+      );
     } finally {
       setTesting(false);
     }
@@ -73,8 +153,8 @@ export function AlertPreferencesForm({
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-5">
         <p className="text-sm text-slate-600">
-          Automated scans, email alerts, and Slack/Teams webhooks are included
-          with Pro.
+          Automated scans, email alerts, and Slack, Teams, or Discord webhooks
+          are included with Pro.
         </p>
         <Link
           href="/dashboard/billing"
@@ -97,7 +177,7 @@ export function AlertPreferencesForm({
         </label>
         <p className="mt-1 text-xs text-slate-500">
           After each daily automated scan when something meaningful changes —
-          sent to email and your webhook (if configured).
+          sent to email and your chat webhook (if configured).
         </p>
         <select
           id="instant-alerts"
@@ -139,11 +219,11 @@ export function AlertPreferencesForm({
           htmlFor="webhook-url"
           className="block text-sm font-medium text-slate-900"
         >
-          Slack or Teams webhook
+          Chat webhook
         </label>
         <p className="mt-1 text-xs text-slate-500">
-          Optional incoming webhook URL. Alerts use the same rules as email
-          above.
+          Optional Slack, Microsoft Teams, or Discord incoming webhook. We format
+          alerts for the detected platform.
         </p>
         <input
           id="webhook-url"
@@ -151,23 +231,94 @@ export function AlertPreferencesForm({
           value={webhookUrl}
           onChange={(e) => {
             setWebhookUrl(e.target.value);
+            setPlatformOverride("auto");
             setSaved(false);
-            setTestOk(false);
+            setTestMessage(null);
           }}
-          placeholder="https://hooks.slack.com/services/… or https://….webhook.office.com/…"
+          placeholder="https://hooks.slack.com/… · webhook.office.com/… · discord.com/api/webhooks/…"
           className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
         />
-        {webhookUrl.trim() && (
-          <button
-            type="button"
-            onClick={testWebhook}
-            disabled={testing}
-            className="mt-2 inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700 disabled:opacity-60"
-          >
-            {testing && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            Send test message
-          </button>
+
+        {webhookUrl.trim() && effectivePlatform && (
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span
+              className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${platformBadgeClass(effectivePlatform)}`}
+            >
+              {platformOverride === "auto" && detectedPlatform
+                ? `Detected: ${platformLabel(detectedPlatform)}`
+                : `Format: ${platformLabel(effectivePlatform)}`}
+            </span>
+            {platformOverride !== "auto" && detectedPlatform && (
+              <span className="text-xs text-slate-500">
+                URL looks like {platformLabel(detectedPlatform)}
+              </span>
+            )}
+            {!detectedPlatform && platformOverride === "auto" && (
+              <span className="text-xs text-amber-700">
+                Could not auto-detect — choose a format below or use Generic.
+              </span>
+            )}
+          </div>
         )}
+
+        <details
+          className="mt-3 rounded-lg border border-slate-200 bg-slate-50"
+          open={advancedOpen}
+          onToggle={(e) => setAdvancedOpen(e.currentTarget.open)}
+        >
+          <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-700 marker:content-none [&::-webkit-details-marker]:hidden">
+            <ChevronDown
+              className={`h-4 w-4 shrink-0 transition-transform ${advancedOpen ? "rotate-180" : ""}`}
+            />
+            Advanced: platform format
+          </summary>
+          <div className="border-t border-slate-200 px-3 pb-3 pt-2">
+            <p className="text-xs text-slate-500">
+              Override auto-detection if alerts don&apos;t render correctly (e.g.
+              Power Automate or a custom relay).
+            </p>
+            <select
+              id="webhook-platform"
+              value={platformOverride}
+              onChange={(e) => {
+                setPlatformOverride(e.target.value as WebhookPlatformOverride);
+                setSaved(false);
+              }}
+              className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            >
+              {WEBHOOK_PLATFORM_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </details>
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4">
+        <p className="text-sm font-medium text-slate-900">Test alerts</p>
+        <p className="mt-1 text-xs text-slate-500">
+          Sends a sample alert to{" "}
+          <span className="font-medium text-slate-700">{userEmail}</span>
+          {webhookUrl.trim()
+            ? ` and ${effectivePlatform ? platformLabel(effectivePlatform) : "your webhook"}`
+            : ""}
+          . No need to save first.
+        </p>
+        <button
+          type="button"
+          onClick={sendTestAlert}
+          disabled={testing}
+          className="mt-3 inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700 disabled:opacity-60"
+        >
+          {testing ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Send className="h-4 w-4" />
+          )}
+          Send test alert
+        </button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -183,8 +334,8 @@ export function AlertPreferencesForm({
         {saved && (
           <span className="text-sm text-green-600">Preferences saved.</span>
         )}
-        {testOk && (
-          <span className="text-sm text-green-600">Test message sent.</span>
+        {testMessage && (
+          <span className="text-sm text-green-600">{testMessage}</span>
         )}
         {error && <span className="text-sm text-red-600">{error}</span>}
       </div>

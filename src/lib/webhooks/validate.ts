@@ -1,4 +1,7 @@
-/** Validate Slack / Teams incoming webhook URLs (HTTPS, known hosts, no private IPs). */
+import type { WebhookPlatform } from "@/lib/webhooks/platform";
+import { detectWebhookPlatform } from "@/lib/webhooks/platform";
+
+/** Validate Slack / Teams / Discord incoming webhook URLs (HTTPS, known hosts). */
 export function parseWebhookUrl(raw: string | null | undefined): string | null {
   if (raw == null) return null;
   const trimmed = raw.trim();
@@ -19,16 +22,19 @@ export function parseWebhookUrl(raw: string | null | undefined): string | null {
 }
 
 function isAllowedHost(hostname: string): boolean {
+  const lower = hostname.toLowerCase();
   const allowed = [
     "hooks.slack.com",
     "hooks.slackusercontent.com",
     "webhook.office.com",
     "outlook.office.com",
+    "discord.com",
+    "discordapp.com",
   ];
 
-  if (allowed.includes(hostname)) return true;
-  if (hostname.endsWith(".webhook.office.com")) return true;
-  if (hostname.endsWith(".logic.azure.com")) return true;
+  if (allowed.includes(lower)) return true;
+  if (lower.endsWith(".webhook.office.com")) return true;
+  if (lower.endsWith(".logic.azure.com")) return true;
 
   return false;
 }
@@ -49,18 +55,7 @@ function isPrivateOrLocalHost(hostname: string): boolean {
   return false;
 }
 
-export type WebhookKind = "slack" | "teams" | "generic";
-
-export function detectWebhookKind(url: string): WebhookKind {
-  const { hostname } = new URL(url);
-  if (hostname === "hooks.slack.com" || hostname.endsWith(".hooks.slack.com")) {
-    return "slack";
-  }
-  if (
-    hostname.includes("webhook.office.com") ||
-    hostname === "outlook.office.com"
-  ) {
-    return "teams";
-  }
-  return "generic";
+/** @deprecated Use detectWebhookPlatform from ./platform */
+export function detectWebhookKind(url: string): WebhookPlatform {
+  return detectWebhookPlatform(url) ?? "generic";
 }

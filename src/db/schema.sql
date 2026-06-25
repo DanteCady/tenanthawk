@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS alert_preferences (
   instant_alerts  text NOT NULL DEFAULT 'high',
   weekly_digest   boolean NOT NULL DEFAULT true,
   webhook_url     text,
+  webhook_platform text,
   updated_at      timestamptz NOT NULL DEFAULT now()
 );
 
@@ -57,3 +58,4 @@ ALTER TABLE scan ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'manual';
 
 -- Slack / Teams webhook (added after initial alert_preferences table).
 ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS webhook_url text;
+ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS webhook_platform text;

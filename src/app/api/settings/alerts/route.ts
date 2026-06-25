@@ -6,11 +6,18 @@ import {
   upsertAlertPreferences,
 } from "@/lib/alerts/preferences";
 import { parseWebhookUrl } from "@/lib/webhooks/validate";
+import {
+  WEBHOOK_PLATFORM_OPTIONS,
+  type WebhookPlatformOverride,
+} from "@/lib/webhooks/platform";
 import type { InstantAlertMode } from "@/db/types";
 
 export const runtime = "nodejs";
 
 const MODES: InstantAlertMode[] = ["high", "any", "off"];
+const PLATFORM_OVERRIDES = new Set(
+  WEBHOOK_PLATFORM_OPTIONS.map((o) => o.value),
+);
 
 export async function GET() {
   const session = await getSession();
@@ -36,6 +43,7 @@ export async function POST(req: Request) {
     instantAlerts?: unknown;
     weeklyDigest?: unknown;
     webhookUrl?: unknown;
+    webhookPlatformOverride?: unknown;
   };
   try {
     body = await req.json();
@@ -46,6 +54,7 @@ export async function POST(req: Request) {
   const instantAlerts = body.instantAlerts;
   const weeklyDigest = body.weeklyDigest;
   const webhookRaw = body.webhookUrl;
+  const platformOverride = body.webhookPlatformOverride;
 
   if (typeof instantAlerts !== "string" || !MODES.includes(instantAlerts as InstantAlertMode)) {
     return NextResponse.json({ error: "Invalid instantAlerts" }, { status: 400 });
@@ -59,6 +68,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid webhookUrl" }, { status: 400 });
   }
 
+  if (
+    platformOverride != null &&
+    (typeof platformOverride !== "string" ||
+      !PLATFORM_OVERRIDES.has(platformOverride as WebhookPlatformOverride))
+  ) {
+    return NextResponse.json({ error: "Invalid webhookPlatformOverride" }, { status: 400 });
+  }
+
   const webhookUrl =
     typeof webhookRaw === "string" ? parseWebhookUrl(webhookRaw) : null;
 
@@ -66,7 +83,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         error:
-          "Invalid webhook URL. Use an HTTPS Slack or Microsoft Teams incoming webhook.",
+          "Invalid webhook URL. Use an HTTPS Slack, Microsoft Teams, or Discord incoming webhook.",
       },
       { status: 400 },
     );
@@ -76,7 +93,12 @@ export async function POST(req: Request) {
     instantAlerts: instantAlerts as InstantAlertMode,
     weeklyDigest,
     webhookUrl,
+    webhookPlatformOverride:
+      typeof platformOverride === "string"
+        ? (platformOverride as WebhookPlatformOverride)
+        : "auto",
   });
 
-  return NextResponse.json({ ok: true });
+  const saved = await getAlertPreferences(session.user.id);
+  return NextResponse.json({ ok: true, webhookPlatform: saved.webhookPlatform });
 }

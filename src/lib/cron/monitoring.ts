@@ -120,6 +120,7 @@ export async function runScheduledScans(): Promise<{
       if (prefs.webhookUrl) {
         const webhookOk = await sendWebhook({
           url: prefs.webhookUrl,
+          platform: prefs.webhookPlatform,
           title: mail.subject,
           text: mail.text,
         });
@@ -211,6 +212,7 @@ export async function sendWeeklyDigests(): Promise<{ sent: number }> {
       if (prefs.webhookUrl) {
         const webhookOk = await sendWebhook({
           url: prefs.webhookUrl,
+          platform: prefs.webhookPlatform,
           title: mail.subject,
           text: mail.text,
         });
