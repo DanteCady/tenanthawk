@@ -32,6 +32,8 @@ export interface ConnectionTable {
   created_at: CreatedAt;
 }
 
+export type ScanSource = "manual" | "scheduled";
+
 export interface ScanTable {
   id: string;
   connection_id: string;
@@ -41,6 +43,7 @@ export interface ScanTable {
   started_at: CreatedAt;
   completed_at: TimestampNullable;
   error: Nullable<string>;
+  source: ColumnType<ScanSource, ScanSource | undefined, ScanSource>;
 }
 
 export interface FindingTable {
@@ -68,9 +71,31 @@ export interface SubscriptionTable {
   periodEnd: ColumnType<Date | null, string | null, string | null>;
 }
 
+export type InstantAlertMode = "high" | "any" | "off";
+
+export interface AlertPreferencesTable {
+  user_id: string;
+  instant_alerts: ColumnType<
+    InstantAlertMode,
+    InstantAlertMode | undefined,
+    InstantAlertMode
+  >;
+  weekly_digest: ColumnType<boolean, boolean | undefined, boolean>;
+  updated_at: ColumnType<Date, string | undefined, string>;
+}
+
+// Read-only view of Better Auth's `user` table.
+export interface UserTable {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export interface Database {
   connection: ConnectionTable;
   scan: ScanTable;
   finding: FindingTable;
   subscription: SubscriptionTable;
+  alert_preferences: AlertPreferencesTable;
+  user: UserTable;
 }

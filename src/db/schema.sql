@@ -42,3 +42,14 @@ CREATE TABLE IF NOT EXISTS finding (
 );
 
 CREATE INDEX IF NOT EXISTS finding_scan_id_idx ON finding (scan_id);
+
+-- Pro monitoring: per-user alert preferences (defaults applied in app when row missing).
+CREATE TABLE IF NOT EXISTS alert_preferences (
+  user_id         text PRIMARY KEY,
+  instant_alerts  text NOT NULL DEFAULT 'high',
+  weekly_digest   boolean NOT NULL DEFAULT true,
+  updated_at      timestamptz NOT NULL DEFAULT now()
+);
+
+-- Distinguish manual rescans from scheduled cron scans.
+ALTER TABLE scan ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'manual';

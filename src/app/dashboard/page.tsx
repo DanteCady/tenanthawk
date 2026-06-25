@@ -18,6 +18,7 @@ import { RescanButton } from "@/components/app/RescanButton";
 import { ExportMenu } from "@/components/app/ExportMenu";
 import { DriftSummary } from "@/components/app/DriftSummary";
 import { ScanHistory } from "@/components/app/ScanHistory";
+import { MonitoringStatus } from "@/components/app/MonitoringStatus";
 import { FindingsTable, type FindingDTO } from "@/components/app/FindingsTable";
 import { CATEGORY_META } from "@/components/app/categories";
 import { GradeBadge } from "@/components/app/GradeBadge";
@@ -117,6 +118,8 @@ export default async function DashboardPage() {
           <RescanButton />
         </div>
       </div>
+
+      {isPro && <MonitoringStatus connectionId={conn.id} />}
 
       {isPro && drift && <DriftSummary drift={drift} />}
 

@@ -15,6 +15,8 @@ export interface ScanDrift {
   changedCount: number;
   newTitles: string[];
   resolvedTitles: string[];
+  newHighCount: number;
+  newHighTitles: string[];
 }
 
 /** Compare findings between two scans (previous → current). */
@@ -26,6 +28,7 @@ export function diffScans(
   const currMap = new Map(current.map((f) => [key(f), f]));
 
   const newTitles: string[] = [];
+  const newHighTitles: string[] = [];
   const resolvedTitles: string[] = [];
   let changedCount = 0;
 
@@ -33,6 +36,7 @@ export function diffScans(
     const prev = prevMap.get(k);
     if (!prev) {
       newTitles.push(f.title);
+      if (f.severity === "high") newHighTitles.push(f.title);
     } else if (prev.severity !== f.severity) {
       changedCount++;
     }
@@ -48,5 +52,7 @@ export function diffScans(
     changedCount,
     newTitles: newTitles.slice(0, 5),
     resolvedTitles: resolvedTitles.slice(0, 5),
+    newHighCount: newHighTitles.length,
+    newHighTitles: newHighTitles.slice(0, 5),
   };
 }

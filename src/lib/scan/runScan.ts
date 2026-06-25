@@ -7,7 +7,10 @@ import { scoreFindings } from "./score";
 import type { FindingDraft } from "./types";
 
 /** Run a scan for a connection, persist scan + findings, return the scan id. */
-export async function runScan(connectionId: string): Promise<string> {
+export async function runScan(
+  connectionId: string,
+  options?: { source?: "manual" | "scheduled" },
+): Promise<string> {
   const conn = await db
     .selectFrom("connection")
     .selectAll()
@@ -19,7 +22,12 @@ export async function runScan(connectionId: string): Promise<string> {
   const scanId = randomUUID();
   await db
     .insertInto("scan")
-    .values({ id: scanId, connection_id: connectionId, status: "running" })
+    .values({
+      id: scanId,
+      connection_id: connectionId,
+      status: "running",
+      source: options?.source ?? "manual",
+    })
     .execute();
 
   try {

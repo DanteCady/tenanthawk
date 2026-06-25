@@ -15,6 +15,8 @@ import { getPlan } from "@/lib/entitlements";
 import { getConnections } from "@/lib/queries";
 import { PlanBadge } from "@/components/app/PlanBadge";
 import { DisconnectTenantButton } from "@/components/app/DisconnectTenantButton";
+import { AlertPreferencesForm } from "@/components/app/AlertPreferencesForm";
+import { getAlertPreferences } from "@/lib/alerts/preferences";
 import { timeAgo } from "@/lib/time";
 
 function SettingsSection({
@@ -64,6 +66,8 @@ export default async function SettingsPage() {
   if (!session) redirect("/login");
 
   const plan = await getPlan(session.user.id);
+  const isPro = plan === "pro";
+  const alertPrefs = await getAlertPreferences(session.user.id);
   const connections = await getConnections(session.user.id);
   const connection = connections[0];
   const liveConfigured = Boolean(process.env.MS_CLIENT_ID);
@@ -170,6 +174,17 @@ export default async function SettingsPage() {
             </Link>
           </div>
         )}
+      </SettingsSection>
+
+      <SettingsSection
+        title="Monitoring & alerts"
+        description="Pro includes daily automated scans. Choose when we email you about drift."
+      >
+        <AlertPreferencesForm
+          isPro={isPro}
+          initialInstantAlerts={alertPrefs.instantAlerts}
+          initialWeeklyDigest={alertPrefs.weeklyDigest}
+        />
       </SettingsSection>
 
       <SettingsSection title="Plan & billing">

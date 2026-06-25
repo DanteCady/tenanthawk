@@ -77,3 +77,14 @@ export async function getPreviousScan(connectionId: string, currentScanId: strin
     .orderBy("started_at", "desc")
     .executeTakeFirst();
 }
+
+export async function getLastScheduledScan(connectionId: string) {
+  return db
+    .selectFrom("scan")
+    .selectAll()
+    .where("connection_id", "=", connectionId)
+    .where("status", "=", "complete")
+    .where("source", "=", "scheduled")
+    .orderBy("started_at", "desc")
+    .executeTakeFirst();
+}
