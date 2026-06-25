@@ -141,6 +141,12 @@ body {
   color: #0f172a;
 }
 
+@media print {
+  header {
+    display: none !important;
+  }
+}
+
 ::selection {
   background: rgba(245, 158, 11, 0.28);
   color: #0f172a;

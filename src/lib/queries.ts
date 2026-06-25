@@ -48,3 +48,32 @@ export async function getScanTrend(connectionId: string, limit = 12) {
     .execute();
   return rows.reverse();
 }
+
+export async function getScanHistory(connectionId: string, limit = 12) {
+  return db
+    .selectFrom("scan")
+    .select(["id", "score", "started_at", "category_scores"])
+    .where("connection_id", "=", connectionId)
+    .where("status", "=", "complete")
+    .orderBy("started_at", "desc")
+    .limit(limit)
+    .execute();
+}
+
+export async function getPreviousScan(connectionId: string, currentScanId: string) {
+  const current = await db
+    .selectFrom("scan")
+    .select(["started_at"])
+    .where("id", "=", currentScanId)
+    .executeTakeFirst();
+  if (!current) return undefined;
+
+  return db
+    .selectFrom("scan")
+    .selectAll()
+    .where("connection_id", "=", connectionId)
+    .where("status", "=", "complete")
+    .where("started_at", "<", current.started_at)
+    .orderBy("started_at", "desc")
+    .executeTakeFirst();
+}

@@ -6,12 +6,18 @@ import {
   getLatestScan,
   getFindings,
   getScanTrend,
+  getScanHistory,
+  getPreviousScan,
 } from "@/lib/queries";
 import { getPlan } from "@/lib/entitlements";
 import { summarize } from "@/lib/summary";
+import { diffScans } from "@/lib/scan/drift";
 import { ScoreRing } from "@/components/app/ScoreRing";
 import { Sparkline } from "@/components/app/Sparkline";
 import { RescanButton } from "@/components/app/RescanButton";
+import { ExportMenu } from "@/components/app/ExportMenu";
+import { DriftSummary } from "@/components/app/DriftSummary";
+import { ScanHistory } from "@/components/app/ScanHistory";
 import { FindingsTable, type FindingDTO } from "@/components/app/FindingsTable";
 import { CATEGORY_META } from "@/components/app/categories";
 import { GradeBadge } from "@/components/app/GradeBadge";
@@ -53,6 +59,32 @@ export default async function DashboardPage() {
     entityRef: f.entity_ref,
   }));
 
+  let drift = null;
+  let history: Array<{ id: string; score: number | null; started_at: Date | string }> =
+    [];
+
+  if (isPro) {
+    const prevScan = await getPreviousScan(conn.id, scan.id);
+    if (prevScan) {
+      const prevFindings = await getFindings(prevScan.id);
+      drift = diffScans(
+        prevFindings.map((f) => ({
+          check_id: f.check_id,
+          entity_ref: f.entity_ref,
+          title: f.title,
+          severity: f.severity,
+        })),
+        findings.map((f) => ({
+          check_id: f.check_id,
+          entity_ref: f.entity_ref,
+          title: f.title,
+          severity: f.severity,
+        })),
+      );
+    }
+    history = await getScanHistory(conn.id);
+  }
+
   const stats = [
     { icon: ListChecks, label: "Open issues", value: summary.total.toString() },
     { icon: AlertTriangle, label: "High severity", value: summary.high.toString() },
@@ -80,10 +112,14 @@ export default async function DashboardPage() {
             </span>
           </p>
         </div>
-        <RescanButton />
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportMenu isPro={isPro} />
+          <RescanButton />
+        </div>
       </div>
 
-      {/* KPI row — equal compact cards, no stretched empty space */}
+      {isPro && drift && <DriftSummary drift={drift} />}
+
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <div className="surface-highlight flex flex-col gap-3 p-4 sm:col-span-2 xl:col-span-1">
           <div className="flex items-center gap-3">
@@ -121,7 +157,6 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* Category grades — single compact row per card */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {summary.categories.map((c) => {
           const meta = CATEGORY_META[c.category];
@@ -153,6 +188,10 @@ export default async function DashboardPage() {
           );
         })}
       </div>
+
+      {isPro && history.length > 0 && (
+        <ScanHistory scans={history} />
+      )}
 
       <div>
         <h2 className="mb-3 text-lg font-semibold text-slate-900">Findings</h2>
