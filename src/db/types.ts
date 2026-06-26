@@ -1,5 +1,7 @@
 import type { ColumnType } from "kysely";
 
+import type { RemediationEnriched } from "@/lib/remediation/types";
+
 export type Category = "security" | "cost" | "reliability" | "hygiene";
 export type Severity = "low" | "medium" | "high";
 export type ScanStatus = "running" | "complete" | "failed";
@@ -64,6 +66,7 @@ export interface FindingTable {
   impact: Json<FindingImpact>;
   remediation: ColumnType<string, string | undefined, string>;
   entity_ref: Nullable<string>;
+  remediation_enriched: Json<RemediationEnriched | null>;
 }
 
 // Read-only view of the Better Auth Stripe plugin's `subscription` table

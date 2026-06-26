@@ -14,6 +14,7 @@ import { summarize } from "@/lib/summary";
 import { diffScans } from "@/lib/scan/drift";
 import { getFindingStatuses, isFindingHidden } from "@/lib/findings/status";
 import { findingStatusKey } from "@/lib/findings/key";
+import type { RemediationEnriched } from "@/lib/remediation/types";
 import { ScoreRing } from "@/components/app/ScoreRing";
 import { Sparkline } from "@/components/app/Sparkline";
 import { RescanButton } from "@/components/app/RescanButton";
@@ -35,6 +36,13 @@ const CATEGORY_STYLE: Record<
   reliability: { icon: "text-blue-600", chip: "bg-blue-50" },
   hygiene: { icon: "text-yellow-600", chip: "bg-yellow-50" },
 };
+
+function parseRemediationEnriched(raw: unknown): RemediationEnriched | null {
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as RemediationEnriched;
+  if (!Array.isArray(o.steps) || !Array.isArray(o.links)) return null;
+  return o;
+}
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -70,6 +78,9 @@ export default async function DashboardPage() {
       impact: f.impact,
       remediation: f.remediation,
       entityRef: f.entity_ref,
+      remediationEnriched: isPro
+        ? parseRemediationEnriched(f.remediation_enriched)
+        : null,
       tracking: tracking?.status ?? "open",
       snoozedUntil: tracking?.snoozedUntil?.toISOString() ?? null,
     };

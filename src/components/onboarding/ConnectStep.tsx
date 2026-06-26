@@ -8,12 +8,14 @@ import {
   CheckCircle2,
   Loader2,
   Lock,
+  LogIn,
   PlayCircle,
   ShieldCheck,
   Sparkles,
   TriangleAlert,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { MicrosoftSetupGuide } from "@/components/onboarding/MicrosoftSetupGuide";
 
 const SCAN_STEPS = [
   "Authorizing read-only access…",
@@ -22,6 +24,24 @@ const SCAN_STEPS = [
   "Reviewing Conditional Access posture…",
   "Scoring tenant health…",
 ];
+
+const LIVE_STEPS = [
+  {
+    icon: ShieldCheck,
+    title: "Click Connect Microsoft 365",
+    body: "We send you to Microsoft’s secure consent screen.",
+  },
+  {
+    icon: LogIn,
+    title: "Sign in as a Global Administrator",
+    body: "Use your work account — the person who can approve org-wide access.",
+  },
+  {
+    icon: CheckCircle2,
+    title: "Accept read-only permissions once",
+    body: "Tenant Hawk scans your tenant. We never store passwords or tokens.",
+  },
+] as const;
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 16 },
@@ -60,7 +80,38 @@ function Scanning() {
   );
 }
 
-function ConnectCard({
+function LiveConnectSteps() {
+  return (
+    <motion.div
+      variants={fadeUp}
+      className="mt-6 rounded-2xl border border-slate-200 bg-slate-50/60 p-4"
+    >
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        What happens next
+      </p>
+      <ol className="mt-3 space-y-3">
+        {LIVE_STEPS.map((step, i) => {
+          const Icon = step.icon;
+          return (
+            <li key={step.title} className="flex gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-blue-600 shadow-sm ring-1 ring-slate-200">
+                <Icon className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 pt-0.5">
+                <p className="text-sm font-medium text-slate-900">
+                  {i + 1}. {step.title}
+                </p>
+                <p className="text-xs text-slate-600">{step.body}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </motion.div>
+  );
+}
+
+function ConnectOptions({
   liveConfigured,
   onDemo,
   demoLoading,
@@ -71,52 +122,33 @@ function ConnectCard({
 }) {
   const reduceMotion = useReducedMotion();
 
-  const liveCard = (
-    <div
-      className={`flex items-center gap-4 rounded-2xl border p-5 ${
-        liveConfigured
-          ? "surface-card"
-          : "border-slate-200 bg-slate-50/80 opacity-75"
-      }`}
-      aria-disabled={!liveConfigured}
-    >
-      <div
-        className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-          liveConfigured ? "bg-blue-50 text-blue-600" : "bg-slate-100 text-slate-400"
-        }`}
-      >
-        <ShieldCheck className="h-5 w-5" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="font-semibold text-slate-900">Connect Microsoft 365</p>
-        <p className="text-sm text-slate-600">
-          Sign in as a global admin and consent once to read-only access.
-        </p>
-        {!liveConfigured && (
-          <p className="mt-1.5 text-xs text-slate-500">
-            Live connect requires Entra app credentials in this environment.
-          </p>
-        )}
-      </div>
-      {liveConfigured && (
-        <ArrowRight className="h-5 w-5 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5" />
-      )}
-    </div>
-  );
-
   return (
     <div className="space-y-4">
-      {liveConfigured ? (
+      {liveConfigured && (
         <motion.a
           href="/api/connect/start"
           variants={fadeUp}
-          className="group block transition-all hover:opacity-95"
+          className="group relative block transition-all hover:opacity-95"
           whileHover={reduceMotion ? {} : { y: -2 }}
         >
-          {liveCard}
+          <span className="absolute -top-2.5 right-4 inline-flex items-center gap-1 rounded-full bg-blue-600 px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-white shadow-sm">
+            <Sparkles className="h-3 w-3" />
+            Recommended
+          </span>
+          <div className="surface-highlight flex items-center gap-4 rounded-2xl border border-blue-200 p-5 transition-all group-hover:border-blue-300 group-hover:shadow-md">
+            <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-slate-900">Connect Microsoft 365</p>
+              <p className="text-sm text-slate-600">
+                Sign in with Microsoft as a Global Administrator and approve
+                one-time read-only access. No app install required.
+              </p>
+            </div>
+            <ArrowRight className="h-5 w-5 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5" />
+          </div>
         </motion.a>
-      ) : (
-        <motion.div variants={fadeUp}>{liveCard}</motion.div>
       )}
 
       <motion.button
@@ -134,7 +166,7 @@ function ConnectCard({
         {!liveConfigured && (
           <span className="absolute -top-2.5 right-4 inline-flex items-center gap-1 rounded-full bg-blue-600 px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-white shadow-sm">
             <Sparkles className="h-3 w-3" />
-            Recommended
+            Try it now
           </span>
         )}
         <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
@@ -147,8 +179,9 @@ function ConnectCard({
         <div className="min-w-0 flex-1">
           <p className="font-semibold text-slate-900">Run a demo scan</p>
           <p className="text-sm text-slate-600">
-            Explore the full product with realistic sample findings — no Microsoft
-            sign-in required.
+            {liveConfigured
+              ? "Preview sample findings first — no Microsoft sign-in required."
+              : "Explore the full product with realistic sample findings — no Microsoft sign-in required."}
           </p>
         </div>
         <ArrowRight className="h-5 w-5 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5" />
@@ -159,9 +192,11 @@ function ConnectCard({
 
 export function ConnectStep({
   liveConfigured,
+  showDevSetup,
   error,
 }: {
   liveConfigured: boolean;
+  showDevSetup: boolean;
   error?: string;
 }) {
   const router = useRouter();
@@ -221,8 +256,9 @@ export function ConnectStep({
               Connect your tenant
             </h1>
             <p className="mx-auto mt-2 max-w-md text-slate-600">
-              Grant read-only access and we&apos;ll have your health score in
-              about a minute.
+              {liveConfigured
+                ? "Sign in with Microsoft to grant read-only access — your health score in about a minute."
+                : "Try a demo scan now, or connect your real tenant once Microsoft sign-in is enabled."}
             </p>
           </motion.div>
 
@@ -238,12 +274,16 @@ export function ConnectStep({
           )}
 
           <div className="mt-8">
-            <ConnectCard
+            <ConnectOptions
               liveConfigured={liveConfigured}
               onDemo={runDemo}
               demoLoading={scanning}
             />
           </div>
+
+          {liveConfigured && <LiveConnectSteps />}
+
+          {showDevSetup && <MicrosoftSetupGuide />}
 
           <motion.p
             variants={fadeUp}

@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronDown, Lock, Wrench } from "lucide-react";
+import { ChevronDown, Lock } from "lucide-react";
 import type { Category, FindingTrackingStatus, Severity } from "@/db/types";
 import { CATEGORY_META } from "./categories";
 import { SeverityBadge } from "./SeverityBadge";
 import { UpgradeButton } from "./UpgradeButton";
 import { FindingActions } from "./FindingActions";
+import { RemediationPanel } from "./RemediationPanel";
 import { isExpiryCheckId } from "@/lib/scan/expiry";
+import type { RemediationEnriched } from "@/lib/remediation/types";
 
 export interface FindingDTO {
   id: string;
@@ -20,6 +22,7 @@ export interface FindingDTO {
   impact: { usd?: number; count?: number; daysUntil?: number } | null;
   remediation: string;
   entityRef: string | null;
+  remediationEnriched?: RemediationEnriched | null;
   tracking: FindingTrackingStatus | "open";
   snoozedUntil?: string | null;
 }
@@ -53,8 +56,8 @@ function LockedTable({ count }: { count: number }) {
           {count} findings with full remediation
         </p>
         <p className="mt-1 max-w-sm text-sm text-slate-600">
-          Unlock severity, dollar impact, and step-by-step fixes — plus daily
-          monitoring and drift alerts.
+          Unlock severity, dollar impact, AI-guided fixes with Microsoft docs,
+          plus daily monitoring and drift alerts.
         </p>
         <div className="mt-4">
           <UpgradeButton className="btn-primary px-5 py-2.5 text-sm shadow-none hover:shadow-md">
@@ -170,10 +173,11 @@ export function FindingsTable({
                   {f.entityRef && (
                     <p className="text-xs text-slate-500">Affected: {f.entityRef}</p>
                   )}
-                  <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3">
-                    <Wrench className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-                    <p className="text-sm text-slate-800">{f.remediation}</p>
-                  </div>
+                  <RemediationPanel
+                    findingId={f.id}
+                    templateRemediation={f.remediation}
+                    initialEnriched={f.remediationEnriched}
+                  />
                   <FindingActions
                     checkId={f.checkId}
                     entityRef={f.entityRef}

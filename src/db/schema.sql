@@ -41,6 +41,8 @@ CREATE TABLE IF NOT EXISTS finding (
   entity_ref  text
 );
 
+ALTER TABLE finding ADD COLUMN IF NOT EXISTS remediation_enriched jsonb;
+
 CREATE INDEX IF NOT EXISTS finding_scan_id_idx ON finding (scan_id);
 
 -- Per-connection remediation state (survives rescans).

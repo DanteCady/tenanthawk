@@ -15,6 +15,7 @@ import { getPlan } from "@/lib/entitlements";
 import { getConnections } from "@/lib/queries";
 import { PlanBadge } from "@/components/app/PlanBadge";
 import { DisconnectTenantButton } from "@/components/app/DisconnectTenantButton";
+import { DeleteAccountButton } from "@/components/app/DeleteAccountButton";
 import { AlertPreferencesForm } from "@/components/app/AlertPreferencesForm";
 import { getAlertPreferences } from "@/lib/alerts/preferences";
 import { isLiveConfigured } from "@/lib/scan/graph";
@@ -206,6 +207,13 @@ export default async function SettingsPage() {
             Manage billing
           </Link>
         </div>
+      </SettingsSection>
+
+      <SettingsSection
+        title="Danger zone"
+        description="Permanently delete your account and all associated data."
+      >
+        <DeleteAccountButton isPro={isPro} />
       </SettingsSection>
     </div>
   );

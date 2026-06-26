@@ -2,6 +2,10 @@ import { betterAuth } from "better-auth";
 import { stripe } from "@better-auth/stripe";
 import Stripe from "stripe";
 import { pool } from "../db";
+import {
+  cancelStripeSubscription,
+  deleteUserData,
+} from "./account/deleteUserData";
 
 // Placeholder keys keep schema generation + demo mode working before real
 // Stripe keys are added. Real checkout/webhook activate once env is set.
@@ -18,6 +22,15 @@ export const auth = betterAuth({
     // Local/dev: no email provider wired yet, so don't block sign-in.
     requireEmailVerification: false,
     autoSignIn: true,
+  },
+  user: {
+    deleteUser: {
+      enabled: true,
+      beforeDelete: async (user) => {
+        await cancelStripeSubscription(user.id);
+        await deleteUserData(user.id);
+      },
+    },
   },
   plugins: [
     stripe({
