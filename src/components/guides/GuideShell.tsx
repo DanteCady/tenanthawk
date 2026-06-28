@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Logo } from "@/components/Logo";
 import { Footer } from "@/components/Footer";
+import { Navbar } from "@/components/Navbar";
 import {
   GUIDE_BY_SLUG,
   GUIDE_CATEGORY_CHIP,
@@ -17,29 +17,9 @@ export function GuideShell({ guide, children }: { guide: Guide; children: React.
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-6 py-5">
-          <Link href="/" aria-label="Tenant Hawk home">
-            <Logo tone="light" />
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/guides"
-              className="hidden text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline"
-            >
-              Guides
-            </Link>
-            <Link
-              href="/signup"
-              className="btn-primary rounded-full px-4 py-2 text-sm shadow-none hover:shadow-md"
-            >
-              Start free scan
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
-      <main className="mx-auto max-w-3xl px-6 py-12">
+      <main className="mx-auto max-w-3xl px-6 pb-12 pt-28">
         <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>

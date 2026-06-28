@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { rootMetadata } from "@/lib/seo/site";
+import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme/scope";
 import "./themes.css";
 import "./globals.css";
 
@@ -31,7 +32,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("tenant-hawk-theme");if(t==="light"||t==="dark"||t==="hawk")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`,
+            __html: THEME_BOOTSTRAP_SCRIPT,
           }}
         />
       </head>

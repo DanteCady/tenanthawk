@@ -1,11 +1,18 @@
+"use client";
+
+import { useState } from "react";
 import { Check } from "lucide-react";
 import { Reveal } from "./Reveal";
 import {
+  PRO_ANNUAL_MONTHLY_EQUIV,
   PRO_ANNUAL_SAVINGS_PERCENT,
+  PRO_ANNUAL_SAVINGS_USD,
   PRO_ANNUAL_USD,
   PRO_MONTHLY_USD,
 } from "@/lib/billing/pricing";
 import { formatUsd } from "@/lib/format";
+
+type Interval = "monthly" | "annual";
 
 const tiers = [
   {
@@ -24,9 +31,6 @@ const tiers = [
   },
   {
     name: "Pro",
-    price: `$${PRO_MONTHLY_USD}`,
-    cadence: "/tenant / mo",
-    annualNote: `$${formatUsd(PRO_ANNUAL_USD)}/yr (save ${PRO_ANNUAL_SAVINGS_PERCENT}%)`,
     blurb: "The full hawk-eye view for internal IT teams.",
     features: [
       "All four scan categories",
@@ -55,9 +59,12 @@ const tiers = [
     highlight: false,
     comingSoon: true,
   },
-];
+] as const;
 
 export function Pricing() {
+  const [interval, setInterval] = useState<Interval>("monthly");
+  const annual = interval === "annual";
+
   return (
     <section id="pricing" className="scroll-mt-24 bg-white py-24">
       <div className="mx-auto max-w-6xl px-6">
@@ -74,80 +81,128 @@ export function Pricing() {
           </p>
         </Reveal>
 
-        <div className="mt-16 grid items-stretch gap-6 lg:grid-cols-3">
-          {tiers.map((t, i) => (
-            <Reveal key={t.name} delay={i * 0.08} className="h-full">
-              <div
-                className={`flex h-full flex-col rounded-3xl border p-7 ${
-                  t.highlight
-                    ? "surface-highlight ring-1 ring-blue-200/80"
-                    : "border-slate-200 bg-white shadow-sm"
-                }`}
-              >
-                {t.highlight && (
-                  <span className="mb-4 inline-flex w-fit rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
-                    Most popular
-                  </span>
-                )}
-                {"comingSoon" in t && t.comingSoon && (
-                  <span className="mb-4 inline-flex w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                    Coming soon
-                  </span>
-                )}
-                <h3 className="text-lg font-bold text-slate-900">
-                  {t.name}
-                </h3>
-                <div className="mt-2 flex items-baseline gap-1.5">
-                  <span className="text-4xl font-bold text-slate-900">
-                    {t.price}
-                  </span>
-                  <span className="text-slate-500">
-                    {t.cadence}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm text-slate-600">
-                  {t.blurb}
-                </p>
-                {"annualNote" in t && t.annualNote && (
-                  <p className="mt-2 text-sm font-medium text-green-700">{t.annualNote}</p>
-                )}
+        <Reveal className="mx-auto mt-10 max-w-md">
+          <div
+            className="flex rounded-xl border border-slate-200 bg-slate-50 p-1"
+            role="group"
+            aria-label="Billing interval"
+          >
+            <button
+              type="button"
+              onClick={() => setInterval("monthly")}
+              className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                interval === "monthly"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              type="button"
+              onClick={() => setInterval("annual")}
+              className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                interval === "annual"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              Annual
+              <span className="ml-1.5 rounded-full bg-green-100 px-1.5 py-0.5 text-[0.65rem] font-semibold text-green-800">
+                Save {PRO_ANNUAL_SAVINGS_PERCENT}%
+              </span>
+            </button>
+          </div>
+        </Reveal>
 
-                <ul className="mt-6 flex-1 space-y-3">
-                  {t.features.map((f) => (
-                    <li
-                      key={f}
-                      className="flex items-start gap-2.5 text-sm text-slate-700"
+        <div className="mt-10 grid items-stretch gap-6 lg:grid-cols-3">
+          {tiers.map((t, i) => {
+            const isPro = t.name === "Pro";
+            const price = isPro
+              ? annual
+                ? `$${formatUsd(PRO_ANNUAL_USD)}`
+                : `$${PRO_MONTHLY_USD}`
+              : "price" in t
+                ? t.price
+                : "";
+            const cadence = isPro
+              ? annual
+                ? "/ tenant / yr"
+                : "/tenant / mo"
+              : "cadence" in t
+                ? t.cadence
+                : "";
+            const annualNote =
+              isPro && !annual
+                ? `$${formatUsd(PRO_ANNUAL_USD)}/yr (save ${PRO_ANNUAL_SAVINGS_PERCENT}%)`
+                : isPro && annual
+                  ? `$${PRO_ANNUAL_MONTHLY_EQUIV}/mo equivalent · save $${formatUsd(PRO_ANNUAL_SAVINGS_USD)}/yr`
+                  : null;
+
+            return (
+              <Reveal key={t.name} delay={i * 0.08} className="h-full">
+                <div
+                  className={`flex h-full flex-col rounded-3xl border p-7 ${
+                    t.highlight
+                      ? "surface-highlight ring-1 ring-blue-200/80"
+                      : "border-slate-200 bg-white shadow-sm"
+                  }`}
+                >
+                  {t.highlight && (
+                    <span className="mb-4 inline-flex w-fit rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
+                      Most popular
+                    </span>
+                  )}
+                  {"comingSoon" in t && t.comingSoon && (
+                    <span className="mb-4 inline-flex w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                      Coming soon
+                    </span>
+                  )}
+                  <h3 className="text-lg font-bold text-slate-900">{t.name}</h3>
+                  <div className="mt-2 flex items-baseline gap-1.5">
+                    <span className="text-4xl font-bold text-slate-900">{price}</span>
+                    <span className="text-slate-500">{cadence}</span>
+                  </div>
+                  <p className="mt-3 text-sm text-slate-600">{t.blurb}</p>
+                  {annualNote && (
+                    <p className="mt-2 text-sm font-medium text-green-700">{annualNote}</p>
+                  )}
+
+                  <ul className="mt-6 flex-1 space-y-3">
+                    {t.features.map((f) => (
+                      <li
+                        key={f}
+                        className="flex items-start gap-2.5 text-sm text-slate-700"
+                      >
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {"comingSoon" in t && t.comingSoon ? (
+                    <span
+                      aria-disabled="true"
+                      className="mt-7 inline-flex cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm font-semibold text-slate-400"
                     >
-                      <Check
-                        className="mt-0.5 h-4 w-4 shrink-0 text-green-600"
-                      />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                {"comingSoon" in t && t.comingSoon ? (
-                  <span
-                    aria-disabled="true"
-                    className="mt-7 inline-flex cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm font-semibold text-slate-400"
-                  >
-                    {t.cta}
-                  </span>
-                ) : (
-                  <a
-                    href="/signup"
-                    className={`mt-7 inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
-                      t.highlight
-                        ? "btn-primary w-full shadow-none hover:shadow-md"
-                        : "border border-slate-300 text-slate-900 hover:border-slate-400"
-                    }`}
-                  >
-                    {t.cta}
-                  </a>
-                )}
-              </div>
-            </Reveal>
-          ))}
+                      {t.cta}
+                    </span>
+                  ) : (
+                    <a
+                      href="/signup"
+                      className={`mt-7 inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
+                        t.highlight
+                          ? "btn-primary w-full shadow-none hover:shadow-md"
+                          : "border border-slate-300 text-slate-900 hover:border-slate-400"
+                      }`}
+                    >
+                      {t.cta}
+                    </a>
+                  )}
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>

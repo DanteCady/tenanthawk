@@ -65,7 +65,7 @@ jobs:
           cp -r public .next/standalone/public
           cp -r .next/static .next/standalone/.next/static
           mkdir -p deploy/scripts
-          cp -r .next/standalone/* deploy/
+          cp -a .next/standalone/. deploy/
           cp scripts/trigger-cron.sh deploy/scripts/trigger-cron.sh
           cp scripts/server/restart.sh deploy/restart.sh
           chmod +x deploy/restart.sh deploy/scripts/trigger-cron.sh

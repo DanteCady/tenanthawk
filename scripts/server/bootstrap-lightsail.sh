@@ -61,6 +61,24 @@ SHELL=/bin/bash
 CRON
 chmod 644 "$CRON_FILE"
 
+if command -v certbot >/dev/null; then
+  echo "→ Let's Encrypt auto-renew cron..."
+  cat >/etc/cron.d/tenanthawk-letsencrypt <<'LECRON'
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Let's Encrypt — check renewal twice daily; reload nginx when a cert is renewed
+0 3,15 * * * root certbot renew --quiet --deploy-hook "systemctl reload nginx" >> /var/log/tenanthawk-letsencrypt.log 2>&1
+LECRON
+  chmod 644 /etc/cron.d/tenanthawk-letsencrypt
+  mkdir -p /etc/letsencrypt/renewal-hooks/deploy
+  cat >/etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh <<'HOOK'
+#!/bin/bash
+systemctl reload nginx
+HOOK
+  chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
+fi
+
 echo "Done. Next:"
 echo "  1. Edit $APP_ROOT/.env with production secrets"
 echo "  2. Add GitHub Actions secrets (LIGHTSAIL_HOST, LIGHTSAIL_USER, LIGHTSAIL_SSH_KEY)"
