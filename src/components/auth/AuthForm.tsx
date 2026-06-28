@@ -137,6 +137,20 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           </>
         )}
       </p>
+
+      {isSignup && (
+        <p className="text-center text-xs text-slate-500">
+          By creating an account you agree to our{" "}
+          <Link href="/terms" className="text-slate-600 underline hover:text-slate-800">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="text-slate-600 underline hover:text-slate-800">
+            Privacy Policy
+          </Link>
+          .
+        </p>
+      )}
     </form>
   );
 }

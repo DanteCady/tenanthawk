@@ -1,6 +1,8 @@
 export const COMPANY_NAME = "Precipice Technology";
 export const COMPANY_LEGAL_NAME = "Precipice Technology LLC";
 export const PRODUCT_ATTRIBUTION = `Product of ${COMPANY_LEGAL_NAME}`;
+export const SUPPORT_EMAIL = "support@tenanthawk.io";
+export const LEGAL_EMAIL = "legal@tenanthawk.io";
 
 export function copyrightLine(): string {
   return `© ${new Date().getFullYear()} ${COMPANY_LEGAL_NAME}.`;

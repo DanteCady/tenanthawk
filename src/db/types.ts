@@ -1,6 +1,7 @@
 import type { ColumnType } from "kysely";
 
 import type { RemediationEnriched } from "@/lib/remediation/types";
+import type { LicensePricingOverrides } from "@/lib/licenses/pricing-overrides";
 
 export type Category = "security" | "cost" | "reliability" | "hygiene";
 export type Severity = "low" | "medium" | "high";
@@ -40,6 +41,7 @@ export interface ConnectionTable {
     "active" | "pending" | "error"
   >;
   created_at: CreatedAt;
+  license_pricing: Json<LicensePricingOverrides | null>;
 }
 
 export type ScanSource = "manual" | "scheduled";
@@ -121,6 +123,17 @@ export interface AlertPreferencesTable {
   updated_at: ColumnType<Date, string | undefined, string>;
 }
 
+export interface ReportShareTable {
+  id: string;
+  user_id: string;
+  connection_id: string;
+  token: string;
+  label: Nullable<string>;
+  expires_at: TimestampNullable;
+  revoked_at: TimestampNullable;
+  created_at: CreatedAt;
+}
+
 // Read-only view of Better Auth's `user` table.
 export interface UserTable {
   id: string;
@@ -136,5 +149,6 @@ export interface Database {
   subscription: SubscriptionTable;
   alert_preferences: AlertPreferencesTable;
   alert_webhook: AlertWebhookTable;
+  report_share: ReportShareTable;
   user: UserTable;
 }

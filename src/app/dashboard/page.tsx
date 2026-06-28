@@ -1,97 +1,45 @@
-import { redirect } from "next/navigation";
-import { AlertTriangle, ListChecks, PiggyBank } from "lucide-react";
-import { getSession } from "@/lib/session";
-import {
-  getPrimaryConnection,
-  getLatestScan,
-  getFindings,
-  getScanTrend,
-  getScanHistory,
-  getPreviousScan,
-} from "@/lib/queries";
-import { getPlan } from "@/lib/entitlements";
-import { summarize } from "@/lib/summary";
+import Link from "next/link";
+import { AlertTriangle, ListChecks, PiggyBank, ArrowRight, Route } from "lucide-react";
+import { getDashboardSnapshot } from "@/lib/dashboard/context";
+import { getPreviousScan, getFindings } from "@/lib/queries";
 import { diffScans } from "@/lib/scan/drift";
-import { getFindingStatuses, isFindingHidden } from "@/lib/findings/status";
-import { findingStatusKey } from "@/lib/findings/key";
-import type { RemediationEnriched } from "@/lib/remediation/types";
+import { buildCompliancePosture } from "@/lib/compliance/posture";
+import { buildRoadmapStops } from "@/lib/remediation/roadmap";
 import { ScoreRing } from "@/components/app/ScoreRing";
 import { Sparkline } from "@/components/app/Sparkline";
 import { RescanButton } from "@/components/app/RescanButton";
 import { ExportMenu } from "@/components/app/ExportMenu";
 import { DriftSummary } from "@/components/app/DriftSummary";
-import { ScanHistory } from "@/components/app/ScanHistory";
 import { MonitoringStatus } from "@/components/app/MonitoringStatus";
-import { FindingsTable, type FindingDTO } from "@/components/app/FindingsTable";
 import { CATEGORY_META } from "@/components/app/categories";
 import { CategoryInfoButton } from "@/components/app/CategoryInfoButton";
 import { GradeBadge } from "@/components/app/GradeBadge";
+import { CompliancePosture } from "@/components/app/CompliancePosture";
+import { InlineStatHint } from "@/components/app/InlineStatHint";
 import { timeAgo } from "@/lib/time";
 import { formatUsd } from "@/lib/format";
+import { hasCustomLicensePricing, parseLicensePricing } from "@/lib/licenses/pricing-overrides";
 
-const CATEGORY_STYLE: Record<
-  string,
-  { icon: string; chip: string }
-> = {
+const CATEGORY_STYLE: Record<string, { icon: string; chip: string }> = {
   security: { icon: "text-red-600", chip: "bg-red-50" },
   cost: { icon: "text-green-600", chip: "bg-green-50" },
   reliability: { icon: "text-blue-600", chip: "bg-blue-50" },
   hygiene: { icon: "text-yellow-600", chip: "bg-yellow-50" },
 };
 
-function parseRemediationEnriched(raw: unknown): RemediationEnriched | null {
-  if (!raw || typeof raw !== "object") return null;
-  const o = raw as RemediationEnriched;
-  if (!Array.isArray(o.steps) || !Array.isArray(o.links)) return null;
-  return o;
-}
-
 export default async function DashboardPage() {
-  const session = await getSession();
-  if (!session) redirect("/login");
-
-  const conn = await getPrimaryConnection(session.user.id);
-  if (!conn) redirect("/onboarding");
-  const scan = await getLatestScan(conn.id);
-  if (!scan) redirect("/onboarding");
-
-  const findings = await getFindings(scan.id);
-  const plan = await getPlan(session.user.id);
-  const isPro = plan === "pro";
-  const statuses = isPro ? await getFindingStatuses(conn.id) : new Map();
-
-  const activeFindings = findings.filter((f) => {
-    const tracking = statuses.get(findingStatusKey(f.check_id, f.entity_ref));
-    return !isFindingHidden(tracking);
-  });
-
-  const summary = summarize(activeFindings, scan.category_scores);
-  const trend = await getScanTrend(conn.id);
-
-  const dtos: FindingDTO[] = findings.map((f) => {
-    const tracking = statuses.get(findingStatusKey(f.check_id, f.entity_ref));
-    return {
-      id: f.id,
-      checkId: f.check_id,
-      category: f.category,
-      severity: f.severity,
-      title: f.title,
-      description: f.description,
-      impact: f.impact,
-      remediation: f.remediation,
-      entityRef: f.entity_ref,
-      remediationEnriched: isPro
-        ? parseRemediationEnriched(f.remediation_enriched)
-        : null,
-      tracking: tracking?.status ?? "open",
-      snoozedUntil: tracking?.snoozedUntil?.toISOString() ?? null,
-    };
-  });
+  const {
+    conn,
+    scan,
+    findings,
+    activeFindings,
+    summary,
+    trend,
+    isPro,
+    tenantLabel,
+  } = await getDashboardSnapshot();
 
   let drift = null;
-  let history: Array<{ id: string; score: number | null; started_at: Date | string }> =
-    [];
-
   if (isPro) {
     const prevScan = await getPreviousScan(conn.id, scan.id);
     if (prevScan) {
@@ -111,8 +59,45 @@ export default async function DashboardPage() {
         })),
       );
     }
-    history = await getScanHistory(conn.id);
   }
+
+  const compliancePosture = isPro
+    ? buildCompliancePosture(
+        activeFindings.map((f) => ({
+          id: f.id,
+          check_id: f.check_id,
+          title: f.title,
+          severity: f.severity,
+        })),
+      )
+    : null;
+
+  const customLicensePricing = hasCustomLicensePricing(
+    parseLicensePricing(conn.license_pricing),
+  );
+
+  const firstRoadmapStop = isPro
+    ? buildRoadmapStops(
+        activeFindings.map((f) => ({
+          id: f.id,
+          checkId: f.check_id,
+          category: f.category,
+          severity: f.severity,
+          title: f.title,
+          description: f.description,
+          remediation: f.remediation,
+          entityRef: f.entity_ref,
+          impact: f.impact,
+          tracking: "open" as const,
+        })),
+      ).find((s) => s.tracking === "open")
+    : null;
+
+  const recoverableHint = customLicensePricing
+    ? "Monthly savings from unused or misassigned licenses, using your contracted rates from Settings. Rescan after changing rates."
+    : isPro
+      ? "Monthly savings from unused or misassigned licenses, estimated from Microsoft list pricing. Set your contract rates in Settings → License pricing."
+      : "Monthly savings from unused or misassigned licenses, estimated from Microsoft list pricing. Pro users can set contracted rates in Settings.";
 
   const stats = [
     { icon: ListChecks, label: "Open issues", value: summary.total.toString() },
@@ -121,6 +106,7 @@ export default async function DashboardPage() {
       icon: PiggyBank,
       label: "Recoverable / mo",
       value: `$${formatUsd(summary.usd)}`,
+      hint: recoverableHint,
     },
   ];
 
@@ -129,16 +115,12 @@ export default async function DashboardPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Tenant health
+            Overview
           </h1>
           <p className="text-sm text-slate-600">
-            {conn.mode === "demo"
-              ? "Contoso (demo tenant)"
-              : conn.tenant_domain ?? "Microsoft 365"}
+            {tenantLabel}
             {" · "}
-            <span className="text-slate-500">
-              last scan {timeAgo(scan.started_at)}
-            </span>
+            <span className="text-slate-500">last scan {timeAgo(scan.started_at)}</span>
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -148,7 +130,6 @@ export default async function DashboardPage() {
       </div>
 
       {isPro && <MonitoringStatus connectionId={conn.id} />}
-
       {isPro && drift && <DriftSummary drift={drift} />}
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -182,7 +163,10 @@ export default async function DashboardPage() {
               <p className="text-2xl font-semibold leading-none text-slate-900">
                 {s.value}
               </p>
-              <p className="mt-1 truncate text-xs text-slate-600">{s.label}</p>
+              <p className="mt-1 flex items-center gap-1 truncate text-xs text-slate-600">
+                {s.label}
+                {"hint" in s && s.hint ? <InlineStatHint text={s.hint} /> : null}
+              </p>
             </div>
           </div>
         ))}
@@ -209,8 +193,8 @@ export default async function DashboardPage() {
                     {meta.label}
                   </p>
                   <p className="truncate text-xs text-slate-500">
-                    {c.count} issues{c.high > 0 ? ` · ${c.high} high` : ""} ·{" "}
-                    {c.score} pts
+                    {c.count} issues{c.high > 0 ? ` · ${c.high} high` : ""} · {c.score}{" "}
+                    pts
                   </p>
                 </div>
               </div>
@@ -223,17 +207,52 @@ export default async function DashboardPage() {
         })}
       </div>
 
-      {isPro && history.length > 0 && (
-        <ScanHistory scans={history} />
+      {isPro && compliancePosture && (
+        <CompliancePosture posture={compliancePosture} compact />
       )}
 
-      <div>
-        <h2 className="mb-3 text-lg font-semibold text-slate-900">Findings</h2>
-        {isPro ? (
-          <FindingsTable findings={dtos} />
-        ) : (
-          <FindingsTable lockedCount={summary.total} />
-        )}
+      {isPro && summary.total > 0 && firstRoadmapStop && (
+        <div className="surface-card flex flex-wrap items-center justify-between gap-4 border border-[var(--th-brand-muted-border)] bg-[var(--th-brand-muted)] p-5">
+          <div className="flex min-w-0 items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--th-surface)] text-[var(--th-brand-text)]">
+              <Route className="h-5 w-5" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-[var(--th-text)]">Start here</p>
+              <p className="mt-0.5 truncate text-xs text-[var(--th-text-muted)]">
+                {firstRoadmapStop.title}
+              </p>
+              <p className="mt-1 text-xs text-[var(--th-brand-text)]">
+                {firstRoadmapStop.priorityReason}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/dashboard/roadmap"
+            className="inline-flex items-center gap-2 rounded-lg bg-[var(--th-brand)] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+          >
+            Open roadmap
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      )}
+
+      <div className="surface-card flex flex-wrap items-center justify-between gap-4 p-5">
+        <div>
+          <p className="text-sm font-semibold text-slate-900">
+            {summary.total} open finding{summary.total === 1 ? "" : "s"}
+          </p>
+          <p className="mt-0.5 text-xs text-slate-500">
+            Review, remediate, and track progress on the findings page.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/findings"
+          className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+        >
+          View findings
+          <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
     </div>
   );

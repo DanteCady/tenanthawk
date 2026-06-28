@@ -17,8 +17,8 @@ const item: Variants = {
 export function Hero() {
   return (
     <section className="relative overflow-hidden pt-36 pb-24 sm:pt-44">
-      <div className="light-aura pointer-events-none absolute inset-0 -z-10" />
-      <div className="light-grid pointer-events-none absolute inset-0 -z-10 h-[640px]" />
+      <div className="theme-aura pointer-events-none absolute inset-0 -z-10" />
+      <div className="theme-grid pointer-events-none absolute inset-0 -z-10 h-[640px]" />
 
       <div className="mx-auto grid max-w-6xl items-center gap-14 px-6 lg:grid-cols-[1.05fr_0.95fr]">
         <motion.div variants={container} initial="hidden" animate="show">
@@ -43,12 +43,12 @@ export function Hero() {
             className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600"
           >
             Expired secrets. Licenses nobody uses. Risky access that crept in
-            years ago. You <em>know</em> it&apos;s in there somewhere — but with
+            years ago. You know it&apos;s in there somewhere, but with
             hundreds of settings across M365, Entra, and Azure, where do you even
             start?
             <span className="mt-3 block font-medium text-slate-900">
               Tenant Hawk connects read-only and hands you one clear health score
-              and a prioritized fix-it list — in minutes.
+              and a prioritized fix-it list in minutes.
             </span>
           </motion.p>
 
@@ -74,7 +74,7 @@ export function Hero() {
           >
             <span className="inline-flex items-center gap-2">
               <Lock className="h-4 w-4 text-green-500" />
-              Read-only — no credentials stored
+              Read-only. No credentials stored
             </span>
             <span className="hidden h-4 w-px bg-slate-200 sm:block" />
             <span>Connect in 2 minutes · no credit card</span>

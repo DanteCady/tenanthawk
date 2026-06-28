@@ -9,7 +9,7 @@ export const CATEGORY_META: Record<
     label: "Security",
     icon: ShieldAlert,
     description:
-      "Identity and access risks in your Microsoft tenant — misconfigurations that could lead to breach or failed audit.",
+      "Identity and access risks in your Microsoft tenant: misconfigurations that could lead to breach or failed audit.",
     examples: [
       "Conditional Access gaps or risky policy exclusions",
       "MFA not enforced or legacy authentication enabled",
@@ -21,7 +21,7 @@ export const CATEGORY_META: Record<
     label: "Cost",
     icon: Wallet,
     description:
-      "License waste and recoverable spend — seats you're paying for but not using.",
+      "License waste and recoverable spend: seats you're paying for but not using.",
     examples: [
       "Unused prepaid licenses across SKUs",
       "Licenses assigned to disabled or inactive users",

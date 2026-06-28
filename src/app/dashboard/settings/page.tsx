@@ -21,7 +21,14 @@ import { getAlertPreferences } from "@/lib/alerts/preferences";
 import { getConnectionHealth } from "@/lib/connect/health";
 import { TenantConnectionCheck } from "@/components/app/TenantConnectionCheck";
 import { isLiveConfigured } from "@/lib/scan/graph";
+import { ThemePicker } from "@/components/theme/ThemePicker";
 import { timeAgo } from "@/lib/time";
+import { LicensePricingForm } from "@/components/app/LicensePricingForm";
+import {
+  COMMON_LICENSE_PRICING_FIELDS,
+  parseLicensePricing,
+} from "@/lib/licenses/pricing-overrides";
+import { microsoftListPriceForSku } from "@/lib/licenses/sku-pricing";
 
 function SettingsSection({
   title,
@@ -85,6 +92,16 @@ export default async function SettingsPage() {
     ? await getConnectionHealth(connection)
     : null;
 
+  const licensePricing = connection
+    ? parseLicensePricing(connection.license_pricing)
+    : null;
+  const listPrices = Object.fromEntries(
+    COMMON_LICENSE_PRICING_FIELDS.map(({ code }) => [
+      code,
+      microsoftListPriceForSku(code),
+    ]),
+  );
+
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <Link
@@ -102,6 +119,10 @@ export default async function SettingsPage() {
           Account, tenant connection, and billing preferences.
         </p>
       </div>
+
+      <SettingsSection title="Appearance" description="Choose how Tenant Hawk looks on your device.">
+        <ThemePicker />
+      </SettingsSection>
 
       <SettingsSection title="Account">
         <DetailRow icon={User} label="Name" value={session.user.name} />
@@ -121,11 +142,11 @@ export default async function SettingsPage() {
                 <span className="flex flex-wrap items-center gap-2">
                   {tenantLabel}
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    className={
                       connection.mode === "live"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-slate-100 text-slate-600"
-                    }`}
+                        ? "rounded-full border border-[var(--th-brand-muted-border)] bg-[var(--th-brand-muted)] px-2 py-0.5 text-xs font-medium text-[var(--th-brand-text)]"
+                        : "badge-free"
+                    }
                   >
                     {connection.mode === "live" ? "Live" : "Demo"}
                   </span>
@@ -201,6 +222,17 @@ export default async function SettingsPage() {
           initialInstantAlerts={alertPrefs.instantAlerts}
           initialWeeklyDigest={alertPrefs.weeklyDigest}
           initialExpiryAlerts={alertPrefs.expiryAlerts}
+        />
+      </SettingsSection>
+
+      <SettingsSection
+        title="License pricing"
+        description="Contracted per-seat rates for recoverable spend estimates (Pro)."
+      >
+        <LicensePricingForm
+          isPro={isPro}
+          initialOverrides={licensePricing}
+          listPrices={listPrices}
         />
       </SettingsSection>
 

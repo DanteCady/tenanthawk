@@ -22,7 +22,7 @@ const pains = [
     color: "border-l-yellow-500",
   },
   {
-    quote: "Security questionnaires terrify me — I can't prove half of this.",
+    quote: "Security questionnaires terrify me. I can't prove half of this.",
     color: "border-l-blue-500",
   },
   {
@@ -44,7 +44,7 @@ export function ProblemSection() {
           </h2>
           <p className="mt-4 text-lg text-slate-600">
             Every Microsoft 365 tenant accumulates years of quiet drift. The
-            problem was never effort — it&apos;s visibility.
+            problem was never effort. It&apos;s visibility.
           </p>
         </Reveal>
 
@@ -70,7 +70,7 @@ export function ProblemSection() {
             </h3>
             <p className="max-w-xl text-slate-600">
               One scan turns that vague dread into a clear, prioritized checklist
-              — ranked by risk and dollar impact, with the exact fix for each.
+              ranked by risk and dollar impact, with the exact fix for each.
             </p>
             <a
               href="/signup"

@@ -41,8 +41,11 @@ export const auth = betterAuth({
   plugins: [
     emailOTP({
       overrideDefaultEmailVerification: true,
+      sendVerificationOnSignUp: true,
       otpLength: 6,
       expiresIn: 600,
+      resendStrategy: "reuse",
+      rateLimit: { window: 60, max: 5 },
       async sendVerificationOTP({ email, otp, type }) {
         if (type !== "email-verification") return;
         const mail = verificationOtpEmail({ otp });
@@ -62,6 +65,7 @@ export const auth = betterAuth({
           {
             name: PRO_PLAN,
             priceId: process.env.STRIPE_PRICE_PRO || "",
+            annualDiscountPriceId: process.env.STRIPE_PRICE_PRO_ANNUAL || undefined,
           },
         ],
       },

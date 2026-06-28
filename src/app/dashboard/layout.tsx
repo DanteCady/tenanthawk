@@ -4,10 +4,12 @@ import { getPlan } from "@/lib/entitlements";
 import { getPrimaryConnection } from "@/lib/queries";
 import { getConnectionHealth } from "@/lib/connect/health";
 import { exportTenantLabel } from "@/lib/export/payload";
-import { Logo } from "@/components/Logo";
+import { ThemeLogo } from "@/components/theme/ThemeLogo";
 import { PlanBadge } from "@/components/app/PlanBadge";
 import { ConnectionStatusBlip } from "@/components/app/ConnectionStatusBlip";
 import { SignOutButton } from "@/components/app/SignOutButton";
+import { AppFooter } from "@/components/AppFooter";
+import { DashboardNav } from "@/components/app/DashboardNav";
 
 export default async function DashboardLayout({
   children,
@@ -19,13 +21,14 @@ export default async function DashboardLayout({
   const conn = await getPrimaryConnection(session.user.id);
   const connectionHealth = conn ? await getConnectionHealth(conn) : null;
   const tenantLabel = conn ? exportTenantLabel(conn) : null;
+  const isPro = plan === "pro";
 
   return (
     <div className="app-shell flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur-xl">
+      <header className="app-header sticky top-0 z-40 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <Link href="/dashboard" aria-label="Dashboard">
-            <Logo tone="light" />
+            <ThemeLogo />
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
             {connectionHealth ? (
@@ -43,23 +46,17 @@ export default async function DashboardLayout({
                 Upgrade
               </Link>
             )}
-            <Link
-              href="/dashboard/settings"
-              className="hidden rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 sm:inline"
-            >
-              Settings
-            </Link>
-            <Link
-              href="/dashboard/billing"
-              className="hidden rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 sm:inline"
-            >
-              Billing
-            </Link>
             <SignOutButton />
           </div>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">{children}</main>
+
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-8 lg:flex-row lg:gap-8">
+        <DashboardNav isPro={isPro} />
+        <main className="min-w-0 flex-1">{children}</main>
+      </div>
+
+      <AppFooter />
     </div>
   );
 }

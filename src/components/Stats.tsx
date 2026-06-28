@@ -4,7 +4,7 @@ const stats = [
   { value: "200+", label: "automated checks across your tenant", color: "text-blue-600" },
   { value: "M365 · Entra · Azure", label: "connected through read-only Graph", color: "text-slate-900" },
   { value: "1 score", label: "for security, cost, reliability & hygiene", color: "text-yellow-600" },
-  { value: "Unlimited", label: "tenants in one MSP console", color: "text-green-600" },
+  { value: "Coming soon", label: "multi-tenant MSP console", color: "text-green-600" },
 ];
 
 export function Stats() {

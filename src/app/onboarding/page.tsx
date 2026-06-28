@@ -12,6 +12,7 @@ const CONNECT_ERRORS: Record<string, string> = {
   state: "The connection request expired. Please try again.",
   unconfigured:
     "Microsoft sign-in is not available in this environment yet. Use a demo scan or contact support.",
+  rate_limit: "Too many connection attempts. Wait an hour and try again.",
   scan_failed:
     "We connected your tenant but the first scan failed. Try a demo scan or contact support.",
   error: "Something went wrong connecting. Please try again.",

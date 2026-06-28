@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, Lock, TrendingUp } from "lucide-react";
-import { Logo } from "@/components/Logo";
+import { ArrowRight, Lock } from "lucide-react";
+import { ThemeLogo } from "@/components/theme/ThemeLogo";
 import { ScoreRing } from "@/components/app/ScoreRing";
-import { UpgradeButton } from "@/components/app/UpgradeButton";
+import { ProUpgradeOptions } from "@/components/app/UpgradeButton";
+import { isAnnualBillingConfigured } from "@/lib/billing/pricing";
 import { GradeBadge } from "@/components/app/GradeBadge";
 import { CATEGORY_META } from "@/components/app/categories";
 import { CategoryInfoButton } from "@/components/app/CategoryInfoButton";
@@ -24,11 +25,13 @@ export function ResultsStep({
   score: number;
   tenant: string;
 }) {
+  const annualAvailable = isAnnualBillingConfigured();
+
   return (
     <main className="app-shell relative flex min-h-screen flex-col items-center px-6 py-12 sm:py-16">
-      <div className="light-aura pointer-events-none absolute inset-0 -z-10" />
+      <div className="theme-aura pointer-events-none absolute inset-0 -z-10" />
       <div className="mb-6 sm:mb-8">
-        <Logo tone="light" />
+        <ThemeLogo />
       </div>
 
       <div className="w-full max-w-2xl">
@@ -130,10 +133,13 @@ export function ResultsStep({
               Continue to dashboard
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
-            <UpgradeButton className="order-2 inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition-colors hover:border-blue-300 hover:bg-blue-50/50 hover:text-blue-800 sm:order-1">
-              <TrendingUp className="h-4 w-4" />
-              Unlock full report
-            </UpgradeButton>
+            <div className="order-2 flex-1 sm:order-1">
+              <ProUpgradeOptions
+                annualAvailable={annualAvailable}
+                compact
+                buttonClassName="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition-colors hover:border-blue-300 hover:bg-blue-50/50 hover:text-blue-800"
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ import {
   Sparkles,
   TriangleAlert,
 } from "lucide-react";
-import { Logo } from "@/components/Logo";
+import { ThemeLogo } from "@/components/theme/ThemeLogo";
 import { MicrosoftSetupGuide } from "@/components/onboarding/MicrosoftSetupGuide";
 
 const SCAN_STEPS = [
@@ -212,6 +212,12 @@ export function ConnectStep({
       const res = await fetch("/api/connect/demo", { method: "POST" });
       const elapsed = Date.now() - started;
       if (elapsed < 1800) await new Promise((r) => setTimeout(r, 1800 - elapsed));
+      if (res.status === 429) {
+        setScanning(false);
+        const data = (await res.json()) as { error?: string };
+        setDemoError(data.error ?? "Too many demo scans. Try again later.");
+        return;
+      }
       if (!res.ok) {
         setScanning(false);
         setDemoError("Demo scan failed. Check that the server and database are running.");
@@ -229,14 +235,14 @@ export function ConnectStep({
 
   return (
     <main className="app-shell relative flex min-h-screen flex-col items-center justify-center px-6 py-16">
-      <div className="light-aura pointer-events-none absolute inset-0 -z-10" />
+      <div className="theme-aura pointer-events-none absolute inset-0 -z-10" />
       <motion.div
         initial={reduceMotion ? false : { opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         className="mb-8"
       >
-        <Logo tone="light" />
+        <ThemeLogo />
       </motion.div>
 
       {scanning ? (

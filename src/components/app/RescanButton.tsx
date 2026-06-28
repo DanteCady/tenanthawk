@@ -13,6 +13,11 @@ export function RescanButton() {
     setLoading(true);
     try {
       const res = await fetch("/api/scan", { method: "POST" });
+      if (res.status === 429) {
+        const data = (await res.json()) as { error?: string };
+        toast.error(data.error ?? "Too many scans. Try again later.");
+        return;
+      }
       if (!res.ok) {
         toast.error("Scan failed. Check your tenant connection and try again.");
         return;

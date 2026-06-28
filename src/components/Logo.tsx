@@ -49,25 +49,34 @@ export function HawkMark({ className, ...props }: SVGProps<SVGSVGElement>) {
 export function Logo({
   className = "",
   showWordmark = true,
-  tone = "light",
+  tone = "auto",
 }: {
   className?: string;
   showWordmark?: boolean;
-  tone?: "dark" | "light";
+  /** "auto" follows html[data-theme] via CSS — safe for SSR. */
+  tone?: "auto" | "dark" | "light";
 }) {
+  const wordmarkClass =
+    tone === "light"
+      ? "text-[1.3rem] font-semibold tracking-tight text-slate-900"
+      : tone === "dark"
+        ? "text-[1.3rem] font-semibold tracking-tight text-mist"
+        : "logo-wordmark";
+
+  const accentClass =
+    tone === "light"
+      ? "text-hawk-600"
+      : tone === "dark"
+        ? "text-hawk-400"
+        : "logo-accent";
+
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <HawkMark className="h-8 w-8" />
       {showWordmark && (
-        <span
-          className={`text-[1.3rem] font-semibold tracking-tight ${
-            tone === "light" ? "text-slate-900" : "text-mist"
-          }`}
-        >
+        <span className={wordmarkClass}>
           Tenant
-          <span className={tone === "light" ? "text-hawk-600" : "text-hawk-400"}>
-            Hawk
-          </span>
+          <span className={accentClass}>Hawk</span>
         </span>
       )}
     </span>

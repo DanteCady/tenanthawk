@@ -4,6 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { Info, X } from "lucide-react";
 import type { Category } from "@/db/types";
 import { CATEGORY_META } from "./categories";
+import { CategoryIconChip } from "./CategoryIconChip";
 
 export function CategoryInfoButton({
   category,
@@ -15,7 +16,6 @@ export function CategoryInfoButton({
   const [open, setOpen] = useState(false);
   const titleId = useId();
   const meta = CATEGORY_META[category];
-  const Icon = meta.icon;
 
   useEffect(() => {
     if (!open) return;
@@ -68,9 +68,7 @@ export function CategoryInfoButton({
             </button>
 
             <div className="flex items-start gap-3 pr-8">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
-                <Icon className="h-5 w-5 text-slate-700" />
-              </div>
+              <CategoryIconChip category={category} size="md" />
               <div>
                 <h2 id={titleId} className="text-lg font-semibold text-slate-900">
                   {meta.label}

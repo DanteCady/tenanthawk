@@ -1,4 +1,5 @@
 import type { FindingImpact } from "@/db/types";
+import { formatLicenseEntityRef } from "@/lib/licenses/sku-display";
 
 export function formatReportDate(iso: string | Date): string {
   const d = typeof iso === "string" ? new Date(iso) : iso;
@@ -20,7 +21,7 @@ export function formatFindingImpact(input: {
   const impact = input.impact;
   if (impact?.usd != null) return `$${impact.usd.toLocaleString()}/mo`;
   if (impact?.count != null && impact.count > 1) return `${impact.count} items`;
-  if (input.entityRef) return input.entityRef;
+  if (input.entityRef) return formatLicenseEntityRef(input.entityRef);
   return "—";
 }
 
@@ -33,7 +34,7 @@ export function formatExportImpact(f: {
   if (f.impactCount != null && f.impactCount > 0) {
     return f.impactCount === 1 ? "1 item" : `${f.impactCount} items`;
   }
-  if (f.entityRef) return f.entityRef;
+  if (f.entityRef) return formatLicenseEntityRef(f.entityRef);
   return "—";
 }
 

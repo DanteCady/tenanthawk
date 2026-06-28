@@ -6,6 +6,7 @@ import { CATEGORY_META, CATEGORY_ORDER } from "@/components/app/categories";
 import { SeverityBadge } from "@/components/app/SeverityBadge";
 import type { Category, CategoryScores, Severity } from "@/db/types";
 import { formatFindingImpact } from "@/lib/export/report-format";
+import { formatLicenseEntityRef } from "@/lib/licenses/sku-display";
 import type { ReportCustomer } from "@/lib/export/report-customer";
 import { REPORT_FOOTER } from "@/lib/brand";
 import { grade } from "@/lib/scan/score";
@@ -85,7 +86,7 @@ export function PrintableReport({
   ) as CategoryScores;
 
   return (
-    <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm print:rounded-none print:border-0 print:shadow-none">
+    <article className="light-surface overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm print:rounded-none print:border-0 print:shadow-none">
       {/* Branded header — div, not header, so dashboard print CSS does not hide it */}
       <div className="relative bg-slate-900 text-white print:break-inside-avoid">
         <div className="absolute inset-x-0 bottom-0 h-1 bg-blue-600" />
@@ -217,7 +218,9 @@ export function PrintableReport({
               const affected =
                 f.impact?.entities && f.impact.entities.length > 0
                   ? f.impact.entities.join(", ")
-                  : f.entity_ref;
+                  : f.entity_ref
+                    ? formatLicenseEntityRef(f.entity_ref)
+                    : null;
 
               return (
                 <div

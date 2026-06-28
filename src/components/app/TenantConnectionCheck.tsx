@@ -31,6 +31,9 @@ export function TenantConnectionCheck({
         } else {
           toast.error("Connection issue detected. See details below.");
         }
+      } else if (res.status === 429) {
+        const data = (await res.json()) as { error?: string };
+        toast.error(data.error ?? "Too many checks. Try again later.");
       } else {
         toast.error("Could not run connection check.");
       }

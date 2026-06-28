@@ -1,15 +1,24 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { getSession } from "@/lib/session";
 import { getPlan } from "@/lib/entitlements";
-import { UpgradeButton } from "@/components/app/UpgradeButton";
+import { ProUpgradeOptions } from "@/components/app/UpgradeButton";
 import { ManageBillingButton } from "@/components/app/ManageBillingButton";
 import { DevPlanToggle } from "@/components/app/DevPlanToggle";
+import { PlanBadge } from "@/components/app/PlanBadge";
+import {
+  isAnnualBillingConfigured,
+  PRO_ANNUAL_USD,
+  PRO_MONTHLY_USD,
+} from "@/lib/billing/pricing";
+import { formatUsd } from "@/lib/format";
 
 const PRO_FEATURES = [
   "Full findings with severity & dollar impact",
   "AI-guided remediation with Microsoft doc links",
+  "Category score trends & compliance mapping (CIS / NIST)",
+  "Shareable read-only report links for leadership",
   "Daily scans + drift & expiry alerts",
   "Slack / Teams / Discord webhook alerts",
   "Export reports",
@@ -21,30 +30,23 @@ export default async function BillingPage() {
   if (!session) redirect("/login");
 
   const plan = await getPlan(session.user.id);
+  const annualAvailable = isAnnualBillingConfigured();
   const devMode =
     process.env.NODE_ENV !== "production" && !process.env.STRIPE_SECRET_KEY;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <Link
-        href="/dashboard"
-        className="inline-flex items-center gap-2 text-sm text-slate-600 transition-colors hover:text-slate-900"
-      >
-        <ArrowLeft className="h-4 w-4" /> Back to dashboard
-      </Link>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Billing</h1>
+        <p className="mt-1 text-sm text-slate-600">
+          Pro is billed per connected tenant. Cancel anytime from the customer portal.
+        </p>
+      </div>
 
       <div className={`p-8 ${plan === "free" ? "surface-highlight" : "surface-card"}`}>
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Billing</h1>
-          <span
-            className={`rounded-full px-3 py-1 text-sm font-semibold ${
-              plan === "pro"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-slate-100 text-slate-600"
-            }`}
-          >
-            {plan === "pro" ? "Pro" : "Free"}
-          </span>
+          <h2 className="text-lg font-semibold text-slate-900">Your plan</h2>
+          <PlanBadge plan={plan} />
         </div>
 
         {plan === "pro" ? (
@@ -53,17 +55,17 @@ export default async function BillingPage() {
               You&apos;re on <span className="font-semibold text-blue-700">Pro</span> —
               full findings, remediation, and daily monitoring are unlocked.
             </p>
+            <p className="mt-2 text-sm text-slate-500">
+              Switch between monthly and annual, update payment method, or cancel in the
+              portal.
+            </p>
             <div className="mt-5">
               <ManageBillingButton />
             </div>
           </div>
         ) : (
-          <div className="mt-6">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-4xl font-semibold text-slate-900">$49</span>
-              <span className="text-slate-600">/tenant / mo</span>
-            </div>
-            <ul className="mt-6 space-y-3">
+          <div className="mt-6 space-y-6">
+            <ul className="space-y-3">
               {PRO_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2.5 text-sm text-slate-700">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
@@ -71,14 +73,23 @@ export default async function BillingPage() {
                 </li>
               ))}
             </ul>
-            <div className="mt-7">
-              <UpgradeButton className="btn-primary w-full shadow-none hover:shadow-md">
-                Upgrade to Pro
-              </UpgradeButton>
-            </div>
+            <ProUpgradeOptions annualAvailable={annualAvailable} />
+            {!annualAvailable && (
+              <p className="text-xs text-slate-500">
+                Annual billing (${formatUsd(PRO_ANNUAL_USD)}/yr) appears once{" "}
+                <code className="rounded bg-slate-100 px-1">STRIPE_PRICE_PRO_ANNUAL</code>{" "}
+                is configured — see SETUP.md.
+              </p>
+            )}
           </div>
         )}
       </div>
+
+      {plan === "free" && (
+        <p className="text-center text-xs text-slate-500">
+          ${PRO_MONTHLY_USD}/mo or ${formatUsd(PRO_ANNUAL_USD)}/yr per tenant · prices in USD
+        </p>
+      )}
 
       {devMode && <DevPlanToggle plan={plan} />}
     </div>

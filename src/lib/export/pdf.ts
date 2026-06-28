@@ -8,6 +8,7 @@ import { CATEGORY_ICON_PNG } from "@/lib/export/category-icons";
 import {
   formatFindingImpact,
 } from "@/lib/export/report-format";
+import { formatLicenseEntityRef } from "@/lib/licenses/sku-display";
 import { REPORT_FOOTER } from "@/lib/brand";
 import {
   normalizeCategoryScores,
@@ -553,7 +554,12 @@ function drawRemediationSection(doc: Doc, findings: ExportFinding[], startY: num
             8,
           )
         : f.entityRef
-          ? measureLines(doc, `Affected: ${sanitizePdfText(f.entityRef)}`, innerW, 8)
+          ? measureLines(
+              doc,
+              `Affected: ${sanitizePdfText(formatLicenseEntityRef(f.entityRef))}`,
+              innerW,
+              8,
+            )
           : [];
 
     const badgeH = BADGE_H;

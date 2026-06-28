@@ -90,3 +90,21 @@ ALTER TABLE scan ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'manual';
 ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS webhook_url text;
 ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS webhook_platform text;
 ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS expiry_alerts boolean NOT NULL DEFAULT true;
+
+-- Pro: shareable read-only report links (tokenized, revocable).
+CREATE TABLE IF NOT EXISTS report_share (
+  id              text PRIMARY KEY,
+  user_id         text NOT NULL,
+  connection_id   text NOT NULL REFERENCES connection(id) ON DELETE CASCADE,
+  token           text NOT NULL UNIQUE,
+  label           text,
+  expires_at      timestamptz,
+  revoked_at      timestamptz,
+  created_at      timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS report_share_token_idx ON report_share (token);
+CREATE INDEX IF NOT EXISTS report_share_user_id_idx ON report_share (user_id);
+
+-- Pro: per-tenant contracted license rates for recoverable spend estimates.
+ALTER TABLE connection ADD COLUMN IF NOT EXISTS license_pricing jsonb;

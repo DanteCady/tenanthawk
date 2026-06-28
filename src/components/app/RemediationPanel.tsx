@@ -7,11 +7,11 @@ import { isAiRemediation } from "@/lib/remediation/display";
 
 function TemplateRemediation({ text, error }: { text: string; error?: string | null }) {
   return (
-    <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3">
-      <Wrench className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
+    <div className="remediation-template flex items-start gap-2">
+      <Wrench className="mt-0.5 h-4 w-4 shrink-0 text-[var(--th-brand-text)]" />
       <div>
-        {error && <p className="mb-1 text-xs text-amber-700">{error}</p>}
-        <p className="text-sm text-slate-800">{text}</p>
+        {error && <p className="mb-1 text-xs text-amber-400">{error}</p>}
+        <p className="text-sm text-[var(--th-text)]">{text}</p>
       </div>
     </div>
   );
@@ -21,10 +21,12 @@ export function RemediationPanel({
   findingId,
   templateRemediation,
   initialEnriched,
+  onEnriched,
 }: {
   findingId: string;
   templateRemediation: string;
   initialEnriched?: RemediationEnriched | null;
+  onEnriched?: (enriched: RemediationEnriched) => void;
 }) {
   const [mounted, setMounted] = useState(false);
   const [enriched, setEnriched] = useState<RemediationEnriched | null>(
@@ -36,6 +38,10 @@ export function RemediationPanel({
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    setEnriched(initialEnriched ?? null);
+  }, [initialEnriched, findingId]);
 
   useEffect(() => {
     if (!mounted || initialEnriched) return;
@@ -59,7 +65,10 @@ export function RemediationPanel({
           setEnriched(null);
           return;
         }
-        setEnriched(data.enriched ?? null);
+        if (data.enriched) {
+          setEnriched(data.enriched);
+          onEnriched?.(data.enriched);
+        }
       } catch {
         if (!cancelled) setError("Could not reach the server.");
       } finally {
@@ -71,6 +80,7 @@ export function RemediationPanel({
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetch once per finding when no cache
   }, [findingId, initialEnriched, mounted]);
 
   if (!mounted) {
@@ -79,8 +89,8 @@ export function RemediationPanel({
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-3 text-sm text-slate-600">
-        <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+      <div className="remediation-loading">
+        <Loader2 className="h-4 w-4 animate-spin text-[var(--th-brand-text)]" />
         Generating AI-guided fix steps…
       </div>
     );
@@ -95,21 +105,21 @@ export function RemediationPanel({
   }
 
   return (
-    <div className="space-y-3 rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50/40 to-white p-4">
-      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-blue-700">
+    <div className="remediation-ai space-y-3">
+      <div className="remediation-ai-label flex items-center gap-2">
         <Sparkles className="h-3.5 w-3.5" />
         AI-guided remediation
       </div>
-      <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-800">
+      <ol className="remediation-ai-steps list-decimal space-y-2 pl-5">
         {enriched.steps.map((step) => (
-          <li key={step} className="leading-relaxed">
-            {step}
-          </li>
+          <li key={step}>{step}</li>
         ))}
       </ol>
       {enriched.links.length > 0 && (
-        <div className="border-t border-blue-100/80 pt-3">
-          <p className="text-xs font-medium text-slate-500">Microsoft documentation</p>
+        <div className="remediation-ai-divider">
+          <p className="text-xs font-medium text-[var(--th-text-faint)]">
+            Microsoft documentation
+          </p>
           <ul className="mt-2 space-y-1.5">
             {enriched.links.map((link) => (
               <li key={link.url}>
@@ -117,7 +127,7 @@ export function RemediationPanel({
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-blue-700 hover:text-blue-800 hover:underline"
+                  className="remediation-doc-link"
                 >
                   {link.title}
                   <ExternalLink className="h-3.5 w-3.5 shrink-0" />

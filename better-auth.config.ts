@@ -20,7 +20,13 @@ export const auth = betterAuth({
       stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "whsec_placeholder",
       subscription: {
         enabled: true,
-        plans: [{ name: "pro", priceId: process.env.STRIPE_PRICE_PRO || "" }],
+        plans: [
+          {
+            name: "pro",
+            priceId: process.env.STRIPE_PRICE_PRO || "",
+            annualDiscountPriceId: process.env.STRIPE_PRICE_PRO_ANNUAL || undefined,
+          },
+        ],
       },
     }),
   ],

@@ -5,7 +5,7 @@ const categories = [
   {
     icon: ShieldAlert,
     title: "Security",
-    blurb: "Catch the gaps before an auditor — or an attacker — does.",
+    blurb: "Catch the gaps before an auditor or an attacker does.",
     accent: "text-red-600",
     chip: "bg-red-50 text-red-600",
     dot: "bg-red-500",

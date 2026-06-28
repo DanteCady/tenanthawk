@@ -3,7 +3,7 @@ import type { Severity } from "@/db/types";
 const STYLES: Record<Severity, string> = {
   high: "bg-bad/15 text-bad",
   medium: "bg-warn/15 text-warn",
-  low: "bg-slate-100 text-slate-600",
+  low: "bg-[var(--th-muted-bg)] text-[var(--th-text-muted)] ring-1 ring-[var(--th-border)]",
 };
 
 export function SeverityBadge({ severity }: { severity: Severity }) {

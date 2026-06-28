@@ -1,7 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { db } from "@/db";
 import { getSession } from "@/lib/session";
+import { getPlan } from "@/lib/entitlements";
+import { enforceRateLimit } from "@/lib/rate-limit-http";
+import { RATE_LIMITS } from "@/lib/rate-limit";
 import { runScan } from "@/lib/scan/runScan";
 
 export const runtime = "nodejs";
@@ -12,6 +15,10 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const userId = session.user.id;
+
+  const plan = await getPlan(userId);
+  const limited = enforceRateLimit(userId, "connect-demo", plan, RATE_LIMITS.connectDemo);
+  if (limited) return limited;
 
   let conn = await db
     .selectFrom("connection")

@@ -1,13 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Logo } from "./Logo";
+import { ThemeLogo } from "./theme/ThemeLogo";
 
 const links = [
-  { href: "#categories", label: "What it scans" },
-  { href: "#how", label: "How it works" },
-  { href: "#pricing", label: "Pricing" },
+  { href: "/why", label: "Why Tenant Hawk", hash: false },
+  { href: "#categories", label: "What it scans", hash: true },
+  { href: "#how", label: "How it works", hash: true },
+  { href: "#pricing", label: "Pricing", hash: true },
+  { href: "/guides", label: "Guides", hash: false },
 ];
 
 export function Navbar() {
@@ -30,24 +33,34 @@ export function Navbar() {
       <div
         className={`mx-auto flex max-w-6xl items-center justify-between px-6 py-4 transition-all duration-300 ${
           scrolled
-            ? "mt-2 rounded-2xl border border-slate-200 bg-white/80 shadow-sm shadow-slate-200/50 backdrop-blur-xl md:max-w-5xl"
+            ? "mt-2 rounded-2xl border border-[var(--th-border)] bg-[var(--th-surface)]/80 shadow-sm backdrop-blur-xl md:max-w-5xl"
             : "border border-transparent"
         }`}
       >
-        <a href="#" aria-label="Tenant Hawk home">
-          <Logo tone="light" />
-        </a>
+        <Link href="/" aria-label="Tenant Hawk home">
+          <ThemeLogo />
+        </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
-            >
-              {l.label}
-            </a>
-          ))}
+          {links.map((l) =>
+            l.hash ? (
+              <a
+                key={l.href}
+                href={l.href}
+                className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+              >
+                {l.label}
+              </a>
+            ) : (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+              >
+                {l.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <div className="flex items-center gap-2">

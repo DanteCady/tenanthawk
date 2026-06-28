@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import { db } from "@/db";
 import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
 import { invalidateConnectionHealth } from "@/lib/connect/health";
+import { parseLicensePricing } from "@/lib/licenses/pricing-overrides";
 import { checks } from "./checks";
 import { getDemoFindings } from "./demo";
 import { getAppToken, isLiveConfigured } from "./graph";
@@ -50,7 +51,8 @@ export async function runScan(
       drafts = getDemoFindings();
     } else {
       const token = await getAppToken(conn.tenant_id);
-      const ctx = { tenantId: conn.tenant_id, token };
+      const licensePricing = parseLicensePricing(conn.license_pricing);
+      const ctx = { tenantId: conn.tenant_id, token, licensePricing };
       drafts = [];
       for (const check of checks) {
         try {

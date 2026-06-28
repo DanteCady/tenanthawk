@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
+import { getPlan } from "@/lib/entitlements";
+import { enforceRateLimit } from "@/lib/rate-limit-http";
+import { RATE_LIMITS } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -17,6 +20,19 @@ export async function GET(req: NextRequest) {
     // Live connect not configured — send back to onboarding to use demo.
     return NextResponse.redirect(
       new URL("/onboarding?connect=unconfigured", req.url),
+    );
+  }
+
+  const plan = await getPlan(session.user.id);
+  const limited = enforceRateLimit(
+    session.user.id,
+    "connect-start",
+    plan,
+    RATE_LIMITS.connectStart,
+  );
+  if (limited) {
+    return NextResponse.redirect(
+      new URL("/onboarding?connect=rate_limit", req.url),
     );
   }
 

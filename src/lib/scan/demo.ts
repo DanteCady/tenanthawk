@@ -41,7 +41,7 @@ export function getDemoFindings(): FindingDraft[] {
       },
       remediation:
         "Review renewal terms and seat count in M365 Admin → Billing → Your products before the renewal date.",
-      entityRef: "ENTERPRISEPREMIUM",
+      entityRef: "ENTERPRISEPREMIUM", // displays as Office 365 E5
     },
     {
       category: "cost",

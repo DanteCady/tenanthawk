@@ -4,13 +4,17 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown, Lock } from "lucide-react";
 import type { Category, FindingTrackingStatus, Severity } from "@/db/types";
-import { CATEGORY_META } from "./categories";
 import { SeverityBadge } from "./SeverityBadge";
-import { UpgradeButton } from "./UpgradeButton";
+import { CategoryIconChip } from "./CategoryIconChip";
+import { ProUpgradeOptions } from "./UpgradeButton";
 import { FindingActions } from "./FindingActions";
 import { RemediationPanel } from "./RemediationPanel";
 import { isExpiryCheckId } from "@/lib/scan/expiry";
 import { formatUsd } from "@/lib/format";
+import {
+  formatLicenseEntityRefDetailed,
+  isLicenseSkuCode,
+} from "@/lib/licenses/sku-display";
 import type { RemediationEnriched } from "@/lib/remediation/types";
 
 export interface FindingDTO {
@@ -37,7 +41,13 @@ const FILTERS: Array<{ key: "all" | Severity; label: string }> = [
 
 const SEV_RANK: Record<Severity, number> = { high: 0, medium: 1, low: 2 };
 
-function LockedTable({ count }: { count: number }) {
+function LockedTable({
+  count,
+  annualAvailable,
+}: {
+  count: number;
+  annualAvailable: boolean;
+}) {
   return (
     <div className="relative overflow-hidden surface-card">
       <div className="pointer-events-none select-none space-y-px blur-[3px]" aria-hidden>
@@ -57,17 +67,36 @@ function LockedTable({ count }: { count: number }) {
           {count} findings with full remediation
         </p>
         <p className="mt-1 max-w-sm text-sm text-slate-600">
-          Unlock severity, dollar impact, AI-guided fixes with Microsoft docs,
-          plus daily monitoring and drift alerts.
+          Unlock severity, dollar impact, AI-guided fixes, compliance mapping,
+          shareable reports, plus daily monitoring and drift alerts.
         </p>
-        <div className="mt-4">
-          <UpgradeButton className="btn-primary px-5 py-2.5 text-sm shadow-none hover:shadow-md">
-            Unlock with Pro
-          </UpgradeButton>
+        <div className="mt-4 max-w-sm">
+          <ProUpgradeOptions
+            annualAvailable={annualAvailable}
+            compact
+            buttonClassName="btn-primary w-full px-5 py-2.5 text-sm shadow-none hover:shadow-md"
+          />
         </div>
       </div>
     </div>
   );
+}
+
+function LicenseEntityLine({ entityRef }: { entityRef: string }) {
+  const { primary, secondary } = formatLicenseEntityRefDetailed(entityRef);
+  return (
+    <p className="text-xs text-slate-500">
+      License: <span className="font-medium text-slate-700">{primary}</span>
+      {secondary && secondary !== primary && (
+        <span className="text-slate-400"> · {secondary}</span>
+      )}
+    </p>
+  );
+}
+
+function affectedItemsLabel(checkId: string): string {
+  if (checkId.startsWith("cost.")) return "Affected accounts";
+  return "Affected groups";
 }
 
 function trackingLabel(f: FindingDTO): string | null {
@@ -79,16 +108,21 @@ function trackingLabel(f: FindingDTO): string | null {
 export function FindingsTable({
   findings,
   lockedCount,
+  annualAvailable = false,
 }: {
   findings?: FindingDTO[];
   lockedCount?: number;
+  annualAvailable?: boolean;
 }) {
   const router = useRouter();
   const [filter, setFilter] = useState<"all" | Severity>("all");
   const [open, setOpen] = useState<string | null>(null);
   const [showHandled, setShowHandled] = useState(false);
+  const [enrichedCache, setEnrichedCache] = useState<
+    Record<string, RemediationEnriched>
+  >({});
 
-  if (!findings) return <LockedTable count={lockedCount ?? 0} />;
+  if (!findings) return <LockedTable count={lockedCount ?? 0} annualAvailable={annualAvailable} />;
 
   const visible = findings.filter((f) => {
     if (showHandled) return true;
@@ -109,9 +143,7 @@ export function FindingsTable({
             key={f.key}
             onClick={() => setFilter(f.key)}
             className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
-              filter === f.key
-                ? "bg-blue-50 text-blue-700"
-                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              filter === f.key ? "filter-chip-active" : "filter-chip"
             }`}
           >
             {f.label}
@@ -122,9 +154,7 @@ export function FindingsTable({
             type="button"
             onClick={() => setShowHandled((v) => !v)}
             className={`ml-auto rounded-lg px-3 py-1.5 text-sm transition-colors ${
-              showHandled
-                ? "bg-slate-200 text-slate-800"
-                : "text-slate-600 hover:bg-slate-100"
+              showHandled ? "filter-chip-secondary-active" : "filter-chip"
             }`}
           >
             {showHandled ? "Hide" : "Show"} resolved & snoozed ({handledCount})
@@ -134,18 +164,16 @@ export function FindingsTable({
 
       <div className="divide-y divide-slate-100 overflow-hidden surface-card">
         {rows.map((f) => {
-          const meta = CATEGORY_META[f.category];
-          const Icon = meta.icon;
           const isOpen = open === f.id;
           const badge = trackingLabel(f);
           return (
             <div key={f.id} className={f.tracking !== "open" ? "opacity-75" : ""}>
               <button
                 onClick={() => setOpen(isOpen ? null : f.id)}
-                className="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-slate-50"
+                className="finding-row-trigger flex w-full items-center gap-3 px-5 py-4 text-left"
               >
                 <SeverityBadge severity={f.severity} />
-                <Icon className="h-4 w-4 shrink-0 text-slate-500" />
+                <CategoryIconChip category={f.category} size="sm" />
                 <span className="flex min-w-0 flex-1 items-center gap-2">
                   <span className="truncate text-sm text-slate-900">{f.title}</span>
                   {isExpiryCheckId(f.checkId) && f.impact?.daysUntil != null && (
@@ -169,24 +197,33 @@ export function FindingsTable({
                 />
               </button>
               {isOpen && (
-                <div className="space-y-3 bg-slate-50 px-5 pb-5 pt-1">
+                <div className="finding-row-detail space-y-3 px-5 pb-5 pt-1">
                   <p className="text-sm text-slate-600">{f.description}</p>
                   {f.impact?.entities && f.impact.entities.length > 0 ? (
                     <div className="text-xs text-slate-500">
-                      <p className="mb-1 font-medium text-slate-600">Affected groups</p>
+                      <p className="mb-1 font-medium text-slate-600">
+                        {affectedItemsLabel(f.checkId)}
+                      </p>
                       <ul className="list-inside list-disc space-y-0.5">
                         {f.impact.entities.map((name, i) => (
                           <li key={`${i}-${name}`}>{name}</li>
                         ))}
                       </ul>
                     </div>
+                  ) : f.entityRef && isLicenseSkuCode(f.entityRef) ? (
+                    <LicenseEntityLine entityRef={f.entityRef} />
                   ) : f.entityRef ? (
                     <p className="text-xs text-slate-500">Affected: {f.entityRef}</p>
                   ) : null}
                   <RemediationPanel
                     findingId={f.id}
                     templateRemediation={f.remediation}
-                    initialEnriched={f.remediationEnriched}
+                    initialEnriched={
+                      f.remediationEnriched ?? enrichedCache[f.id] ?? null
+                    }
+                    onEnriched={(data) =>
+                      setEnrichedCache((prev) => ({ ...prev, [f.id]: data }))
+                    }
                   />
                   <FindingActions
                     checkId={f.checkId}

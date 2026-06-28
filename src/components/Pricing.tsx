@@ -1,5 +1,11 @@
 import { Check } from "lucide-react";
 import { Reveal } from "./Reveal";
+import {
+  PRO_ANNUAL_SAVINGS_PERCENT,
+  PRO_ANNUAL_USD,
+  PRO_MONTHLY_USD,
+} from "@/lib/billing/pricing";
+import { formatUsd } from "@/lib/format";
 
 const tiers = [
   {
@@ -18,15 +24,17 @@ const tiers = [
   },
   {
     name: "Pro",
-    price: "$49",
+    price: `$${PRO_MONTHLY_USD}`,
     cadence: "/tenant / mo",
+    annualNote: `$${formatUsd(PRO_ANNUAL_USD)}/yr (save ${PRO_ANNUAL_SAVINGS_PERCENT}%)`,
     blurb: "The full hawk-eye view for internal IT teams.",
     features: [
       "All four scan categories",
       "Daily scans + drift alerts",
       "Cost-savings reporting",
-      "Fix-it guides & history",
-      "Teams & Slack notifications",
+      "Category trends & CIS / NIST mapping",
+      "Shareable executive report links",
+      "AI fix-it guides & exports",
     ],
     cta: "Start free scan",
     highlight: true,
@@ -43,8 +51,9 @@ const tiers = [
       "Per-client scorecards",
       "Priority support",
     ],
-    cta: "Talk to us",
+    cta: "Coming soon",
     highlight: false,
+    comingSoon: true,
   },
 ];
 
@@ -80,6 +89,11 @@ export function Pricing() {
                     Most popular
                   </span>
                 )}
+                {"comingSoon" in t && t.comingSoon && (
+                  <span className="mb-4 inline-flex w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                    Coming soon
+                  </span>
+                )}
                 <h3 className="text-lg font-bold text-slate-900">
                   {t.name}
                 </h3>
@@ -94,6 +108,9 @@ export function Pricing() {
                 <p className="mt-3 text-sm text-slate-600">
                   {t.blurb}
                 </p>
+                {"annualNote" in t && t.annualNote && (
+                  <p className="mt-2 text-sm font-medium text-green-700">{t.annualNote}</p>
+                )}
 
                 <ul className="mt-6 flex-1 space-y-3">
                   {t.features.map((f) => (
@@ -109,16 +126,25 @@ export function Pricing() {
                   ))}
                 </ul>
 
-                <a
-                  href={t.name === "MSP" ? "#waitlist" : "/signup"}
-                  className={`mt-7 inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
-                    t.highlight
-                      ? "btn-primary w-full shadow-none hover:shadow-md"
-                      : "border border-slate-300 text-slate-900 hover:border-slate-400"
-                  }`}
-                >
-                  {t.cta}
-                </a>
+                {"comingSoon" in t && t.comingSoon ? (
+                  <span
+                    aria-disabled="true"
+                    className="mt-7 inline-flex cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm font-semibold text-slate-400"
+                  >
+                    {t.cta}
+                  </span>
+                ) : (
+                  <a
+                    href="/signup"
+                    className={`mt-7 inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
+                      t.highlight
+                        ? "btn-primary w-full shadow-none hover:shadow-md"
+                        : "border border-slate-300 text-slate-900 hover:border-slate-400"
+                    }`}
+                  >
+                    {t.cta}
+                  </a>
+                )}
               </div>
             </Reveal>
           ))}

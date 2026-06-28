@@ -45,12 +45,14 @@ migration commands above. No code changes.
 2. Set `SMTP_HOST=smtp.purelymail.com`, port `465` (SSL) or `587` (STARTTLS with `SMTP_SECURE=false`).
 3. Set `SMTP_USER`, `SMTP_PASS`, and `EMAIL_FROM` to match that mailbox.
 4. Branded templates live in `src/lib/email/templates.ts` (instant alerts, weekly digest, test).
-1. Create a recurring **Price** for Pro; put its id in `STRIPE_PRICE_PRO`.
-2. Set `STRIPE_SECRET_KEY` and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.
-3. Add a webhook to `${APP_URL}/api/auth/stripe/webhook`; put the signing secret
+### Stripe (billing)
+1. Create a recurring **monthly** Price for Pro ($49/mo); put its id in `STRIPE_PRICE_PRO`.
+2. Create a recurring **yearly** Price on the same product ($490/yr — 2 months free vs monthly); put its id in `STRIPE_PRICE_PRO_ANNUAL`.
+3. Set `STRIPE_SECRET_KEY` and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.
+4. Add a webhook to `${APP_URL}/api/auth/stripe/webhook`; put the signing secret
    in `STRIPE_WEBHOOK_SECRET`.
-4. The "Unlock full report" / "Upgrade" buttons now run real Checkout, and the
-   customer portal opens from **Billing → Manage billing**.
+5. Checkout shows **Monthly** vs **Annual** on the billing page; Better Auth passes
+   `annual: true` when the user picks yearly.
 
 ### Scheduled monitoring
 `vercel.json` documents the intended schedule: `/api/cron/scan` daily at 07:00 UTC,
