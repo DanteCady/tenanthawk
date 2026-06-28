@@ -18,19 +18,21 @@ function getTransporter(): Transporter | null {
   if (!isSmtpConfigured()) return null;
 
   if (!transporter) {
+    const host = process.env.SMTP_HOST;
+    const user = process.env.SMTP_USER?.trim();
+    const pass = process.env.SMTP_PASS?.trim();
+    if (!host || !user || !pass) return null;
+
     const port = Number(process.env.SMTP_PORT ?? 465);
     const secure =
       process.env.SMTP_SECURE === "true" ||
       (process.env.SMTP_SECURE !== "false" && port === 465);
 
     transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
+      host,
       port,
       secure,
-      auth: {
-        user: process.env.SMTP_USER.trim(),
-        pass: process.env.SMTP_PASS.trim(),
-      },
+      auth: { user, pass },
       authMethod: "LOGIN",
     });
   }

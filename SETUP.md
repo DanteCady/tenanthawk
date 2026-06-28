@@ -61,6 +61,31 @@ migration commands above. No code changes.
 
 Set `CRON_SECRET` so cron routes require `Authorization: Bearer <secret>`.
 
+### Deploy (Lightsail + GitHub Actions)
+
+**One-time server setup** (SSH as ubuntu, then sudo):
+
+```bash
+sudo bash scripts/server/bootstrap-lightsail.sh
+nano /var/www/tenanthawk/.env   # production secrets — not in git
+```
+
+**GitHub → Settings → Environments → `production`** — add secrets:
+
+| Secret | Purpose |
+|--------|---------|
+| `LIGHTSAIL_HOST` | Static IP (e.g. `98.83.207.89`) |
+| `LIGHTSAIL_USER` | `ubuntu` |
+| `LIGHTSAIL_SSH_KEY` | Private key (Lightsail default key PEM) |
+| All vars from `.env.example` | Used at build time; runtime also reads `/var/www/tenanthawk/.env` on the host |
+
+**Pipelines:**
+
+- **CI** (`.github/workflows/ci.yml`) — lint, typecheck, build on PRs and `main`
+- **Deploy** (`.github/workflows/deploy.yml`) — build standalone bundle, rsync to `/var/www/tenanthawk/app`, PM2 restart on push to `main`
+
+Download the Lightsail SSH key under **Account → SSH keys** and paste the full PEM into `LIGHTSAIL_SSH_KEY`.
+
 ### AI remediation (OpenAI)
 Pro users can expand a finding for **AI-guided fix steps** with links to Microsoft
 docs. Set `OPENAI_API_KEY` (and optionally `OPENAI_MODEL`, default `gpt-4o-mini`).
