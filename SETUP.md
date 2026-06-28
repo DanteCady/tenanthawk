@@ -53,6 +53,17 @@ migration commands above. No code changes.
    in `STRIPE_WEBHOOK_SECRET`.
 5. Checkout shows **Monthly** vs **Annual** on the billing page; Better Auth passes
    `annual: true` when the user picks yearly.
+6. **Early bird promo (`EARLYBIRD26`):** 25% off Pro forever, first 20 customers.
+   Stripe needs **both** a **Coupon** (the discount rules) and a **Promotion code**
+   (the customer-facing code at checkout). If you only created a coupon in the
+   dashboard, add a promotion code with code `EARLYBIRD26` linked to that coupon,
+   or run:
+   ```bash
+   node --env-file=.env scripts/stripe-create-founding-promo.mjs
+   ```
+   (Uses `STRIPE_SECRET_KEY` from `.env` — run separately in test and live.)
+   Users enter the code on the billing page before checkout; it applies to monthly
+   and annual Pro.
 
 ### Scheduled monitoring
 `vercel.json` documents the intended schedule: `/api/cron/scan` daily at 07:00 UTC,

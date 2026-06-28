@@ -2,11 +2,11 @@ import Link from "next/link";
 import { ArrowRight, Lock } from "lucide-react";
 import { ThemeLogo } from "@/components/theme/ThemeLogo";
 import { ScoreRing } from "@/components/app/ScoreRing";
-import { ProUpgradeOptions } from "@/components/app/UpgradeButton";
 import { isAnnualBillingConfigured } from "@/lib/billing/pricing";
 import { GradeBadge } from "@/components/app/GradeBadge";
 import { CATEGORY_META } from "@/components/app/categories";
 import { CategoryInfoButton } from "@/components/app/CategoryInfoButton";
+import { OnboardingUpgradePanel } from "@/components/onboarding/OnboardingUpgradePanel";
 import type { ScanSummary } from "@/lib/summary";
 
 const CATEGORY_CHIP: Record<string, string> = {
@@ -125,21 +125,24 @@ export function ResultsStep({
             </div>
           </div>
 
-          <div className="flex flex-col gap-2.5 border-t border-slate-100 bg-slate-50/50 p-4 sm:flex-row sm:p-5">
+          <div className="space-y-4 border-t border-slate-100 bg-slate-50/50 p-5 sm:p-6">
             <Link
               href="/dashboard"
-              className="group btn-primary order-1 flex-1 justify-center shadow-none hover:shadow-md sm:order-2"
+              className="group btn-primary flex w-full items-center justify-center shadow-none hover:shadow-md"
             >
               Continue to dashboard
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
-            <div className="order-2 flex-1 sm:order-1">
-              <ProUpgradeOptions
-                annualAvailable={annualAvailable}
-                compact
-                buttonClassName="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition-colors hover:border-blue-300 hover:bg-blue-50/50 hover:text-blue-800"
-              />
+
+            <div className="relative flex items-center gap-3 py-1">
+              <div className="h-px flex-1 bg-slate-200" />
+              <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                Or go Pro
+              </span>
+              <div className="h-px flex-1 bg-slate-200" />
             </div>
+
+            <OnboardingUpgradePanel annualAvailable={annualAvailable} />
           </div>
         </div>
       </div>

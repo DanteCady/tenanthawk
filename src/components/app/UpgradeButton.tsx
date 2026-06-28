@@ -10,7 +10,10 @@ import {
   PRO_ANNUAL_USD,
   PRO_MONTHLY_USD,
 } from "@/lib/billing/pricing";
+import { FOUNDING_PROMO_CODE } from "@/lib/billing/founding";
+import { normalizePromoCode } from "@/lib/billing/promo-code";
 import { formatUsd } from "@/lib/format";
+import { FoundingPromoCallout } from "@/components/app/FoundingPromoCallout";
 
 type Interval = "monthly" | "annual";
 
@@ -18,11 +21,13 @@ export function UpgradeButton({
   children,
   className = "",
   annual = false,
+  promotionCode,
 }: {
   children: React.ReactNode;
   className?: string;
   /** When true, checkout uses the annual Stripe price. */
   annual?: boolean;
+  promotionCode?: string;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -30,11 +35,13 @@ export function UpgradeButton({
   async function upgrade() {
     setLoading(true);
     setError("");
+    const code = normalizePromoCode(promotionCode);
     const { error: upgradeError } = await authClient.subscription.upgrade({
       plan: "pro",
       annual,
       successUrl: `${window.location.origin}/dashboard?upgraded=1`,
       cancelUrl: window.location.href,
+      ...(code ? { metadata: { promotionCode: code } } : {}),
     });
     if (upgradeError) {
       setError(upgradeError.message ?? "Billing isn't configured yet.");
@@ -62,16 +69,20 @@ export function ProUpgradeOptions({
   annualAvailable = true,
   compact = false,
   buttonClassName = "btn-primary w-full shadow-none hover:shadow-md",
+  showFoundingPromo = true,
 }: {
   annualAvailable?: boolean;
   compact?: boolean;
   buttonClassName?: string;
+  showFoundingPromo?: boolean;
 }) {
   const [interval, setInterval] = useState<Interval>("monthly");
+  const [promotionCode, setPromotionCode] = useState(FOUNDING_PROMO_CODE);
   const annual = interval === "annual";
 
   return (
     <div className={compact ? "space-y-3" : "space-y-4"}>
+      {showFoundingPromo && <FoundingPromoCallout compact={compact} />}
       {annualAvailable && (
         <div
           className={`flex rounded-xl border border-slate-200 bg-slate-50 p-1 ${
@@ -139,7 +150,24 @@ export function ProUpgradeOptions({
         )}
       </div>
 
-      <UpgradeButton annual={annual} className={buttonClassName}>
+      <label className="block">
+        <span className="text-sm font-medium text-slate-700">Promotion code</span>
+        <input
+          type="text"
+          value={promotionCode}
+          onChange={(e) => setPromotionCode(e.target.value.toUpperCase())}
+          autoComplete="off"
+          spellCheck={false}
+          placeholder={FOUNDING_PROMO_CODE}
+          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 font-mono text-sm text-slate-900 uppercase placeholder:normal-case placeholder:font-sans placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        />
+      </label>
+
+      <UpgradeButton
+        annual={annual}
+        promotionCode={promotionCode}
+        className={buttonClassName}
+      >
         {annual ? "Upgrade (annual)" : "Upgrade (monthly)"}
       </UpgradeButton>
     </div>

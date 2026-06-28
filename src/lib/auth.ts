@@ -9,6 +9,10 @@ import {
 } from "./account/deleteUserData";
 import { sendEmail } from "./email/send";
 import { verificationOtpEmail } from "./email/templates";
+import {
+  promotionCodeFromUpgradeMetadata,
+  resolveCheckoutDiscountParams,
+} from "./billing/stripe-checkout";
 
 // Placeholder keys keep schema generation + demo mode working before real
 // Stripe keys are added. Real checkout/webhook activate once env is set.
@@ -68,6 +72,14 @@ export const auth = betterAuth({
             annualDiscountPriceId: process.env.STRIPE_PRICE_PRO_ANNUAL || undefined,
           },
         ],
+        async getCheckoutSessionParams(_data, _request, ctx) {
+          const metadata = ctx.body?.metadata as Record<string, unknown> | undefined;
+          const discountParams = await resolveCheckoutDiscountParams(
+            stripeClient,
+            promotionCodeFromUpgradeMetadata(metadata),
+          );
+          return { params: discountParams };
+        },
       },
     }),
   ],

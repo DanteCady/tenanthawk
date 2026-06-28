@@ -76,8 +76,9 @@ export function Pricing() {
             Start free. Scale per tenant.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            Founding customers lock early pricing for life. Plans below are
-            indicative for launch.
+            Founding customers lock early pricing for life — use{" "}
+            <span className="font-mono text-sm font-semibold text-amber-700">EARLYBIRD26</span>{" "}
+            for 25% off Pro (first 20 customers).
           </p>
         </Reveal>
 
