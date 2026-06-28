@@ -1,5 +1,7 @@
 import { randomUUID } from "crypto";
 import { db } from "@/db";
+import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
+import { invalidateConnectionHealth } from "@/lib/connect/health";
 import { checks } from "./checks";
 import { getDemoFindings } from "./demo";
 import { getAppToken, isLiveConfigured } from "./graph";
@@ -18,6 +20,17 @@ export async function runScan(
     .executeTakeFirst();
 
   if (!conn) throw new Error("Connection not found");
+
+  if (
+    conn.mode === "live" &&
+    conn.tenant_id &&
+    !conn.tenant_domain &&
+    isLiveConfigured()
+  ) {
+    await enrichConnectionProfile(conn.id, conn.tenant_id);
+  }
+
+  invalidateConnectionHealth(connectionId);
 
   const scanId = randomUUID();
   await db

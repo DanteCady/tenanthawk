@@ -4,7 +4,10 @@
 // Uses the app's own HTTP endpoints so passwords are hashed by Better Auth and
 // the Pro entitlement is set the same way the app reads it.
 
+import pg from "pg";
+
 const BASE = process.env.APP_URL || "http://localhost:3000";
+const DATABASE_URL = process.env.DATABASE_URL;
 const USER = {
   name: "Demo Admin",
   email: process.env.SEED_EMAIL || "demo@tenanthawk.app",
@@ -45,6 +48,23 @@ async function post(path, body, jar) {
   return res;
 }
 
+async function verifyEmailInDb(email) {
+  if (!DATABASE_URL) {
+    console.error("✗ No session and DATABASE_URL unset — can't verify seed user email.");
+    return false;
+  }
+  const pool = new pg.Pool({ connectionString: DATABASE_URL });
+  try {
+    const res = await pool.query(
+      `UPDATE "user" SET "emailVerified" = true WHERE email = $1`,
+      [email.toLowerCase()],
+    );
+    return res.rowCount > 0;
+  } finally {
+    await pool.end();
+  }
+}
+
 async function main() {
   // sanity: server up?
   try {
@@ -74,8 +94,21 @@ async function main() {
   }
 
   if (!jar.size) {
-    console.error("✗ No session cookie obtained.");
-    process.exit(1);
+    const verified = await verifyEmailInDb(USER.email);
+    if (!verified) {
+      console.error("✗ No session cookie obtained.");
+      process.exit(1);
+    }
+    console.log("✓ Marked email verified (dev seed)");
+    const signin = await post(
+      "/api/auth/sign-in/email",
+      { email: USER.email, password: USER.password },
+      jar,
+    );
+    if (!signin.ok || !jar.size) {
+      console.error("✗ Sign-in after email verification failed:", await signin.text());
+      process.exit(1);
+    }
   }
 
   const demo = await post("/api/connect/demo", undefined, jar);

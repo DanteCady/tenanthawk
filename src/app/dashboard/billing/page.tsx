@@ -9,7 +9,7 @@ import { DevPlanToggle } from "@/components/app/DevPlanToggle";
 
 const PRO_FEATURES = [
   "Full findings with severity & dollar impact",
-  "Step-by-step remediation for every issue",
+  "AI-guided remediation with Microsoft doc links",
   "Daily scans + drift & expiry alerts",
   "Slack / Teams / Discord webhook alerts",
   "Export reports",

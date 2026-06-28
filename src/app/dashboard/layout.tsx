@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/session";
+import { requireVerifiedSession } from "@/lib/session";
 import { getPlan } from "@/lib/entitlements";
+import { getPrimaryConnection } from "@/lib/queries";
+import { getConnectionHealth } from "@/lib/connect/health";
+import { exportTenantLabel } from "@/lib/export/payload";
 import { Logo } from "@/components/Logo";
 import { PlanBadge } from "@/components/app/PlanBadge";
+import { ConnectionStatusBlip } from "@/components/app/ConnectionStatusBlip";
 import { SignOutButton } from "@/components/app/SignOutButton";
 
 export default async function DashboardLayout({
@@ -11,9 +14,11 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const session = await requireVerifiedSession();
   const plan = await getPlan(session.user.id);
+  const conn = await getPrimaryConnection(session.user.id);
+  const connectionHealth = conn ? await getConnectionHealth(conn) : null;
+  const tenantLabel = conn ? exportTenantLabel(conn) : null;
 
   return (
     <div className="app-shell flex min-h-screen flex-col">
@@ -23,6 +28,12 @@ export default async function DashboardLayout({
             <Logo tone="light" />
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
+            {connectionHealth ? (
+              <ConnectionStatusBlip
+                health={connectionHealth}
+                tenantLabel={tenantLabel}
+              />
+            ) : null}
             <PlanBadge plan={plan} />
             {plan === "free" && (
               <Link

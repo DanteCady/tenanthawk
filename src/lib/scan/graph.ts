@@ -6,10 +6,40 @@ export function isLiveConfigured(): boolean {
 
 /** Acquire an app-only (client-credentials) Graph token for a tenant. */
 export async function getAppToken(tenantId: string): Promise<string> {
+  const result = await probeAppToken(tenantId);
+  if (!result.ok) {
+    throw new Error(result.error.errorDescription || result.error.error);
+  }
+  return result.token;
+}
+
+export interface AppTokenError {
+  error: string;
+  errorDescription: string;
+  aadstsCode?: string;
+}
+
+export type AppTokenProbeResult =
+  | { ok: true; token: string }
+  | { ok: false; error: AppTokenError };
+
+function parseAadstsCode(description: string): string | undefined {
+  const match = description.match(/AADSTS(\d+)/i);
+  return match?.[1];
+}
+
+/** Probe whether app-only auth still works for a tenant (does not throw). */
+export async function probeAppToken(tenantId: string): Promise<AppTokenProbeResult> {
   const clientId = process.env.MS_CLIENT_ID;
   const clientSecret = process.env.MS_CLIENT_SECRET;
   if (!clientId || !clientSecret) {
-    throw new Error("MS_CLIENT_ID / MS_CLIENT_SECRET not configured");
+    return {
+      ok: false,
+      error: {
+        error: "not_configured",
+        errorDescription: "Microsoft Graph credentials are not configured.",
+      },
+    };
   }
 
   const res = await fetch(
@@ -26,11 +56,25 @@ export async function getAppToken(tenantId: string): Promise<string> {
     },
   );
 
-  if (!res.ok) {
-    throw new Error(`Token request failed (${res.status})`);
+  const data = (await res.json()) as {
+    access_token?: string;
+    error?: string;
+    error_description?: string;
+  };
+
+  if (res.ok && data.access_token) {
+    return { ok: true, token: data.access_token };
   }
-  const data = (await res.json()) as { access_token: string };
-  return data.access_token;
+
+  const errorDescription = data.error_description ?? `Token request failed (${res.status})`;
+  return {
+    ok: false,
+    error: {
+      error: data.error ?? "token_error",
+      errorDescription,
+      aadstsCode: parseAadstsCode(errorDescription),
+    },
+  };
 }
 
 interface GraphPage<T> {
@@ -41,6 +85,20 @@ interface GraphPage<T> {
 export interface TenantProfile {
   displayName: string;
   defaultDomain: string | null;
+}
+
+function pickPrimaryDomain(
+  domains: Array<{ name: string; isDefault?: boolean }>,
+): string | null {
+  if (domains.length === 0) return null;
+  const custom = domains.filter((d) => !d.name.endsWith(".onmicrosoft.com"));
+  return (
+    custom.find((d) => d.isDefault)?.name ??
+    domains.find((d) => d.isDefault)?.name ??
+    custom[0]?.name ??
+    domains[0]?.name ??
+    null
+  );
 }
 
 /** Resolve tenant display name and primary domain after admin consent. */
@@ -57,14 +115,9 @@ export async function fetchTenantProfile(
     const org = orgs[0];
     if (!org) return null;
 
-    const defaultDomain =
-      org.verifiedDomains?.find((d) => d.isDefault)?.name ??
-      org.verifiedDomains?.[0]?.name ??
-      null;
-
     return {
       displayName: org.displayName ?? "Microsoft 365",
-      defaultDomain,
+      defaultDomain: pickPrimaryDomain(org.verifiedDomains ?? []),
     };
   } catch (err) {
     console.error("[graph] tenant profile fetch failed", err);

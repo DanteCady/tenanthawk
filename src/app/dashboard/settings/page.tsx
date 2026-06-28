@@ -18,6 +18,8 @@ import { DisconnectTenantButton } from "@/components/app/DisconnectTenantButton"
 import { DeleteAccountButton } from "@/components/app/DeleteAccountButton";
 import { AlertPreferencesForm } from "@/components/app/AlertPreferencesForm";
 import { getAlertPreferences } from "@/lib/alerts/preferences";
+import { getConnectionHealth } from "@/lib/connect/health";
+import { TenantConnectionCheck } from "@/components/app/TenantConnectionCheck";
 import { isLiveConfigured } from "@/lib/scan/graph";
 import { timeAgo } from "@/lib/time";
 
@@ -78,6 +80,10 @@ export default async function SettingsPage() {
     connection?.tenant_domain ??
     connection?.display_name ??
     (connection?.mode === "demo" ? "Contoso (demo)" : "Microsoft 365");
+
+  const connectionHealth = connection
+    ? await getConnectionHealth(connection)
+    : null;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -142,6 +148,13 @@ export default async function SettingsPage() {
               label="Connected"
               value={timeAgo(connection.created_at)}
             />
+
+            {connectionHealth ? (
+              <TenantConnectionCheck
+                initial={connectionHealth}
+                tenantLabel={tenantLabel}
+              />
+            ) : null}
 
             <div className="mt-5 flex flex-wrap gap-2">
               {liveConfigured && connection.mode === "live" && (

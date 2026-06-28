@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { ChevronDown, ExternalLink, Wrench } from "lucide-react";
 
-const APP_URL =
-  typeof window !== "undefined"
-    ? window.location.origin
-    : "http://localhost:3000";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 const SETUP_STEPS = [
   {
@@ -16,7 +13,7 @@ const SETUP_STEPS = [
   },
   {
     title: "Add read-only Graph permissions",
-    body: "API permissions → Microsoft Graph → Application permissions: Directory.Read.All, Application.Read.All, Policy.Read.All, Reports.Read.All, AuditLog.Read.All, Organization.Read.All. Grant admin consent for your tenant.",
+    body: "API permissions → Microsoft Graph → Application permissions: Directory.Read.All, User.Read.All, Application.Read.All, Policy.Read.All, Reports.Read.All, AuditLog.Read.All, Organization.Read.All, DeviceManagementManagedDevices.Read.All, SharePointTenantSettings.Read.All. Grant admin consent for your tenant.",
   },
   {
     title: "Create a client secret & redirect URI",

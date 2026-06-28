@@ -1,13 +1,32 @@
 import "server-only";
 import { db } from "@/db";
+import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
+import { isLiveConfigured } from "@/lib/scan/graph";
 
 export async function getPrimaryConnection(userId: string) {
-  return db
+  const conn = await db
     .selectFrom("connection")
     .selectAll()
     .where("user_id", "=", userId)
     .orderBy("created_at", "desc")
     .executeTakeFirst();
+
+  if (
+    conn &&
+    conn.mode === "live" &&
+    conn.tenant_id &&
+    !conn.tenant_domain &&
+    isLiveConfigured()
+  ) {
+    await enrichConnectionProfile(conn.id, conn.tenant_id);
+    return db
+      .selectFrom("connection")
+      .selectAll()
+      .where("id", "=", conn.id)
+      .executeTakeFirst();
+  }
+
+  return conn;
 }
 
 export async function getConnections(userId: string) {

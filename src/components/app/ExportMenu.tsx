@@ -2,21 +2,34 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Download, FileText, Loader2 } from "lucide-react";
+import { Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
+
+type ExportKind = "csv" | "xlsx" | "pdf";
+
+const EXPORT_PATHS: Record<ExportKind, `/api/export/${ExportKind}`> = {
+  csv: "/api/export/csv",
+  xlsx: "/api/export/xlsx",
+  pdf: "/api/export/pdf",
+};
+
+const FALLBACK_NAMES: Record<ExportKind, string> = {
+  csv: "tenanthawk-summary.csv",
+  xlsx: "tenanthawk-report.xlsx",
+  pdf: "tenanthawk-report.pdf",
+};
 
 export function ExportMenu({ isPro }: { isPro: boolean }) {
-  const [loading, setLoading] = useState<"csv" | "pdf" | null>(null);
+  const [loading, setLoading] = useState<ExportKind | null>(null);
 
-  async function download(path: "/api/export/csv" | "/api/export/pdf", kind: "csv" | "pdf") {
+  async function download(kind: ExportKind) {
     setLoading(kind);
     try {
-      const res = await fetch(path);
+      const res = await fetch(EXPORT_PATHS[kind]);
       if (!res.ok) return;
       const blob = await res.blob();
       const disposition = res.headers.get("Content-Disposition") ?? "";
       const match = disposition.match(/filename="([^"]+)"/);
-      const fallback = kind === "pdf" ? "tenanthawk-report.pdf" : "tenanthawk-report.csv";
-      const filename = match?.[1] ?? fallback;
+      const filename = match?.[1] ?? FALLBACK_NAMES[kind];
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -44,8 +57,9 @@ export function ExportMenu({ isPro }: { isPro: boolean }) {
     <div className="flex flex-wrap items-center gap-2">
       <button
         type="button"
-        onClick={() => download("/api/export/csv", "csv")}
+        onClick={() => download("csv")}
         disabled={loading !== null}
+        title="Executive summary CSV"
         className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700 disabled:opacity-60"
       >
         {loading === "csv" ? (
@@ -57,7 +71,21 @@ export function ExportMenu({ isPro }: { isPro: boolean }) {
       </button>
       <button
         type="button"
-        onClick={() => download("/api/export/pdf", "pdf")}
+        onClick={() => download("xlsx")}
+        disabled={loading !== null}
+        title="Detailed workbook with category sheets"
+        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700 disabled:opacity-60"
+      >
+        {loading === "xlsx" ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <FileSpreadsheet className="h-4 w-4" />
+        )}
+        Excel
+      </button>
+      <button
+        type="button"
+        onClick={() => download("pdf")}
         disabled={loading !== null}
         className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700 disabled:opacity-60"
       >

@@ -33,6 +33,26 @@ const CHECK_DOCS: Record<string, RemediationDocLink[]> = {
       url: "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/assign-licenses-to-users",
     },
   ],
+  "cost.disabled-user-licenses": [
+    {
+      title: "Manage licenses for users",
+      url: "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-licenses-for-users",
+    },
+    {
+      title: "Remove licenses from disabled users",
+      url: "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/remove-licenses-from-users",
+    },
+  ],
+  "security.mfa-registration": [
+    {
+      title: "Require MFA for all users",
+      url: "https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa",
+    },
+    {
+      title: "Authentication methods in Entra ID",
+      url: "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-methods",
+    },
+  ],
   "security.conditional-access": [
     {
       title: "Plan a Conditional Access deployment",
@@ -87,6 +107,24 @@ const CHECK_DOCS: Record<string, RemediationDocLink[]> = {
     {
       title: "User account management",
       url: "https://learn.microsoft.com/en-us/entra/identity/users/users-restore",
+    },
+  ],
+  "hygiene.disabled-outside-group": [
+    {
+      title: "Manage groups in Microsoft Entra ID",
+      url: "https://learn.microsoft.com/en-us/entra/identity/fundamentals/groups-create-eligible-delete",
+    },
+  ],
+  "hygiene.intune-noncompliant": [
+    {
+      title: "Device compliance in Intune",
+      url: "https://learn.microsoft.com/en-us/mem/intune/protect/device-compliance-get-started",
+    },
+  ],
+  "reliability.intune-stale-sync": [
+    {
+      title: "Monitor devices in Intune",
+      url: "https://learn.microsoft.com/en-us/mem/intune/remote-actions/device-management",
     },
   ],
   "hygiene.sharing": [

@@ -44,5 +44,8 @@ next-env.d.ts
 /data
 brand/_preview.png
 
+# local QA runs, snapshots, and reports
+/QA
+
 # keep env template tracked
 !.env.example

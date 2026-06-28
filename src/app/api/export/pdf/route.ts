@@ -7,6 +7,7 @@ import {
   getFindings,
 } from "@/lib/queries";
 import { buildFindingsPdf } from "@/lib/export/pdf";
+import { buildExportPayload, exportFilenameSlug } from "@/lib/export/payload";
 
 export const runtime = "nodejs";
 
@@ -31,29 +32,14 @@ export async function GET() {
   }
 
   const findings = await getFindings(scan.id);
-  const tenant =
-    conn.tenant_domain ?? conn.display_name ?? (conn.mode === "demo" ? "Contoso (demo)" : "Tenant");
-
-  const pdf = buildFindingsPdf(
-    {
-      tenant,
-      scannedAt: new Date(scan.started_at).toISOString(),
-      score: scan.score,
-      mode: conn.mode,
-    },
-    findings.map((f) => ({
-      category: f.category,
-      severity: f.severity,
-      title: f.title,
-      description: f.description,
-      remediation: f.remediation,
-      entityRef: f.entity_ref,
-      impactUsd: f.impact?.usd ?? null,
-      checkId: f.check_id,
-    })),
+  const { meta, findings: exportFindings, tenant } = buildExportPayload(
+    conn,
+    scan,
+    findings,
   );
 
-  const slug = tenant.replace(/[^a-z0-9]+/gi, "-").toLowerCase() || "tenant";
+  const pdf = buildFindingsPdf(meta, exportFindings);
+  const slug = exportFilenameSlug(tenant);
   const date = new Date(scan.started_at).toISOString().slice(0, 10);
 
   return new NextResponse(Buffer.from(pdf), {

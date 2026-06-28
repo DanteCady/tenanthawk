@@ -42,13 +42,6 @@ export async function POST(
     return NextResponse.json({ enriched: cached, cached: true });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json(
-      { error: "AI remediation is not configured" },
-      { status: 503 },
-    );
-  }
-
   const enriched = await enrichRemediation({
     checkId: finding.check_id,
     category: finding.category,

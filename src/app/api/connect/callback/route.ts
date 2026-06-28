@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { getSession } from "@/lib/session";
 import { runScan } from "@/lib/scan/runScan";
 import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
+import { invalidateConnectionHealth } from "@/lib/connect/health";
 
 export const runtime = "nodejs";
 
@@ -69,6 +70,7 @@ export async function GET(req: NextRequest) {
   }
 
   await enrichConnectionProfile(conn.id, tenant);
+  invalidateConnectionHealth(conn.id);
 
   try {
     await runScan(conn.id);

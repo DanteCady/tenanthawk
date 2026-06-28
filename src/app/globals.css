@@ -142,8 +142,24 @@ body {
 }
 
 @media print {
-  header {
+  @page {
+    margin: 0.5in;
+    size: letter;
+  }
+
+  body {
+    background: white !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .app-shell > header {
     display: none !important;
+  }
+
+  .app-shell > main {
+    max-width: none !important;
+    padding: 0 !important;
   }
 }
 

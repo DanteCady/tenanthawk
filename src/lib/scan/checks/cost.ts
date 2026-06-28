@@ -9,6 +9,53 @@ interface SubscribedSku {
   consumedUnits?: { enabled?: number };
 }
 
+interface LicensedUser {
+  displayName?: string;
+  userPrincipalName?: string;
+  assignedLicenses?: unknown[];
+}
+
+/** Free/viral SKUs with huge prepaid counts add noise without actionable waste. */
+const NOISE_UNUSED_SKUS = new Set([
+  "FLOW_FREE",
+  "CCIBOTS_PRIVPREV_VIRAL",
+  "POWERAPPS_VIRAL",
+  "TEAMS_ESSENTIALS_AAD",
+  "WINDOWS_STORE",
+]);
+
+/** Disabled or blocked sign-in accounts still consuming license seats. */
+export const disabledUserLicenses: Check = {
+  id: "cost.disabled-user-licenses",
+  category: "cost",
+  async run({ token }) {
+    const users = await graphGet<LicensedUser>(
+      token,
+      "/users?$filter=accountEnabled eq false&$select=displayName,userPrincipalName,assignedLicenses&$top=999",
+    );
+
+    const withLicenses = users.filter((u) => (u.assignedLicenses?.length ?? 0) > 0);
+    if (withLicenses.length === 0) return [];
+
+    const names = withLicenses
+      .slice(0, 20)
+      .map((u) => u.displayName ?? u.userPrincipalName ?? "Unknown");
+
+    return [
+      {
+        category: "cost",
+        checkId: disabledUserLicenses.id,
+        severity: withLicenses.length >= 5 ? "high" : "medium",
+        title: `${withLicenses.length} disabled account${withLicenses.length === 1 ? "" : "s"} still have licenses`,
+        description: `${withLicenses.length} disabled (blocked sign-in) accounts still have Microsoft 365 licenses assigned.`,
+        impact: { count: withLicenses.length, entities: names },
+        remediation:
+          "Remove licenses from disabled accounts in M365 Admin > Users > Active users, or automate offboarding.",
+      },
+    ];
+  },
+};
+
 /** Surfaces prepaid license seats that are assigned but unused. */
 export const unusedLicenses: Check = {
   id: "cost.unused-licenses",
@@ -26,6 +73,7 @@ export const unusedLicenses: Check = {
       if (unused < 3) continue;
 
       const name = sku.skuPartNumber ?? "Unknown SKU";
+      if (NOISE_UNUSED_SKUS.has(name)) continue;
       findings.push({
         category: "cost",
         checkId: unusedLicenses.id,

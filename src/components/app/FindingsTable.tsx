@@ -10,6 +10,7 @@ import { UpgradeButton } from "./UpgradeButton";
 import { FindingActions } from "./FindingActions";
 import { RemediationPanel } from "./RemediationPanel";
 import { isExpiryCheckId } from "@/lib/scan/expiry";
+import { formatUsd } from "@/lib/format";
 import type { RemediationEnriched } from "@/lib/remediation/types";
 
 export interface FindingDTO {
@@ -19,7 +20,7 @@ export interface FindingDTO {
   severity: Severity;
   title: string;
   description: string;
-  impact: { usd?: number; count?: number; daysUntil?: number } | null;
+  impact: { usd?: number; count?: number; daysUntil?: number; entities?: string[] } | null;
   remediation: string;
   entityRef: string | null;
   remediationEnriched?: RemediationEnriched | null;
@@ -160,7 +161,7 @@ export function FindingsTable({
                 </span>
                 {f.impact?.usd ? (
                   <span className="hidden text-sm font-medium text-blue-700 sm:inline">
-                    ${f.impact.usd.toLocaleString()}/mo
+                    ${formatUsd(f.impact.usd)}/mo
                   </span>
                 ) : null}
                 <ChevronDown
@@ -170,9 +171,18 @@ export function FindingsTable({
               {isOpen && (
                 <div className="space-y-3 bg-slate-50 px-5 pb-5 pt-1">
                   <p className="text-sm text-slate-600">{f.description}</p>
-                  {f.entityRef && (
+                  {f.impact?.entities && f.impact.entities.length > 0 ? (
+                    <div className="text-xs text-slate-500">
+                      <p className="mb-1 font-medium text-slate-600">Affected groups</p>
+                      <ul className="list-inside list-disc space-y-0.5">
+                        {f.impact.entities.map((name, i) => (
+                          <li key={`${i}-${name}`}>{name}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : f.entityRef ? (
                     <p className="text-xs text-slate-500">Affected: {f.entityRef}</p>
-                  )}
+                  ) : null}
                   <RemediationPanel
                     findingId={f.id}
                     templateRemediation={f.remediation}

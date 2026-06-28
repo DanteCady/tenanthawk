@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { signIn, signUp } from "@/lib/auth-client";
+import { signIn, signUp, VERIFY_CALLBACK } from "@/lib/auth-client";
 
 const inputClass =
   "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/25";
@@ -27,18 +27,37 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     setError("");
     setLoading(true);
 
-    const { error } = isSignup
-      ? await signUp.email({ name: name || email.split("@")[0], email, password })
-      : await signIn.email({ email, password });
+    const result = isSignup
+      ? await signUp.email({
+          name: name || email.split("@")[0],
+          email,
+          password,
+          callbackURL: VERIFY_CALLBACK,
+        })
+      : await signIn.email({
+          email,
+          password,
+          callbackURL: redirect ?? VERIFY_CALLBACK,
+        });
 
     setLoading(false);
 
-    if (error) {
-      setError(error.message ?? "Something went wrong. Please try again.");
+    if (result.error) {
+      const message = result.error.message ?? "Something went wrong. Please try again.";
+      if (message.toLowerCase().includes("email") && message.toLowerCase().includes("verif")) {
+        router.push(`/check-email?email=${encodeURIComponent(email)}`);
+        return;
+      }
+      setError(message);
       return;
     }
 
-    router.push(redirect ?? (isSignup ? "/onboarding" : "/dashboard"));
+    if (isSignup) {
+      router.push(`/check-email?email=${encodeURIComponent(email)}`);
+      return;
+    }
+
+    router.push(redirect ?? "/dashboard");
     router.refresh();
   }
 

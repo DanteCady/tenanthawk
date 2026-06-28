@@ -26,7 +26,7 @@ export function formatNextScanLabel(from = new Date()): string {
   const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
   if (hours >= 24) {
-    return next.toLocaleString(undefined, {
+    return next.toLocaleString("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",

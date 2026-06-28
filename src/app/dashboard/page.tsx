@@ -24,8 +24,10 @@ import { ScanHistory } from "@/components/app/ScanHistory";
 import { MonitoringStatus } from "@/components/app/MonitoringStatus";
 import { FindingsTable, type FindingDTO } from "@/components/app/FindingsTable";
 import { CATEGORY_META } from "@/components/app/categories";
+import { CategoryInfoButton } from "@/components/app/CategoryInfoButton";
 import { GradeBadge } from "@/components/app/GradeBadge";
 import { timeAgo } from "@/lib/time";
+import { formatUsd } from "@/lib/format";
 
 const CATEGORY_STYLE: Record<
   string,
@@ -118,7 +120,7 @@ export default async function DashboardPage() {
     {
       icon: PiggyBank,
       label: "Recoverable / mo",
-      value: `$${summary.usd.toLocaleString()}`,
+      value: `$${formatUsd(summary.usd)}`,
     },
   ];
 
@@ -194,7 +196,7 @@ export default async function DashboardPage() {
           return (
             <div
               key={c.category}
-              className="surface-card flex items-center justify-between gap-3 p-4"
+              className="surface-card flex items-center justify-between gap-4 p-4"
             >
               <div className="flex min-w-0 items-center gap-3">
                 <div
@@ -212,7 +214,10 @@ export default async function DashboardPage() {
                   </p>
                 </div>
               </div>
-              <GradeBadge letter={c.grade} size="md" />
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                <CategoryInfoButton category={c.category} />
+                <GradeBadge letter={c.grade} size="md" />
+              </div>
             </div>
           );
         })}

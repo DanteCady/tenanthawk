@@ -5,6 +5,7 @@ import { ScoreRing } from "@/components/app/ScoreRing";
 import { UpgradeButton } from "@/components/app/UpgradeButton";
 import { GradeBadge } from "@/components/app/GradeBadge";
 import { CATEGORY_META } from "@/components/app/categories";
+import { CategoryInfoButton } from "@/components/app/CategoryInfoButton";
 import type { ScanSummary } from "@/lib/summary";
 
 const CATEGORY_CHIP: Record<string, string> = {
@@ -80,8 +81,12 @@ export function ResultsStep({
                 return (
                   <div
                     key={c.category}
-                    className="rounded-xl border border-slate-200/80 bg-slate-50/80 p-3"
+                    className="relative rounded-xl border border-slate-200/80 bg-slate-50/80 p-3"
                   >
+                    <CategoryInfoButton
+                      category={c.category}
+                      className="absolute right-2 top-1"
+                    />
                     <div className="flex items-center justify-between gap-2">
                       <span
                         className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ${chip}`}

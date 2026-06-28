@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/session";
 import { getPrimaryConnection, getLatestScan, getFindings } from "@/lib/queries";
 import { getPlan } from "@/lib/entitlements";
 import { summarize, type FindingRow } from "@/lib/summary";
 import { isLiveConfigured } from "@/lib/scan/graph";
+import { requireVerifiedSession } from "@/lib/session";
 import { ConnectStep } from "@/components/onboarding/ConnectStep";
 import { ResultsStep } from "@/components/onboarding/ResultsStep";
 
@@ -22,8 +22,7 @@ export default async function OnboardingPage({
 }: {
   searchParams: Promise<{ connect?: string }>;
 }) {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const session = await requireVerifiedSession();
 
   const conn = await getPrimaryConnection(session.user.id);
   const scan = conn ? await getLatestScan(conn.id) : undefined;

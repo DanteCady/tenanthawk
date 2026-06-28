@@ -6,7 +6,7 @@ export default function SignupPage() {
   return (
     <AuthShell
       title="Start your free scan"
-      subtitle="Create an account, connect a tenant, and see your health score in minutes."
+      subtitle="Create an account, enter the verification code from your email, then connect a tenant."
     >
       <Suspense>
         <AuthForm mode="signup" />

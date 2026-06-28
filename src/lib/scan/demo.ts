@@ -113,7 +113,14 @@ export function getDemoFindings(): FindingDraft[] {
       severity: "low",
       title: "34 empty groups",
       description: "34 groups have no members and appear unused.",
-      impact: { count: 34 },
+      impact: {
+        count: 34,
+        entities: [
+          "Legacy-Project-Alpha",
+          "Temp-Onboarding-2023",
+          "SharePoint-Archive-RO",
+        ],
+      },
       remediation: "Review and delete unused groups in Entra → Groups.",
     },
     {

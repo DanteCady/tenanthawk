@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Loader2, RefreshCw } from "lucide-react";
 import { useState } from "react";
+import { toast } from "@/store/toast";
 
 export function RescanButton() {
   const router = useRouter();
@@ -10,9 +11,19 @@ export function RescanButton() {
 
   async function rescan() {
     setLoading(true);
-    await fetch("/api/scan", { method: "POST" });
-    router.refresh();
-    setLoading(false);
+    try {
+      const res = await fetch("/api/scan", { method: "POST" });
+      if (!res.ok) {
+        toast.error("Scan failed. Check your tenant connection and try again.");
+        return;
+      }
+      toast.success("Scan complete. Dashboard updated.");
+      router.refresh();
+    } catch {
+      toast.error("Could not reach the server. Try again in a moment.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

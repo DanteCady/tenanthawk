@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import type { FindingTrackingStatus } from "@/db/types";
+import { toast } from "@/store/toast";
 
 export function FindingActions({
   checkId,
@@ -25,7 +26,16 @@ export function FindingActions({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ checkId, entityRef, action, snoozeDays }),
       });
-      if (res.ok) onUpdated();
+      if (res.ok) {
+        if (action === "resolve") toast.success("Finding marked resolved.");
+        else if (action === "snooze") toast.success("Finding snoozed for 7 days.");
+        else toast.info("Finding reopened.");
+        onUpdated();
+      } else {
+        toast.error("Could not update finding status.");
+      }
+    } catch {
+      toast.error("Could not reach the server.");
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,4 @@
+import { copyrightLine } from "@/lib/brand";
 import { Logo } from "./Logo";
 
 export function Footer() {
@@ -10,9 +11,7 @@ export function Footer() {
             The hawk-eye view of your Microsoft 365 &amp; Azure tenant.
           </p>
         </div>
-        <p className="text-xs text-slate-400">
-          © {new Date().getFullYear()} Tenant Hawk. Not affiliated with Microsoft.
-        </p>
+        <p className="text-xs text-slate-400">{copyrightLine()}</p>
       </div>
     </footer>
   );

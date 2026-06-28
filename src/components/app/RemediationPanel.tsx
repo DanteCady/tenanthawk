@@ -3,6 +3,19 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Loader2, Sparkles, Wrench } from "lucide-react";
 import type { RemediationEnriched } from "@/lib/remediation/types";
+import { isAiRemediation } from "@/lib/remediation/display";
+
+function TemplateRemediation({ text, error }: { text: string; error?: string | null }) {
+  return (
+    <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3">
+      <Wrench className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
+      <div>
+        {error && <p className="mb-1 text-xs text-amber-700">{error}</p>}
+        <p className="text-sm text-slate-800">{text}</p>
+      </div>
+    </div>
+  );
+}
 
 export function RemediationPanel({
   findingId,
@@ -13,14 +26,19 @@ export function RemediationPanel({
   templateRemediation: string;
   initialEnriched?: RemediationEnriched | null;
 }) {
+  const [mounted, setMounted] = useState(false);
   const [enriched, setEnriched] = useState<RemediationEnriched | null>(
     initialEnriched ?? null,
   );
-  const [loading, setLoading] = useState(!initialEnriched);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (initialEnriched) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || initialEnriched) return;
 
     let cancelled = false;
 
@@ -53,7 +71,11 @@ export function RemediationPanel({
     return () => {
       cancelled = true;
     };
-  }, [findingId, initialEnriched]);
+  }, [findingId, initialEnriched, mounted]);
+
+  if (!mounted) {
+    return <TemplateRemediation text={templateRemediation} />;
+  }
 
   if (loading) {
     return (
@@ -65,15 +87,11 @@ export function RemediationPanel({
   }
 
   if (error || !enriched) {
-    return (
-      <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3">
-        <Wrench className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-        <div>
-          {error && <p className="mb-1 text-xs text-amber-700">{error}</p>}
-          <p className="text-sm text-slate-800">{templateRemediation}</p>
-        </div>
-      </div>
-    );
+    return <TemplateRemediation text={templateRemediation} error={error} />;
+  }
+
+  if (!isAiRemediation(enriched.model)) {
+    return <TemplateRemediation text={enriched.steps[0] ?? templateRemediation} />;
   }
 
   return (

@@ -12,6 +12,7 @@ export type FindingImpact = {
   count?: number;
   expiresAt?: string;
   daysUntil?: number;
+  entities?: string[];
 } | null;
 
 export type FindingTrackingStatus = "resolved" | "snoozed";
