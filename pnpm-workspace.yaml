@@ -1,11 +1,6 @@
-# Transitive optional peers of @better-auth/cli — we use Postgres (pg), not sqlite/prisma.
+packages:
+  - "."
 allowBuilds:
-  '@prisma/client': false
-  better-sqlite3: false
-  core-js: true
-  sharp: true
-  unrs-resolver: true
-onlyBuiltDependencies:
-  - core-js
-  - sharp
-  - unrs-resolver
+  core-js: set this to true or false
+  sharp: set this to true or false
+  unrs-resolver: set this to true or false
