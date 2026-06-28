@@ -1,28 +1,29 @@
-import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { WhyTenantHawk } from "@/components/WhyTenantHawk";
+import { faqPageSchema } from "@/lib/seo/schemas";
+import { buildPageMetadata } from "@/lib/seo/site";
+import { WHY_FAQ } from "@/lib/seo/why-faq";
 
-export const metadata: Metadata = {
-  title: "Why Tenant Hawk | vs Microsoft native tools",
+export const metadata = buildPageMetadata({
+  title: "Why Tenant Hawk vs Secure Score, Admin Center & Defender",
   description:
-    "How Tenant Hawk differs from M365 Admin Center, Secure Score, and Defender: one health score, prioritized fixes, license waste, and read-only tenant scans in minutes.",
-  openGraph: {
-    title: "Why Tenant Hawk",
-    description:
-      "Microsoft gives you dashboards. Tenant Hawk gives you one score and a prioritized fix list.",
-    type: "website",
-  },
-};
+    "Compare Tenant Hawk to Microsoft Secure Score, M365 Admin Center, and Defender. One tenant health score, license waste ranked by dollars, expiring secrets, and read-only scans in minutes.",
+  path: "/why",
+});
 
 export default function WhyPage() {
   return (
-    <div className="min-h-screen bg-white text-slate-900">
-      <Navbar />
-      <main className="flex-1">
-        <WhyTenantHawk />
-      </main>
-      <Footer />
-    </div>
+    <>
+      <JsonLd data={faqPageSchema(WHY_FAQ)} />
+      <div className="min-h-screen bg-white text-slate-900">
+        <Navbar />
+        <main className="flex-1">
+          <WhyTenantHawk />
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 }

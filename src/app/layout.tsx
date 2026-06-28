@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
+import { rootMetadata } from "@/lib/seo/site";
 import "./themes.css";
 import "./globals.css";
 
@@ -14,27 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Tenant Hawk | The hawk-eye view of your Microsoft 365 & Azure tenant",
-  description:
-    "Tenant Hawk continuously scans Microsoft 365, Entra, and Azure for security gaps, wasted license spend, expiring secrets, and hygiene issues. Get one health score you can actually fix.",
-  keywords: [
-    "Microsoft 365",
-    "Entra",
-    "Azure",
-    "tenant security",
-    "license optimization",
-    "expiring secrets",
-    "MSP",
-    "M365 admin",
-  ],
-  openGraph: {
-    title: "Tenant Hawk | Microsoft 365 & Azure tenant health, at a glance",
-    description:
-      "One health score for security, cost, reliability, and hygiene across your M365 and Azure tenants.",
-    type: "website",
-  },
-};
+export const metadata = rootMetadata;
 
 export default function RootLayout({
   children,

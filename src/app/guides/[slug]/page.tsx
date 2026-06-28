@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { GuideSection, GuideShell } from "@/components/guides/GuideShell";
 import { GUIDES, GUIDE_BY_SLUG } from "@/lib/guides/content";
-import { getSiteUrl } from "@/lib/guides/site-url";
+import { articleSchema } from "@/lib/seo/schemas";
+import { buildPageMetadata } from "@/lib/seo/site";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -15,19 +17,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const guide = GUIDE_BY_SLUG[slug];
   if (!guide) return {};
 
-  const url = `${getSiteUrl()}/guides/${guide.slug}`;
-
-  return {
-    title: `${guide.title} — Tenant Hawk`,
+  return buildPageMetadata({
+    title: guide.title,
     description: guide.description,
-    openGraph: {
-      title: guide.title,
-      description: guide.description,
-      type: "article",
-      url,
-    },
-    alternates: { canonical: url },
-  };
+    path: `/guides/${guide.slug}`,
+    type: "article",
+  });
 }
 
 export default async function GuidePage({ params }: Props) {
@@ -35,21 +30,14 @@ export default async function GuidePage({ params }: Props) {
   const guide = GUIDE_BY_SLUG[slug];
   if (!guide) notFound();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: guide.title,
-    description: guide.description,
-    author: { "@type": "Organization", name: "Tenant Hawk" },
-    publisher: { "@type": "Organization", name: "Tenant Hawk" },
-    mainEntityOfPage: `${getSiteUrl()}/guides/${guide.slug}`,
-  };
-
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <JsonLd
+        data={articleSchema({
+          title: guide.title,
+          description: guide.description,
+          path: `/guides/${guide.slug}`,
+        })}
       />
       <GuideShell guide={guide}>
         {guide.sections.map((section) => (

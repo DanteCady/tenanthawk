@@ -1,22 +1,17 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { buildPageMetadata } from "@/lib/seo/site";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { GuideCard } from "@/components/guides/GuideCard";
 import { GuideCta } from "@/components/guides/GuideCta";
 import { GUIDES } from "@/lib/guides/content";
 
-export const metadata: Metadata = {
-  title: "Guides — Microsoft 365 tenant health & security",
+export const metadata = buildPageMetadata({
+  title: "Microsoft 365 tenant health guides for admins & MSPs",
   description:
-    "Evergreen guides for M365 admins and MSPs: tenant health checklists, security misconfigurations, license waste, expiring secrets, hygiene, and audit prep.",
-  openGraph: {
-    title: "Tenant Hawk Guides — M365 tenant health resources",
-    description:
-      "Practical guides for Microsoft 365 tenant security, cost optimization, reliability, and hygiene.",
-    type: "website",
-  },
-};
+    "Free evergreen guides: M365 tenant health checklists, security misconfigurations, license waste, expiring app secrets, hygiene cleanup, and audit prep — then automate the checks with Tenant Hawk.",
+  path: "/guides",
+});
 
 export default function GuidesIndexPage() {
   return (
