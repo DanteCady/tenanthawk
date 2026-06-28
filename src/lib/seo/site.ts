@@ -10,6 +10,17 @@ export const DEFAULT_TITLE =
 export const DEFAULT_DESCRIPTION =
   "Tenant Hawk scans Microsoft 365, Entra ID, and Azure for security gaps, wasted license spend, expiring secrets, and hygiene drift. One health score, prioritized fixes, and recoverable dollars — built for M365 admins, MSPs, and IT leaders.";
 
+export const OG_IMAGE_ALT =
+  "Tenant Hawk — Microsoft 365 and Azure tenant health scanner for admins and MSPs";
+
+export const OG_IMAGE = {
+  url: "/opengraph-image",
+  width: 1200,
+  height: 630,
+  alt: OG_IMAGE_ALT,
+  type: "image/png" as const,
+};
+
 /** Keywords aligned with how admins search for tenant health tools. */
 export const TARGET_KEYWORDS = [
   "Microsoft 365 tenant health",
@@ -45,6 +56,17 @@ export const rootMetadata: Metadata = {
   creator: SITE_NAME,
   publisher: COMPANY_LEGAL_NAME,
   applicationName: SITE_NAME,
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [
+      {
+        url: "/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
+  manifest: "/manifest.webmanifest",
   category: "technology",
   robots: {
     index: true,
@@ -63,11 +85,13 @@ export const rootMetadata: Metadata = {
     title: DEFAULT_TITLE,
     description: DEFAULT_DESCRIPTION,
     url: getSiteUrl(),
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: DEFAULT_TITLE,
     description: DEFAULT_DESCRIPTION,
+    images: [OG_IMAGE.url],
   },
   other: {
     "contact:email": SUPPORT_EMAIL,
@@ -105,11 +129,13 @@ export function buildPageMetadata({
       url,
       siteName: SITE_NAME,
       locale: "en_US",
+      images: [OG_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [OG_IMAGE.url],
     },
   };
 }
