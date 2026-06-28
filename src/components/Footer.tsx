@@ -1,5 +1,9 @@
+import Link from "next/link";
 import { copyrightLine } from "@/lib/brand";
 import { ThemeLogo } from "@/components/theme/ThemeLogo";
+
+const footerLinkClass =
+  "text-[var(--th-text-faint)] hover:text-[var(--th-text-muted)]";
 
 export function Footer() {
   return (
@@ -11,18 +15,18 @@ export function Footer() {
             The hawk-eye view of your Microsoft 365 &amp; Azure tenant.
           </p>
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
-            <a href="/why" className="text-[var(--th-text-faint)] hover:text-[var(--th-text-muted)]">
+            <Link href="/why" className={footerLinkClass}>
               Why Tenant Hawk
-            </a>
-            <a href="/guides" className="text-[var(--th-text-faint)] hover:text-[var(--th-text-muted)]">
+            </Link>
+            <Link href="/guides" className={footerLinkClass}>
               Guides
-            </a>
-            <a href="/privacy" className="text-[var(--th-text-faint)] hover:text-[var(--th-text-muted)]">
+            </Link>
+            <Link href="/privacy" className={footerLinkClass}>
               Privacy
-            </a>
-            <a href="/terms" className="text-[var(--th-text-faint)] hover:text-[var(--th-text-muted)]">
+            </Link>
+            <Link href="/terms" className={footerLinkClass}>
               Terms
-            </a>
+            </Link>
           </div>
         </div>
         <p className="text-xs text-[var(--th-text-faint)]">{copyrightLine()}</p>

@@ -282,13 +282,14 @@ function PieTrendChart({
       ? scores.map((s) => s.value)
       : scores.map(() => 25);
 
-  let angle = 0;
-  const slices = scores.map((s, i) => {
-    const sweep = (weights[i] / weights.reduce((a, b) => a + b, 0)) * 360;
-    const start = angle;
-    angle += sweep;
-    return { ...s, start, end: angle };
-  });
+  const weightSum = weights.reduce((a, b) => a + b, 0);
+  const slices = scores.reduce<
+    Array<{ cat: (typeof scores)[number]["cat"]; value: number; start: number; end: number }>
+  >((acc, s, i) => {
+    const sweep = (weights[i] / weightSum) * 360;
+    const start = acc.length ? acc[acc.length - 1].end : 0;
+    return [...acc, { ...s, start, end: start + sweep }];
+  }, []);
 
   return (
     <svg
