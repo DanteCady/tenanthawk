@@ -27,7 +27,7 @@ export function PlatformAdminUsers({ users }: { users: Row[] }) {
       setError(result.error.message ?? "Impersonation failed.");
       return;
     }
-    window.location.href = buildApexAppUrl("/dashboard");
+    window.location.assign(buildApexAppUrl("/dashboard"));
   }
 
   return (
