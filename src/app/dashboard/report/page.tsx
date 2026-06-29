@@ -10,6 +10,7 @@ import {
 import { summarize } from "@/lib/summary";
 import { PrintableReport } from "@/components/app/PrintableReport";
 import { PrintReportButton } from "@/components/app/PrintReportButton";
+import { connectionLabel } from "@/lib/connection/label";
 import { buildReportCustomer } from "@/lib/export/report-customer";
 
 export default async function ReportPage() {
@@ -24,10 +25,7 @@ export default async function ReportPage() {
 
   const findings = await getFindings(scan.id);
   const summary = summarize(findings, scan.category_scores);
-  const tenant =
-    conn.tenant_domain ??
-    conn.display_name ??
-    (conn.mode === "demo" ? "Contoso (demo)" : "Microsoft 365");
+  const tenant = connectionLabel(conn);
 
   return (
     <div className="mx-auto max-w-[816px] print:max-w-none">

@@ -2,14 +2,14 @@
 
 Tenant Hawk scopes scan data by **`connection`** (one Microsoft 365 tenant per row). The MSP console adds an **active client context** so operators with many connections can switch tenants without re-onboarding.
 
-## Two workspace layers
+## Two layers (don't confuse them)
 
 | Layer | Model | Switching |
 |-------|--------|-----------|
-| **MSP workspace** | Better Auth organization (Phase 6) | Org switcher — staff, billing |
-| **Client tenant** | `connection` row | Workspaces page + active connection cookie |
+| **MSP organization** | Better Auth organization (Phase 6) | Org switcher — staff, billing |
+| **Client tenant** | `connection` row | Clients page + active connection cookie |
 
-Phases 1–3 implement **client tenant switching** only.
+Phases 1–3 implement **client tenant switching** only. In the UI we say **client**, not workspace.
 
 ## Active connection resolution
 
@@ -32,15 +32,17 @@ Switch API: `POST /api/connection/switch` with `{ "connectionId": "..." }` — s
 | Route | Purpose |
 |-------|---------|
 | `/dashboard` | MSP roll-up overview — avg score, totals, clients needing attention |
-| `/dashboard/workspaces` | Workspace picker — switch and open client tenants |
+| `/dashboard/clients` | Client list — switch, open, rescan, scorecards |
+| `/dashboard/workspaces` | Legacy redirect → `/dashboard/clients` |
+| `/dashboard/client?connection=` | Single-client health overview |
 | `/dashboard/client/scorecard?connection=` | Per-client scorecard — top findings, grades, share link |
 | `/onboarding?mode=add-client` | Connect another tenant without solo onboarding flow |
-| `/dashboard?connection=<id>` | Deep link to a client overview |
 
 ## UI guards
 
-- **Tenant switcher** — removed; use **Workspaces** page to switch
-- **Workspaces nav** — shown when `connections.length > 1`
+- **Tenant switcher** — removed; use **Clients** page to switch
+- **Clients nav** — shown when `connections.length > 1`
+- **Context bar** — on findings/roadmap/reports: “Client: {name} · Switch client”
 
 Solo users with one connection see no MSP chrome.
 
@@ -56,15 +58,15 @@ pnpm seed:msp
 |---|---|
 | **Email** | `msp@tenanthawk.app` |
 | **Password** | `TenantHawk!MSP1` |
-| **Plan** | Pro (dev subscription) |
+| **Plan** | Enterprise (`msp` dev subscription) |
 | **Clients** | Contoso Holdings, Fabrikam Legal, Northwind Traders (demo) |
-| **Portfolio** | `/dashboard/workspaces` |
+| **Portfolio** | `/dashboard/clients` |
 
 Override with `SEED_MSP_EMAIL` / `SEED_MSP_PASSWORD`. Idempotent — safe to re-run.
 
-## Manual MSP entitlement (Phase 4+)
+## Enterprise entitlement (Phase 4)
 
-`Plan = "free" | "pro" | "msp"` — early design partners via dev plan API or env allowlist until Stripe org billing (Phase 7).
+`Plan = "free" | "pro" | "msp"` — `msp` is the Enterprise / MSP tier (multi-tenant console). Early design partners via dev subscription or env allowlist until Stripe org billing (Phase 7).
 
 ## Better Auth (Phase 6+)
 

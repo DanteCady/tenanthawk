@@ -608,6 +608,16 @@ html[data-theme="hawk"] .light-grid {
   color: var(--th-brand-text);
 }
 
+.badge-enterprise {
+  border-radius: 9999px;
+  background-color: color-mix(in srgb, #7c3aed 12%, var(--th-surface));
+  border: 1px solid color-mix(in srgb, #7c3aed 28%, var(--th-border));
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #5b21b6;
+}
+
 .badge-free {
   border-radius: 9999px;
   background-color: var(--th-muted-bg);

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import type { RemediationEnriched } from "@/lib/remediation/types";
 import type { FindingDTO } from "@/components/app/FindingsTable";
 import { getSession } from "@/lib/session";
-import { getPlan } from "@/lib/entitlements";
+import { getPlan, hasProFeatures } from "@/lib/entitlements";
 import {
   getActiveConnection,
   getLatestScan,
@@ -36,7 +36,7 @@ export async function getDashboardSnapshot() {
 
   const findings = await getFindings(scan.id);
   const plan = await getPlan(session.user.id);
-  const isPro = plan === "pro";
+  const isPro = hasProFeatures(plan);
   const statuses = isPro ? await getFindingStatuses(conn.id) : new Map();
 
   const activeFindings = findings.filter((f) => {

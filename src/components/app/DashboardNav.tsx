@@ -7,80 +7,53 @@ import {
   ClipboardList,
   FileOutput,
   LayoutDashboard,
-  LayoutGrid,
   Route,
   Settings,
   Shield,
   CreditCard,
 } from "lucide-react";
 
-type NavItem = {
-  href: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  exact?: boolean;
-  pro?: boolean;
-  msp?: boolean;
-  workspace?: boolean;
-};
-
-function buildNav(workspaceHref?: string | null): NavItem[] {
-  const items: NavItem[] = [
-    { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
-    { href: "/dashboard/workspaces", label: "Workspaces", icon: Building2, msp: true },
-  ];
-
-  if (workspaceHref) {
-    items.push({
-      href: workspaceHref,
-      label: "Workspace",
-      icon: LayoutGrid,
-      workspace: true,
-    });
-  }
-
-  items.push(
-    { href: "/dashboard/findings", label: "Findings", icon: ClipboardList },
-    { href: "/dashboard/roadmap", label: "Roadmap", icon: Route, pro: true },
-    { href: "/dashboard/compliance", label: "Compliance", icon: Shield, pro: true },
-    { href: "/dashboard/reports", label: "Reports", icon: FileOutput, pro: true },
-    { href: "/dashboard/settings", label: "Settings", icon: Settings },
-    { href: "/dashboard/billing", label: "Billing", icon: CreditCard },
-  );
-
-  return items;
-}
+const NAV = [
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
+  { href: "/dashboard/clients", label: "Clients", icon: Building2, msp: true },
+  { href: "/dashboard/findings", label: "Findings", icon: ClipboardList },
+  { href: "/dashboard/roadmap", label: "Roadmap", icon: Route, pro: true },
+  { href: "/dashboard/compliance", label: "Compliance", icon: Shield, pro: true },
+  { href: "/dashboard/reports", label: "Reports", icon: FileOutput, pro: true },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard/billing", label: "Billing", icon: CreditCard },
+] as const;
 
 export function DashboardNav({
   isPro,
-  showWorkspaces = false,
-  workspaceHref,
+  showClients = false,
 }: {
   isPro: boolean;
-  showWorkspaces?: boolean;
-  workspaceHref?: string | null;
+  showClients?: boolean;
 }) {
   const pathname = usePathname();
-  const nav = buildNav(showWorkspaces ? workspaceHref : null);
 
-  function isActive(item: NavItem) {
-    if (item.workspace) return pathname.startsWith("/dashboard/client");
-    if (item.exact) return pathname === item.href;
-    return pathname === item.href || pathname.startsWith(`${item.href}/`);
+  function isActive(href: string, exact?: boolean) {
+    if (href === "/dashboard" && exact) {
+      return pathname === "/dashboard";
+    }
+    if (exact) return pathname === href;
+    return pathname === href || pathname.startsWith(`${href}/`);
   }
 
-  const items = nav.filter((item) => !item.msp || showWorkspaces);
+  const items = NAV.filter((item) => !("msp" in item && item.msp) || showClients);
 
   return (
     <>
       <nav className="hidden w-52 shrink-0 lg:block" aria-label="Dashboard">
         <ul className="sticky top-20 space-y-0.5">
           {items.map((item) => {
-            const locked = item.pro && !isPro;
-            const active = !locked && isActive(item);
+            const locked = "pro" in item && item.pro && !isPro;
+            const active =
+              !locked && isActive(item.href, "exact" in item ? item.exact : false);
             const Icon = item.icon;
             return (
-              <li key={item.href + item.label}>
+              <li key={item.href}>
                 <Link
                   href={locked ? "/dashboard/billing" : item.href}
                   className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
@@ -110,11 +83,12 @@ export function DashboardNav({
         aria-label="Dashboard"
       >
         {items.map((item) => {
-          const locked = item.pro && !isPro;
-          const active = !locked && isActive(item);
+          const locked = "pro" in item && item.pro && !isPro;
+          const active =
+            !locked && isActive(item.href, "exact" in item ? item.exact : false);
           return (
             <Link
-              key={item.href + item.label}
+              key={item.href}
               href={locked ? "/dashboard/billing" : item.href}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                 active ? "nav-pill-active" : "nav-pill"

@@ -49,7 +49,17 @@ export default async function BillingPage() {
           <PlanBadge plan={plan} />
         </div>
 
-        {plan === "pro" ? (
+        {plan === "msp" ? (
+          <div className="mt-6">
+            <p className="text-slate-700">
+              You&apos;re on <span className="font-semibold text-violet-700">Enterprise</span> —
+              multi-tenant console, Pro features, and portfolio roll-ups are unlocked.
+            </p>
+            <p className="mt-2 text-sm text-slate-500">
+              Contact support for seat changes or billing questions.
+            </p>
+          </div>
+        ) : plan === "pro" ? (
           <div className="mt-6">
             <p className="text-slate-700">
               You&apos;re on <span className="font-semibold text-blue-700">Pro</span> —

@@ -5,7 +5,7 @@ import { Loader2, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/store/toast";
 
-export function WorkspaceRescanButton({
+export function ClientRescanButton({
   connectionId,
   compact = false,
 }: {
@@ -24,7 +24,7 @@ export function WorkspaceRescanButton({
         body: JSON.stringify({ connectionId }),
       });
       if (!switched.ok) {
-        toast.error("Could not select workspace for scan.");
+        toast.error("Could not select client for scan.");
         return;
       }
 

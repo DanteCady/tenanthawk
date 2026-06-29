@@ -35,7 +35,7 @@ export function DisconnectTenantButton({
 
     setOpen(false);
     toast.success(`${label} disconnected. Scan history for this client was removed.`);
-    router.push("/dashboard/workspaces");
+    router.push("/dashboard/clients");
     router.refresh();
   }
 

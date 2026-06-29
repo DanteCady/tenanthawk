@@ -33,7 +33,7 @@ export function rateLimitKey(userId: string, action: string): string {
   return `${action}:${userId}`;
 }
 
-export type PlanTier = "free" | "pro";
+export type PlanTier = "free" | "pro" | "msp";
 
 export const RATE_LIMITS = {
   /** Manual re-scan from dashboard */
@@ -50,5 +50,5 @@ export function limitForPlan(
   spec: { free: number; pro: number; windowMs: number },
   plan: PlanTier,
 ): { max: number; windowMs: number } {
-  return { max: plan === "pro" ? spec.pro : spec.free, windowMs: spec.windowMs };
+  return { max: plan === "free" ? spec.free : spec.pro, windowMs: spec.windowMs };
 }

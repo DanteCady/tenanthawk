@@ -90,14 +90,14 @@ async function ensureUser(pool) {
   return userId;
 }
 
-async function ensurePro(pool, userId) {
+async function ensureEnterprisePlan(pool, userId) {
   await pool.query(`DELETE FROM subscription WHERE "referenceId" = $1`, [userId]);
   await pool.query(
     `INSERT INTO subscription (id, plan, "referenceId", status, "stripeCustomerId", "stripeSubscriptionId")
-     VALUES ($1, 'pro', $2, 'active', 'dev_customer_msp', 'dev_sub_msp')`,
+     VALUES ($1, 'msp', $2, 'active', 'dev_customer_msp', 'dev_sub_msp')`,
     [randomUUID(), userId],
   );
-  console.log("✓ Granted Pro (full access)");
+  console.log("✓ Granted Enterprise (msp) plan");
 }
 
 async function ensureConnection(pool, userId, client) {
@@ -169,7 +169,7 @@ async function main() {
   const pool = new pg.Pool({ connectionString: DATABASE_URL });
   try {
     const userId = await ensureUser(pool);
-    await ensurePro(pool, userId);
+    await ensureEnterprisePlan(pool, userId);
 
     for (const client of CLIENTS) {
       const connectionId = await ensureConnection(pool, userId, client);
@@ -197,8 +197,8 @@ async function main() {
     console.log(`  URL:       ${base}/login`);
     console.log(`  Email:     ${USER.email}`);
     console.log(`  Password:  ${USER.password}`);
-    console.log(`  Clients:   ${CLIENTS.length} demo tenants`);
-    console.log(`  Workspaces: ${base}/dashboard/workspaces`);
+    console.log(`  Plan:      Enterprise (msp)`);
+    console.log(`  Portfolio: ${base}/dashboard/clients`);
     console.log("────────────────────────────────\n");
   } finally {
     await pool.end();

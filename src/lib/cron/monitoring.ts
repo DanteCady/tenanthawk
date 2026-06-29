@@ -11,6 +11,7 @@ import { getFindings, getPreviousScan } from "@/lib/queries";
 import { summarize } from "@/lib/summary";
 import { diffScans } from "@/lib/scan/drift";
 import { runScan } from "@/lib/scan/runScan";
+import { connectionLabel } from "@/lib/connection/label";
 
 function toDriftKeys(
   findings: Awaited<ReturnType<typeof getFindings>>,
@@ -28,11 +29,7 @@ function tenantLabel(conn: {
   display_name: string | null;
   mode: "live" | "demo";
 }) {
-  return (
-    conn.tenant_domain ??
-    conn.display_name ??
-    (conn.mode === "demo" ? "Contoso (demo)" : "Microsoft 365")
-  );
+  return connectionLabel(conn);
 }
 
 async function getUserEmail(userId: string) {

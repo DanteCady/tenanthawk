@@ -227,7 +227,7 @@ export function ConnectStep({
         setDemoError("Demo scan failed. Check that the server and database are running.");
         return;
       }
-      router.push(addClientMode ? "/dashboard/workspaces" : "/onboarding");
+      router.push(addClientMode ? "/dashboard/clients" : "/onboarding");
       router.refresh();
     } catch {
       setScanning(false);

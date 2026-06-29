@@ -4,10 +4,11 @@ import {
   getLatestScan,
   getFindings,
 } from "@/lib/queries";
-import { getPlan } from "@/lib/entitlements";
+import { getPlan, hasProFeatures } from "@/lib/entitlements";
 import { summarize, type FindingRow } from "@/lib/summary";
 import { isLiveConfigured } from "@/lib/scan/graph";
 import { requireVerifiedSession } from "@/lib/session";
+import { connectionLabel } from "@/lib/connection/label";
 import { ConnectStep } from "@/components/onboarding/ConnectStep";
 import { ResultsStep } from "@/components/onboarding/ResultsStep";
 
@@ -55,7 +56,7 @@ export default async function OnboardingPage({
   }
 
   const plan = await getPlan(session.user.id);
-  if (plan === "pro") redirect("/dashboard");
+  if (hasProFeatures(plan)) redirect("/dashboard");
 
   const findings = (await getFindings(scan.id)) as FindingRow[];
   const summary = summarize(findings, scan.category_scores);
@@ -64,7 +65,7 @@ export default async function OnboardingPage({
     <ResultsStep
       summary={summary}
       score={scan.score ?? 0}
-      tenant={conn.tenant_domain ?? conn.display_name ?? "your tenant"}
+      tenant={connectionLabel(conn)}
     />
   );
 }

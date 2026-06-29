@@ -32,15 +32,15 @@ export function MspOverviewDashboard({
             MSP overview
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            Roll-up across {overview.clientCount} workspaces — open a workspace for tenant detail.
+            Roll-up across {overview.clientCount} clients — open one for tenant detail.
           </p>
         </div>
         <Link
-          href="/dashboard/workspaces"
+          href="/dashboard/clients"
           className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
         >
           <Building2 className="h-4 w-4" />
-          All workspaces
+          All clients
         </Link>
       </div>
 
@@ -55,10 +55,10 @@ export function MspOverviewDashboard({
           )}
           <div>
             <p className="text-sm font-medium text-slate-900">Avg. health score</p>
-            <p className="text-xs text-slate-500">Across scanned workspaces</p>
+            <p className="text-xs text-slate-500">Across scanned clients</p>
           </div>
         </div>
-        <StatCard label="Workspaces" value={String(overview.clientCount)} />
+        <StatCard label="Clients" value={String(overview.clientCount)} />
         <StatCard label="Open high findings" value={String(overview.totalOpenHigh)} />
         <StatCard
           label="Recoverable / mo"
@@ -88,10 +88,10 @@ export function MspOverviewDashboard({
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-semibold text-slate-900">Needs attention</h2>
             <Link
-              href="/dashboard/workspaces"
+              href="/dashboard/clients"
               className="text-sm font-medium text-blue-700 hover:text-blue-800"
             >
-              Manage workspaces
+              View all clients
             </Link>
           </div>
           <div className="grid gap-3">
@@ -102,15 +102,15 @@ export function MspOverviewDashboard({
         </section>
       ) : (
         <div className="surface-card border border-emerald-200/80 bg-emerald-50/40 px-5 py-4 text-sm text-emerald-900">
-          All workspaces look healthy — no stale scans or urgent findings flagged.
+          All clients look healthy — no stale scans or urgent findings flagged.
         </div>
       )}
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">All workspaces</h2>
+        <h2 className="text-lg font-semibold text-slate-900">All clients</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {overview.portfolio.map((client) => (
-            <WorkspaceMiniCard key={client.id} client={client} />
+            <ClientMiniCard key={client.id} client={client} />
           ))}
         </div>
       </section>
@@ -147,12 +147,12 @@ function AttentionRow({ client }: { client: ClientPortfolioRow }) {
           {client.stale ? " · stale scan" : ""}
         </p>
       </div>
-      <OpenWorkspaceButton connectionId={client.id} label="Open" compact />
+      <OpenClientButton connectionId={client.id} label="Open" compact />
     </div>
   );
 }
 
-function WorkspaceMiniCard({ client }: { client: ClientPortfolioRow }) {
+function ClientMiniCard({ client }: { client: ClientPortfolioRow }) {
   return (
     <div className="surface-card flex flex-col gap-3 p-4">
       <div className="flex items-start justify-between gap-2">
@@ -172,7 +172,7 @@ function WorkspaceMiniCard({ client }: { client: ClientPortfolioRow }) {
           ${formatUsd(client.recoverableUsd)}/mo
         </span>
       </div>
-      <OpenWorkspaceButton connectionId={client.id} label="Open workspace" />
+      <OpenClientButton connectionId={client.id} label="Open client" />
       {client.score != null ? (
         <Link
           href={`/dashboard/client/scorecard?connection=${client.id}`}
@@ -185,7 +185,7 @@ function WorkspaceMiniCard({ client }: { client: ClientPortfolioRow }) {
   );
 }
 
-export function OpenWorkspaceButton({
+export function OpenClientButton({
   connectionId,
   label,
   compact,

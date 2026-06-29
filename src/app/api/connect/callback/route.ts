@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
 
   const redirectPath =
     returnTo === "clients"
-      ? `/dashboard/workspaces?connection=${conn.id}`
+      ? `/dashboard/clients?connection=${conn.id}`
       : "/onboarding";
 
   const res = NextResponse.redirect(new URL(redirectPath, req.url));

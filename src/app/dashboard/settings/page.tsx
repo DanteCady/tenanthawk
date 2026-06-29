@@ -11,7 +11,7 @@ import {
   User,
 } from "lucide-react";
 import { getSession } from "@/lib/session";
-import { getPlan } from "@/lib/entitlements";
+import { getPlan, hasProFeatures } from "@/lib/entitlements";
 import { getActiveConnection, getConnections } from "@/lib/queries";
 import { connectionLabel } from "@/lib/connection/label";
 import { PlanBadge } from "@/components/app/PlanBadge";
@@ -78,7 +78,7 @@ export default async function SettingsPage() {
   if (!session) redirect("/login");
 
   const plan = await getPlan(session.user.id);
-  const isPro = plan === "pro";
+  const isPro = hasProFeatures(plan);
   const alertPrefs = await getAlertPreferences(session.user.id);
   const connections = await getConnections(session.user.id);
   const activeConn = await getActiveConnection(session.user.id);
@@ -216,11 +216,11 @@ export default async function SettingsPage() {
               </Link>
               {connections.length > 1 ? (
                 <Link
-                  href="/dashboard/workspaces"
+                  href="/dashboard/clients"
                   className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
                 >
                   <Building2 className="h-4 w-4" />
-                  All workspaces
+                  All clients
                 </Link>
               ) : null}
             </div>

@@ -1,4 +1,5 @@
 import type { CategoryScores } from "@/db/types";
+import { connectionLabel } from "@/lib/connection/label";
 import { buildReportCustomer } from "@/lib/export/report-customer";
 import type { ExportFinding, ExportMeta } from "@/lib/export/types";
 import { summarize } from "@/lib/summary";
@@ -33,11 +34,7 @@ interface FindingLike {
 }
 
 export function exportTenantLabel(conn: ConnectionLike): string {
-  return (
-    conn.tenant_domain ??
-    conn.display_name ??
-    (conn.mode === "demo" ? "Contoso (demo)" : "Tenant")
-  );
+  return connectionLabel(conn);
 }
 
 export function exportFilenameSlug(tenant: string): string {

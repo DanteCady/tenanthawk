@@ -36,7 +36,7 @@ export default async function ClientScorecardPage() {
             className="mb-3 inline-flex items-center gap-2 text-sm text-slate-600 transition-colors hover:text-slate-900"
           >
             <ArrowLeft className="h-4 w-4" />
-            Workspace overview
+            Client overview
           </Link>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Client scorecard
@@ -123,7 +123,7 @@ export default async function ClientScorecardPage() {
           </div>
           <p className="mb-4 text-sm text-slate-600">
             Create a read-only link for QBRs and client updates. Links are scoped to this
-            workspace.
+            client.
           </p>
           <ShareReportPanel />
         </section>

@@ -115,7 +115,7 @@ export async function ClientOverviewDashboard() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Workspace overview
+            Client overview
           </h1>
           <p className="text-sm text-slate-600">
             {tenantLabel}

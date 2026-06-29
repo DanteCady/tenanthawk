@@ -6,6 +6,7 @@ import { getActiveShareByToken } from "@/lib/report-share";
 import { getLatestScan, getFindings } from "@/lib/queries";
 import { db } from "@/db";
 import { summarize } from "@/lib/summary";
+import { connectionLabel } from "@/lib/connection/label";
 import { buildReportCustomer } from "@/lib/export/report-customer";
 import { buildCompliancePosture } from "@/lib/compliance/posture";
 import { getFindingStatuses, isFindingHidden } from "@/lib/findings/status";
@@ -53,10 +54,7 @@ export default async function SharedReportPage({
     })),
   );
 
-  const tenant =
-    conn.tenant_domain ??
-    conn.display_name ??
-    (conn.mode === "demo" ? "Contoso (demo)" : "Microsoft 365");
+  const tenant = connectionLabel(conn);
 
   return (
     <div className="light-surface min-h-screen py-8 print:py-0">
