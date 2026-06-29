@@ -8,6 +8,17 @@ function normalizePlan(raw: string | null | undefined): Plan {
   return "free";
 }
 
+/** Internal IT — single-organization paid plan (per tenant). */
+export function isProPlan(plan: Plan): boolean {
+  return plan === "pro";
+}
+
+/** MSPs & consultants — multi-tenant paid plan. Not an add-on to Pro. */
+export function isEnterprisePlan(plan: Plan): boolean {
+  return plan === "msp";
+}
+
+/** Unlocks paid scan features (Pro or Enterprise). Internal gating only. */
 export function hasProFeatures(plan: Plan): boolean {
   return plan === "pro" || plan === "msp";
 }

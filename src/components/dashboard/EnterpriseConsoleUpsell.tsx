@@ -1,16 +1,10 @@
 import Link from "next/link";
 import { Building2, Check, Mail } from "lucide-react";
-
-const FEATURES = [
-  "Multi-tenant portfolio roll-up",
-  "Clients list with switch & rescan",
-  "Per-client scorecards for QBRs",
-  "White-label ready exports (coming soon)",
-] as const;
+import { ENTERPRISE_CONSOLE_FEATURES } from "@/lib/billing/plan-features";
 
 export function EnterpriseConsoleUpsell({
   title = "Enterprise multi-tenant console",
-  description = "Manage every client tenant from one dashboard — portfolio health, scorecards, and switching without re-onboarding.",
+  description = "MSPs and consultants use Enterprise — not Pro — to manage client tenants from one dashboard.",
   compact = false,
 }: {
   title?: string;
@@ -57,14 +51,14 @@ export function EnterpriseConsoleUpsell({
               : "btn-primary inline-flex items-center gap-2 shadow-none hover:shadow-md"
           }
         >
-          {compact ? "Upgrade" : "View Enterprise options"}
+          {compact ? "View Enterprise" : "View Enterprise options"}
         </Link>
       </div>
 
       {!compact ? (
         <>
           <ul className="space-y-2.5">
-            {FEATURES.map((feature) => (
+            {ENTERPRISE_CONSOLE_FEATURES.map((feature) => (
               <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-700">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
                 {feature}
@@ -78,14 +72,15 @@ export function EnterpriseConsoleUpsell({
               Design partner access
             </p>
             <p className="mt-1">
-              Enterprise billing is rolling out soon. Contact{" "}
+              Pro is for a single internal IT team. Enterprise billing is rolling out soon —
+              contact{" "}
               <a
                 href="mailto:support@tenanthawk.io?subject=Enterprise%20console"
                 className="font-medium text-violet-700 hover:text-violet-800"
               >
                 support@tenanthawk.io
               </a>{" "}
-              for early access, or run{" "}
+              for MSP access, or run{" "}
               <code className="rounded bg-white px-1 py-0.5 text-xs">pnpm seed:msp</code>{" "}
               locally.
             </p>

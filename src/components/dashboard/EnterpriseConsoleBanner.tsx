@@ -4,8 +4,8 @@ export function EnterpriseConsoleBanner() {
   return (
     <EnterpriseConsoleUpsell
       compact
-      title="You have multiple tenants — unlock the Enterprise console"
-      description="Portfolio roll-ups, client switching, and scorecards require an Enterprise plan."
+      title="MSPs use Enterprise — not Pro"
+      description="Pro is for one internal IT team. Add client tenants and the multi-tenant console with an Enterprise plan."
     />
   );
 }

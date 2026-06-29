@@ -5,12 +5,14 @@ import {
   getFindings,
 } from "@/lib/queries";
 import { getPlan, hasProFeatures } from "@/lib/entitlements";
+import { hasMspConsoleEntitlement } from "@/lib/entitlements/msp-console";
 import { summarize, type FindingRow } from "@/lib/summary";
 import { isLiveConfigured } from "@/lib/scan/graph";
 import { requireVerifiedSession } from "@/lib/session";
 import { connectionLabel } from "@/lib/connection/label";
 import { ConnectStep } from "@/components/onboarding/ConnectStep";
 import { ResultsStep } from "@/components/onboarding/ResultsStep";
+import { EnterpriseConsoleUpsell } from "@/components/dashboard/EnterpriseConsoleUpsell";
 
 const CONNECT_ERRORS: Record<string, string> = {
   denied: "Consent was cancelled or denied. Please try again.",
@@ -33,6 +35,18 @@ export default async function OnboardingPage({
   const addClientMode = mode === "add-client";
 
   if (addClientMode) {
+    const entitled = await hasMspConsoleEntitlement(
+      session.user.id,
+      session.user.email,
+    );
+    if (!entitled) {
+      return (
+        <EnterpriseConsoleUpsell
+          title="Add client tenants with Enterprise"
+          description="Pro is for a single internal IT team. MSPs and consultants need Enterprise — not Pro — to connect and manage client tenants."
+        />
+      );
+    }
     return (
       <ConnectStep
         liveConfigured={isLiveConfigured()}

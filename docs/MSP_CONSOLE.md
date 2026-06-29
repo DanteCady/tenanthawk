@@ -38,13 +38,23 @@ Switch API: `POST /api/connection/switch` with `{ "connectionId": "..." }` — s
 | `/dashboard/client/scorecard?connection=` | Per-client scorecard — top findings, grades, share link |
 | `/onboarding?mode=add-client` | Connect another tenant without solo onboarding flow |
 
+## Plans (who buys what)
+
+| Buyer | Plan | Billing |
+|-------|------|---------|
+| Internal IT admin | Free or **Pro** | Per tenant |
+| MSP / consultant | **Enterprise only** | Volume pricing — never Pro |
+
+Enterprise is a **standalone** plan for MSPs. It is not “Pro plus multi-tenant.” Pro users who need a client portfolio should move to Enterprise.
+
 ## UI guards
 
 - **Tenant switcher** — removed; use **Clients** page to switch
 - **Clients nav + context bar** — Enterprise (`msp` plan) with 2+ connections
 - **Portfolio roll-up** on `/dashboard` — same gate as clients nav
 - **Scorecards** — Enterprise only
-- Pro users with multiple tenants keep per-tenant Pro access; switching via Settings
+- **Add client** (`/onboarding?mode=add-client`) — Enterprise only
+- Pro remains for single internal-tenant IT teams only
 
 Solo users with one connection see no MSP chrome.
 
@@ -57,7 +67,7 @@ Access to the multi-tenant console requires **`msp` plan** (shown as **Enterpris
 | `hasMspConsoleEntitlement()` | `src/lib/entitlements/msp-console.ts` |
 | `getMspConsoleAccess()` | Combines entitlement + connection count → `showConsole` |
 
-Dev plan cycling (no Stripe): Billing → Dev tools toggles Free → Pro → Enterprise.
+Dev plan cycling (no Stripe): Billing → Dev tools toggles Free → Pro (IT) → Enterprise (MSP).
 
 Until Stripe org billing (Phase 7), grant Enterprise via `pnpm seed:msp`, `/api/dev/plan { "plan": "msp" }`, or the allowlist.
 

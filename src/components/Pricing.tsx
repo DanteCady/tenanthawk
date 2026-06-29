@@ -44,14 +44,14 @@ const tiers = [
     highlight: true,
   },
   {
-    name: "MSP",
+    name: "Enterprise",
     price: "Custom",
     cadence: "volume pricing",
-    blurb: "Manage every client tenant from one console.",
+    blurb: "For MSPs and consultants — not Pro. Manage every client tenant from one console.",
     features: [
-      "Unlimited tenants",
+      "Full platform on every client tenant",
+      "Unlimited client tenants",
       "Multi-tenant console & roll-ups",
-      "White-label reports",
       "Per-client scorecards",
       "Priority support",
     ],

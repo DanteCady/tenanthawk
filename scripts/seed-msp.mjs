@@ -1,4 +1,4 @@
-// Seed an MSP-style demo user: Pro plan + 3 demo client tenants with scans.
+// Seed an MSP-style demo user: Enterprise plan + 3 demo client tenants with scans.
 // Run: pnpm seed:msp  (or node --experimental-strip-types --env-file=.env scripts/seed-msp.mjs)
 
 import { randomUUID } from "crypto";

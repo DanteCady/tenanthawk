@@ -38,7 +38,7 @@ export function DevPlanToggle({ plan }: { plan: Plan }) {
     <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
       <p className="flex items-center gap-2 text-xs font-medium text-slate-600">
         <FlaskConical className="h-3.5 w-3.5" />
-        Dev tools — simulate plan without Stripe
+        Dev tools — simulate Free, Pro (internal IT), or Enterprise (MSP)
       </p>
       <button
         onClick={toggle}

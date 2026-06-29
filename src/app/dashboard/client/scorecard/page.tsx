@@ -22,7 +22,7 @@ export default async function ClientScorecardPage() {
     return (
       <EnterpriseConsoleUpsell
         title="Client scorecards"
-        description="Shareable per-client scorecards with top findings and grades are included on Enterprise."
+        description="Shareable per-client scorecards with top findings and grades are included on Enterprise — not on Pro."
       />
     );
   }
