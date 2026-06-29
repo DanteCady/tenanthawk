@@ -1,0 +1,321 @@
+{
+  "name": "Tenant Hawk — Post-Scan Lifecycle",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tenanthawk-scan-completed",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-560, 320],
+      "webhookId": "tenanthawk-scan-completed"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "sig",
+              "leftValue": "={{ $json.headers['x-th-signature'] }}",
+              "rightValue": "REPLACE_WITH_SHARED_SECRET",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "verify-secret",
+      "name": "Verify secret",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [-360, 320]
+    },
+    {
+      "parameters": {},
+      "id": "rejected",
+      "name": "Rejected (bad secret)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [-160, 560]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "free",
+              "leftValue": "={{ $json.body.plan }}",
+              "rightValue": "pro",
+              "operator": { "type": "string", "operation": "notEquals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "is-free",
+      "name": "Is free plan?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [-160, 320]
+    },
+    {
+      "parameters": {},
+      "id": "skip-paid",
+      "name": "Skip (already paid)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [40, 560]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "msp",
+              "leftValue": "={{ $json.body.isLikelyMsp }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "is-msp",
+      "name": "Is likely MSP?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [40, 320]
+    },
+
+    {
+      "parameters": {
+        "fromEmail": "Tenant Hawk <hello@tenanthawk.io>",
+        "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
+        "subject": "=Your tenant scored {{ $('Webhook').item.json.body.scan.score }}/100",
+        "emailFormat": "text",
+        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nYour scan is done. Tenant Hawk gave {{ $('Webhook').item.json.body.tenant.name }} a health score of {{ $('Webhook').item.json.body.scan.score }}/100, with {{ $('Webhook').item.json.body.scan.severityHighCount }} high-severity issues.\n\nThe biggest one right now: {{ $('Webhook').item.json.body.scan.topFinding }}.\n\nUnlock the full report to see every finding, the severity, the dollar impact and step-by-step remediation:\nhttps://tenanthawk.io/dashboard/report\n\nFounding users lock 25% off for life with code EARLYBIRD26.\n\n— Tenant Hawk",
+        "options": {}
+      },
+      "id": "send-a1",
+      "name": "A1 — Your score",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [260, 200],
+      "credentials": { "smtp": { "id": "REPLACE_SMTP_CRED_ID", "name": "Tenant Hawk Marketing SMTP" } }
+    },
+    {
+      "parameters": { "amount": 1, "unit": "days" },
+      "id": "wait-a1",
+      "name": "Wait 1 day",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [460, 200],
+      "webhookId": "wait-a1"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Tenant Hawk <hello@tenanthawk.io>",
+        "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
+        "subject": "=You're paying ~${{ $('Webhook').item.json.body.scan.licenseWasteMonthly }}/mo for licenses nobody uses",
+        "emailFormat": "text",
+        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nYour scan flagged about ${{ $('Webhook').item.json.body.scan.licenseWasteMonthly }}/month in unused or never-signed-in licenses. That's money you can recover — usually more than the cost of fixing everything else combined.\n\nThe full report shows exactly which accounts and how to reclaim them:\nhttps://tenanthawk.io/dashboard/report\n\n— Tenant Hawk",
+        "options": {}
+      },
+      "id": "send-a2",
+      "name": "A2 — The money angle",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [660, 200],
+      "credentials": { "smtp": { "id": "REPLACE_SMTP_CRED_ID", "name": "Tenant Hawk Marketing SMTP" } }
+    },
+    {
+      "parameters": { "amount": 2, "unit": "days" },
+      "id": "wait-a2",
+      "name": "Wait 2 days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [860, 200],
+      "webhookId": "wait-a2"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Tenant Hawk <hello@tenanthawk.io>",
+        "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
+        "subject": "={{ $('Webhook').item.json.body.scan.expiringSoonCount }} things in your tenant are about to expire",
+        "emailFormat": "text",
+        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nApp secrets, SSO signing certs and domains don't fail gracefully — they take an integration or sign-in down with no warning. Your scan found {{ $('Webhook').item.json.body.scan.expiringSoonCount }} expiring soon.\n\nSee each one, the days remaining, and how to rotate it before it fires:\nhttps://tenanthawk.io/dashboard/report\n\n— Tenant Hawk",
+        "options": {}
+      },
+      "id": "send-a3",
+      "name": "A3 — The time-bomb",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1060, 200],
+      "credentials": { "smtp": { "id": "REPLACE_SMTP_CRED_ID", "name": "Tenant Hawk Marketing SMTP" } }
+    },
+    {
+      "parameters": { "amount": 4, "unit": "days" },
+      "id": "wait-a3",
+      "name": "Wait 4 days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1260, 200],
+      "webhookId": "wait-a3"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Tenant Hawk <hello@tenanthawk.io>",
+        "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
+        "subject": "From \"where do I start?\" to a sorted to-do list",
+        "emailFormat": "text",
+        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nThe hardest part of M365 hygiene was never effort — it's that nothing's prioritized. Your full report sorts every finding by severity and impact, so you fix what matters first and can show exactly what you handled.\n\nhttps://tenanthawk.io/dashboard/report\n\n— Tenant Hawk",
+        "options": {}
+      },
+      "id": "send-a4",
+      "name": "A4 — Prioritized list",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1460, 200],
+      "credentials": { "smtp": { "id": "REPLACE_SMTP_CRED_ID", "name": "Tenant Hawk Marketing SMTP" } }
+    },
+    {
+      "parameters": { "amount": 7, "unit": "days" },
+      "id": "wait-a4",
+      "name": "Wait 7 days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1660, 200],
+      "webhookId": "wait-a4"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Tenant Hawk <hello@tenanthawk.io>",
+        "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
+        "subject": "Your founding rate (25% off for life)",
+        "emailFormat": "text",
+        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nQuick reminder: founding pricing — 25% off, locked for life with EARLYBIRD26 — is for early users. Once you've cleaned up {{ $('Webhook').item.json.body.tenant.name }} once, Tenant Hawk keeps watching it so the score doesn't quietly slide back.\n\nhttps://tenanthawk.io/dashboard/billing\n\n— Tenant Hawk",
+        "options": {}
+      },
+      "id": "send-a5",
+      "name": "A5 — Founding deadline",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1860, 200],
+      "credentials": { "smtp": { "id": "REPLACE_SMTP_CRED_ID", "name": "Tenant Hawk Marketing SMTP" } }
+    },
+
+    {
+      "parameters": {
+        "fromEmail": "Tenant Hawk <hello@tenanthawk.io>",
+        "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
+        "subject": "One score across every client tenant",
+        "emailFormat": "text",
+        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nYou ran a scan — here's the part built for people who manage many tenants: the MSP console rolls every client's score into one view, so you can open every QBR with a number that's trending up and a license-waste line you can bill against.\n\nWant me to set you up with the multi-tenant trial? Just reply.\n\nhttps://tenanthawk.io\n\n— Tenant Hawk",
+        "options": {}
+      },
+      "id": "send-b1",
+      "name": "B1 — MSP console",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [260, 440],
+      "credentials": { "smtp": { "id": "REPLACE_SMTP_CRED_ID", "name": "Tenant Hawk Marketing SMTP" } }
+    },
+    {
+      "parameters": { "amount": 4, "unit": "days" },
+      "id": "wait-b1",
+      "name": "Wait 4 days (MSP)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [460, 440],
+      "webhookId": "wait-b1"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Tenant Hawk <hello@tenanthawk.io>",
+        "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
+        "subject": "The QBR one-pager your clients will actually read",
+        "emailFormat": "text",
+        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nA scored, prioritized, dollar-quantified health page per client — read-only, no agents. It turns tenant hygiene into a recurring, visible deliverable (and a natural upsell into remediation projects).\n\nReply and I'll walk you through it on one of your real client tenants.\n\n— Tenant Hawk",
+        "options": {}
+      },
+      "id": "send-b2",
+      "name": "B2 — QBR one-pager",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [660, 440],
+      "credentials": { "smtp": { "id": "REPLACE_SMTP_CRED_ID", "name": "Tenant Hawk Marketing SMTP" } }
+    },
+    {
+      "parameters": { "amount": 6, "unit": "days" },
+      "id": "wait-b2",
+      "name": "Wait 6 days (MSP)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [860, 440],
+      "webhookId": "wait-b2"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Tenant Hawk <hello@tenanthawk.io>",
+        "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
+        "subject": "Founding MSP rate — 25% off for life",
+        "emailFormat": "text",
+        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nIf you roll Tenant Hawk across your book now, EARLYBIRD26 locks 25% off for life. Happy to do a 15-min walkthrough on one of your real client tenants — just reply with a time.\n\n— Tenant Hawk",
+        "options": {}
+      },
+      "id": "send-b3",
+      "name": "B3 — Founding MSP rate",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1060, 440],
+      "credentials": { "smtp": { "id": "REPLACE_SMTP_CRED_ID", "name": "Tenant Hawk Marketing SMTP" } }
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Verify secret", "type": "main", "index": 0 }]] },
+    "Verify secret": {
+      "main": [
+        [{ "node": "Is free plan?", "type": "main", "index": 0 }],
+        [{ "node": "Rejected (bad secret)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Is free plan?": {
+      "main": [
+        [{ "node": "Is likely MSP?", "type": "main", "index": 0 }],
+        [{ "node": "Skip (already paid)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Is likely MSP?": {
+      "main": [
+        [{ "node": "B1 — MSP console", "type": "main", "index": 0 }],
+        [{ "node": "A1 — Your score", "type": "main", "index": 0 }]
+      ]
+    },
+    "A1 — Your score": { "main": [[{ "node": "Wait 1 day", "type": "main", "index": 0 }]] },
+    "Wait 1 day": { "main": [[{ "node": "A2 — The money angle", "type": "main", "index": 0 }]] },
+    "A2 — The money angle": { "main": [[{ "node": "Wait 2 days", "type": "main", "index": 0 }]] },
+    "Wait 2 days": { "main": [[{ "node": "A3 — The time-bomb", "type": "main", "index": 0 }]] },
+    "A3 — The time-bomb": { "main": [[{ "node": "Wait 4 days", "type": "main", "index": 0 }]] },
+    "Wait 4 days": { "main": [[{ "node": "A4 — Prioritized list", "type": "main", "index": 0 }]] },
+    "A4 — Prioritized list": { "main": [[{ "node": "Wait 7 days", "type": "main", "index": 0 }]] },
+    "Wait 7 days": { "main": [[{ "node": "A5 — Founding deadline", "type": "main", "index": 0 }]] },
+    "B1 — MSP console": { "main": [[{ "node": "Wait 4 days (MSP)", "type": "main", "index": 0 }]] },
+    "Wait 4 days (MSP)": { "main": [[{ "node": "B2 — QBR one-pager", "type": "main", "index": 0 }]] },
+    "B2 — QBR one-pager": { "main": [[{ "node": "Wait 6 days (MSP)", "type": "main", "index": 0 }]] },
+    "Wait 6 days (MSP)": { "main": [[{ "node": "B3 — Founding MSP rate", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false,
+  "pinData": {}
+}
