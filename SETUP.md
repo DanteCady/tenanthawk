@@ -65,6 +65,14 @@ migration commands above. No code changes.
    Users enter the code on the billing page before checkout; it applies to monthly
    and annual Pro.
 
+7. **Enterprise (MSP) billing:** Create a separate Stripe Product for Enterprise.
+   - Monthly Price **$299/mo** → `STRIPE_PRICE_ENTERPRISE`
+   - Yearly Price **$2990/yr** (2 months free vs monthly) → `STRIPE_PRICE_ENTERPRISE_ANNUAL`
+   - Checkout: Billing page → Enterprise → `authClient.subscription.upgrade({ plan: "msp" })`
+   - Webhook writes `subscription.plan = "msp"` (shown as **Enterprise** in the UI)
+   - Starter includes **10 client tenants** (`ENTERPRISE_CLIENT_CAP`, default 10)
+   - Manage/cancel via the same Stripe customer portal as Pro
+
 ### Scheduled monitoring
 `vercel.json` documents the intended schedule: `/api/cron/scan` daily at 07:00 UTC,
 `/api/cron/digest` weekly. On non-Vercel hosts, add a crontab entry and call

@@ -26,6 +26,11 @@ export const auth = betterAuth({
             priceId: process.env.STRIPE_PRICE_PRO || "",
             annualDiscountPriceId: process.env.STRIPE_PRICE_PRO_ANNUAL || undefined,
           },
+          {
+            name: "msp",
+            priceId: process.env.STRIPE_PRICE_ENTERPRISE || "",
+            annualDiscountPriceId: process.env.STRIPE_PRICE_ENTERPRISE_ANNUAL || undefined,
+          },
         ],
       },
     }),

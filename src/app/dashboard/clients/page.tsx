@@ -5,6 +5,7 @@ import { requireVerifiedSession } from "@/lib/session";
 import { getActiveConnection } from "@/lib/queries";
 import { getClientPortfolio } from "@/lib/connection/portfolio";
 import { getMspConsoleAccess } from "@/lib/entitlements/msp-console";
+import { getEnterpriseClientLimit } from "@/lib/billing/enterprise-limits";
 import { connectionLabel } from "@/lib/connection/label";
 import { ScoreRing } from "@/components/app/ScoreRing";
 import { timeAgo } from "@/lib/time";
@@ -16,6 +17,7 @@ import { EnterpriseConsoleUpsell } from "@/components/dashboard/EnterpriseConsol
 export default async function ClientsPage() {
   const session = await requireVerifiedSession();
   const mspAccess = await getMspConsoleAccess(session.user.id, session.user.email);
+  const clientLimit = await getEnterpriseClientLimit(session.user.id, session.user.email);
 
   if (!mspAccess.entitled) {
     return <EnterpriseConsoleUpsell />;
@@ -37,17 +39,30 @@ export default async function ClientsPage() {
             Clients
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            Each client is a connected Microsoft 365 tenant. Open one to view findings,
-            roadmap, and reports.
+            Each client is a connected Microsoft 365 tenant. {clientLimit.count} of{" "}
+            {clientLimit.cap} included on your plan.
           </p>
         </div>
-        <Link
-          href="/onboarding?mode=add-client"
-          className="btn-primary inline-flex items-center gap-2 text-sm shadow-none hover:shadow-md"
-        >
-          <Plus className="h-4 w-4" />
-          Add client
-        </Link>
+        {clientLimit.canAdd ? (
+          <Link
+            href="/onboarding?mode=add-client"
+            className="btn-primary inline-flex items-center gap-2 text-sm shadow-none hover:shadow-md"
+          >
+            <Plus className="h-4 w-4" />
+            Add client
+          </Link>
+        ) : (
+          <p className="text-sm text-amber-800">
+            Plan limit reached —{" "}
+            <a
+              href="mailto:support@tenanthawk.io?subject=Enterprise%20volume%20pricing"
+              className="font-medium text-violet-700 hover:text-violet-800"
+            >
+              contact support
+            </a>{" "}
+            for more clients.
+          </p>
+        )}
       </div>
 
       <div className="grid gap-4">

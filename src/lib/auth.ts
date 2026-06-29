@@ -21,6 +21,7 @@ const stripeClient = new Stripe(
 );
 
 export const PRO_PLAN = "pro";
+export const ENTERPRISE_PLAN = "msp";
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -70,6 +71,11 @@ export const auth = betterAuth({
             name: PRO_PLAN,
             priceId: process.env.STRIPE_PRICE_PRO || "",
             annualDiscountPriceId: process.env.STRIPE_PRICE_PRO_ANNUAL || undefined,
+          },
+          {
+            name: ENTERPRISE_PLAN,
+            priceId: process.env.STRIPE_PRICE_ENTERPRISE || "",
+            annualDiscountPriceId: process.env.STRIPE_PRICE_ENTERPRISE_ANNUAL || undefined,
           },
         ],
         async getCheckoutSessionParams(_data, _request, ctx) {

@@ -40,13 +40,13 @@ async function getUserEmail(userId: string) {
     .executeTakeFirst();
 }
 
-export async function getProActiveConnections() {
+export async function getPaidActiveConnections() {
   return db
     .selectFrom("connection")
     .innerJoin("subscription", "subscription.referenceId", "connection.user_id")
     .selectAll("connection")
     .where("connection.status", "=", "active")
-    .where("subscription.plan", "=", "pro")
+    .where("subscription.plan", "in", ["pro", "msp"])
     .where((eb) =>
       eb.or([
         eb("subscription.status", "=", "active"),
@@ -60,7 +60,7 @@ export async function runScheduledScans(): Promise<{
   scanned: number;
   alerted: number;
 }> {
-  const conns = await getProActiveConnections();
+  const conns = await getPaidActiveConnections();
   let scanned = 0;
   let alerted = 0;
 
@@ -144,7 +144,7 @@ export async function runScheduledScans(): Promise<{
 }
 
 export async function sendWeeklyDigests(): Promise<{ sent: number }> {
-  const conns = await getProActiveConnections();
+  const conns = await getPaidActiveConnections();
   let sent = 0;
 
   for (const conn of conns) {

@@ -69,7 +69,17 @@ Access to the multi-tenant console requires **`msp` plan** (shown as **Enterpris
 
 Dev plan cycling (no Stripe): Billing → Dev tools toggles Free → Pro (IT) → Enterprise (MSP).
 
-Until Stripe org billing (Phase 7), grant Enterprise via `pnpm seed:msp`, `/api/dev/plan { "plan": "msp" }`, or the allowlist.
+Until Stripe is configured, grant Enterprise via `pnpm seed:msp`, `/api/dev/plan { "plan": "msp" }`, or the allowlist.
+
+### Stripe Enterprise (Phase 7a)
+
+| Env | Purpose |
+|-----|---------|
+| `STRIPE_PRICE_ENTERPRISE` | Enterprise Starter monthly ($299/mo) |
+| `STRIPE_PRICE_ENTERPRISE_ANNUAL` | Enterprise Starter annual ($2990/yr) |
+| `ENTERPRISE_CLIENT_CAP` | Included client tenants (default **10**) |
+
+Self-serve checkout and Stripe customer portal work like Pro. Better Auth plan name is **`msp`**; UI shows **Enterprise**.
 
 ## Local MSP test user
 

@@ -72,8 +72,11 @@ export function EnterpriseConsoleUpsell({
               Design partner access
             </p>
             <p className="mt-1">
-              Pro is for a single internal IT team. Enterprise billing is rolling out soon —
-              contact{" "}
+              Pro is for a single internal IT team. Subscribe on the{" "}
+              <Link href="/dashboard/billing?upgrade=enterprise" className="font-medium text-violet-700 hover:text-violet-800">
+                billing page
+              </Link>{" "}
+              when Stripe is configured, contact{" "}
               <a
                 href="mailto:support@tenanthawk.io?subject=Enterprise%20console"
                 className="font-medium text-violet-700 hover:text-violet-800"

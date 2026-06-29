@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { Reveal } from "./Reveal";
 import {
+  ENTERPRISE_ANNUAL_USD,
+  ENTERPRISE_CLIENT_CAP_DEFAULT,
+  ENTERPRISE_MONTHLY_USD,
   PRO_ANNUAL_MONTHLY_EQUIV,
   PRO_ANNUAL_SAVINGS_PERCENT,
   PRO_ANNUAL_SAVINGS_USD,
@@ -45,12 +48,10 @@ const tiers = [
   },
   {
     name: "Enterprise",
-    price: "Custom",
-    cadence: "volume pricing",
     blurb: "For MSPs and consultants — not Pro. Manage every client tenant from one console.",
     features: [
       "Full platform on every client tenant",
-      "Unlimited client tenants",
+      "Up to 10 client tenants (Starter)",
       "Multi-tenant console & roll-ups",
       "Per-client scorecards",
       "Priority support",
@@ -119,26 +120,33 @@ export function Pricing() {
         <div className="mt-10 grid items-stretch gap-6 lg:grid-cols-3">
           {tiers.map((t, i) => {
             const isPro = t.name === "Pro";
+            const isEnterprise = t.name === "Enterprise";
             const price = isPro
               ? annual
                 ? `$${formatUsd(PRO_ANNUAL_USD)}`
                 : `$${PRO_MONTHLY_USD}`
-              : "price" in t
-                ? t.price
-                : "";
+              : isEnterprise
+                ? `$${ENTERPRISE_MONTHLY_USD}`
+                : "price" in t
+                  ? t.price
+                  : "";
             const cadence = isPro
               ? annual
                 ? "/ tenant / yr"
                 : "/tenant / mo"
-              : "cadence" in t
-                ? t.cadence
-                : "";
+              : isEnterprise
+                ? `/mo · ${ENTERPRISE_CLIENT_CAP_DEFAULT} clients`
+                : "cadence" in t
+                  ? t.cadence
+                  : "";
             const annualNote =
               isPro && !annual
                 ? `$${formatUsd(PRO_ANNUAL_USD)}/yr (save ${PRO_ANNUAL_SAVINGS_PERCENT}%)`
                 : isPro && annual
                   ? `$${PRO_ANNUAL_MONTHLY_EQUIV}/mo equivalent · save $${formatUsd(PRO_ANNUAL_SAVINGS_USD)}/yr`
-                  : null;
+                  : isEnterprise
+                    ? `$${formatUsd(ENTERPRISE_ANNUAL_USD)}/yr annual · contact for 10+ client tiers`
+                    : null;
 
             return (
               <Reveal key={t.name} delay={i * 0.08} className="h-full">

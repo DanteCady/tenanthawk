@@ -1,9 +1,10 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Check } from "lucide-react";
 import { getSession } from "@/lib/session";
 import { getPlan, isEnterprisePlan, isProPlan, type Plan } from "@/lib/entitlements";
+import { getEnterpriseClientLimit } from "@/lib/billing/enterprise-limits";
 import { ProUpgradeOptions } from "@/components/app/UpgradeButton";
+import { EnterpriseUpgradeOptions } from "@/components/app/EnterpriseUpgradeButton";
 import { ManageBillingButton } from "@/components/app/ManageBillingButton";
 import { DevPlanToggle } from "@/components/app/DevPlanToggle";
 import { PlanBadge } from "@/components/app/PlanBadge";
@@ -12,7 +13,13 @@ import {
   PRO_PLAN_FEATURES,
 } from "@/lib/billing/plan-features";
 import {
+  ENTERPRISE_ANNUAL_USD,
+  ENTERPRISE_MONTHLY_USD,
+  getEnterpriseClientCap,
   isAnnualBillingConfigured,
+  isEnterpriseAnnualBillingConfigured,
+  isEnterpriseBillingConfigured,
+  isStripeBillingConfigured,
   PRO_ANNUAL_USD,
   PRO_MONTHLY_USD,
 } from "@/lib/billing/pricing";
@@ -20,7 +27,7 @@ import { formatUsd } from "@/lib/format";
 
 function billingSubtitle(plan: Plan) {
   if (isEnterprisePlan(plan)) {
-    return "Enterprise is volume-priced for MSPs and consultants — not per-tenant Pro.";
+    return "Enterprise Starter — flat monthly platform fee for MSPs and consultants.";
   }
   if (isProPlan(plan)) {
     return "Pro is for internal IT teams — billed per connected tenant.";
@@ -38,9 +45,14 @@ export default async function BillingPage({
 
   const { upgrade } = await searchParams;
   const plan = await getPlan(session.user.id);
+  const clientLimit = await getEnterpriseClientLimit(session.user.id, session.user.email);
+  const clientCap = getEnterpriseClientCap();
   const showEnterprisePitch =
     upgrade === "enterprise" || (isProPlan(plan) && !isEnterprisePlan(plan));
-  const annualAvailable = isAnnualBillingConfigured();
+  const proAnnualAvailable = isAnnualBillingConfigured();
+  const enterpriseAnnualAvailable = isEnterpriseAnnualBillingConfigured();
+  const enterpriseCheckoutAvailable = isEnterpriseBillingConfigured();
+  const stripeConfigured = isStripeBillingConfigured();
   const devMode =
     process.env.NODE_ENV !== "production" && !process.env.STRIPE_SECRET_KEY;
 
@@ -64,6 +76,10 @@ export default async function BillingPage({
               the MSP and consultant plan with multi-tenant console, portfolio roll-ups, and
               client scorecards.
             </p>
+            <p className="text-sm text-slate-600">
+              {clientLimit.count} of {clientCap} client tenants connected
+              {clientLimit.atCap ? " · at plan limit" : ""}.
+            </p>
             <ul className="space-y-2">
               {ENTERPRISE_PLAN_FEATURES.map((feature) => (
                 <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-700">
@@ -72,9 +88,31 @@ export default async function BillingPage({
                 </li>
               ))}
             </ul>
-            <p className="text-sm text-slate-500">
-              Contact support for seat changes or billing questions.
-            </p>
+            {stripeConfigured ? (
+              <>
+                <p className="text-sm text-slate-500">
+                  Update payment method, switch billing interval, or cancel in the Stripe
+                  portal.
+                </p>
+                <ManageBillingButton />
+              </>
+            ) : (
+              <p className="text-sm text-slate-500">
+                Contact support for billing changes in this environment.
+              </p>
+            )}
+            {clientLimit.atCap ? (
+              <p className="text-sm text-amber-800">
+                Need more than {clientCap} clients?{" "}
+                <a
+                  href="mailto:support@tenanthawk.io?subject=Enterprise%20volume%20pricing"
+                  className="font-medium text-violet-700 hover:text-violet-800"
+                >
+                  Email support
+                </a>{" "}
+                for volume pricing.
+              </p>
+            ) : null}
           </div>
         ) : isProPlan(plan) ? (
           <div className="mt-6">
@@ -103,8 +141,8 @@ export default async function BillingPage({
                 </li>
               ))}
             </ul>
-            <ProUpgradeOptions annualAvailable={annualAvailable} />
-            {!annualAvailable && (
+            <ProUpgradeOptions annualAvailable={proAnnualAvailable} />
+            {!proAnnualAvailable && (
               <p className="text-xs text-slate-500">
                 Annual billing (${formatUsd(PRO_ANNUAL_USD)}/yr) appears once{" "}
                 <code className="rounded bg-slate-100 px-1">STRIPE_PRICE_PRO_ANNUAL</code>{" "}
@@ -117,8 +155,9 @@ export default async function BillingPage({
 
       {plan === "free" && (
         <p className="text-center text-xs text-slate-500">
-          Pro: ${PRO_MONTHLY_USD}/mo or ${formatUsd(PRO_ANNUAL_USD)}/yr per tenant · Enterprise:
-          custom volume pricing
+          Pro: ${PRO_MONTHLY_USD}/mo or ${formatUsd(PRO_ANNUAL_USD)}/yr per tenant · Enterprise
+          Starter: ${ENTERPRISE_MONTHLY_USD}/mo or ${formatUsd(ENTERPRISE_ANNUAL_USD)}/yr (
+          {clientCap} clients)
         </p>
       )}
 
@@ -131,9 +170,8 @@ export default async function BillingPage({
             <span className="badge-enterprise">MSPs &amp; consultants</span>
           </div>
           <p className="text-sm text-slate-600">
-            Enterprise is a separate plan for MSPs and consultants — not an upgrade from Pro.
-            Manage every client tenant from one console with portfolio health, scorecards, and
-            volume pricing.
+            Enterprise is a separate plan for MSPs and consultants — not Pro. Includes up to{" "}
+            {clientCap} client tenants, portfolio roll-ups, and scorecards.
           </p>
           <ul className="space-y-2">
             {ENTERPRISE_PLAN_FEATURES.map((feature) => (
@@ -143,16 +181,25 @@ export default async function BillingPage({
               </li>
             ))}
           </ul>
-          <p className="text-sm text-slate-600">
-            Enterprise billing is rolling out soon. Email{" "}
-            <a
-              href="mailto:support@tenanthawk.io?subject=Enterprise%20console"
-              className="font-medium text-violet-700 hover:text-violet-800"
-            >
-              support@tenanthawk.io
-            </a>{" "}
-            for design-partner access.
-          </p>
+          {enterpriseCheckoutAvailable ? (
+            <EnterpriseUpgradeOptions
+              annualAvailable={enterpriseAnnualAvailable}
+              clientCap={clientCap}
+            />
+          ) : (
+            <p className="text-sm text-slate-600">
+              Set{" "}
+              <code className="rounded bg-slate-100 px-1">STRIPE_PRICE_ENTERPRISE</code> to
+              enable self-serve checkout, or email{" "}
+              <a
+                href="mailto:support@tenanthawk.io?subject=Enterprise%20console"
+                className="font-medium text-violet-700 hover:text-violet-800"
+              >
+                support@tenanthawk.io
+              </a>{" "}
+              for access.
+            </p>
+          )}
         </div>
       ) : null}
     </div>

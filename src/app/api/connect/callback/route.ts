@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import { db } from "@/db";
 import { getSession } from "@/lib/session";
 import { runScan } from "@/lib/scan/runScan";
+import { getEnterpriseClientLimit } from "@/lib/billing/enterprise-limits";
 import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
 import { invalidateConnectionHealth } from "@/lib/connect/health";
 import {
@@ -51,6 +52,13 @@ export async function GET(req: NextRequest) {
     .executeTakeFirst();
 
   if (!conn) {
+    if (returnTo === "clients") {
+      const limit = await getEnterpriseClientLimit(userId, session.user.email);
+      if (!limit.canAdd) {
+        return fail(limit.atCap ? "client_cap" : "enterprise_required");
+      }
+    }
+
     const id = randomUUID();
     await db
       .insertInto("connection")

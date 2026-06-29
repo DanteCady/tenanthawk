@@ -12,11 +12,11 @@ export const PRO_PLAN_FEATURES = [
 ] as const;
 
 export const ENTERPRISE_PLAN_FEATURES = [
-  "Everything in Pro for every client tenant",
+  "Full platform on every client tenant",
   "Multi-tenant portfolio roll-up dashboard",
   "Clients console — switch, rescan, and open any tenant",
   "Per-client scorecards for QBRs and client updates",
-  "Unlimited client tenants (volume pricing)",
+  "Up to 10 client tenants on Starter (volume tiers available)",
   "Priority support",
 ] as const;
 

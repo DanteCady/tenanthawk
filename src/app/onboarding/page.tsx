@@ -5,7 +5,8 @@ import {
   getFindings,
 } from "@/lib/queries";
 import { getPlan, hasProFeatures } from "@/lib/entitlements";
-import { hasMspConsoleEntitlement } from "@/lib/entitlements/msp-console";
+import { getEnterpriseClientLimit } from "@/lib/billing/enterprise-limits";
+import { getEnterpriseClientCap } from "@/lib/billing/pricing";
 import { summarize, type FindingRow } from "@/lib/summary";
 import { isLiveConfigured } from "@/lib/scan/graph";
 import { requireVerifiedSession } from "@/lib/session";
@@ -22,6 +23,8 @@ const CONNECT_ERRORS: Record<string, string> = {
   rate_limit: "Too many connection attempts. Wait an hour and try again.",
   scan_failed:
     "We connected your tenant but the first scan failed. Try a demo scan or contact support.",
+  client_cap: `Your Enterprise plan includes up to ${getEnterpriseClientCap()} client tenants. Contact support for volume pricing.`,
+  enterprise_required: "Enterprise is required to add client tenants.",
   error: "Something went wrong connecting. Please try again.",
 };
 
@@ -35,11 +38,9 @@ export default async function OnboardingPage({
   const addClientMode = mode === "add-client";
 
   if (addClientMode) {
-    const entitled = await hasMspConsoleEntitlement(
-      session.user.id,
-      session.user.email,
-    );
-    if (!entitled) {
+    const limit = await getEnterpriseClientLimit(session.user.id, session.user.email);
+
+    if (!limit.canAdd && !limit.atCap) {
       return (
         <EnterpriseConsoleUpsell
           title="Add client tenants with Enterprise"
@@ -47,6 +48,16 @@ export default async function OnboardingPage({
         />
       );
     }
+
+    if (limit.atCap) {
+      return (
+        <EnterpriseConsoleUpsell
+          title="Client tenant limit reached"
+          description={`Your Enterprise Starter plan includes ${limit.cap} client tenants and you have ${limit.count} connected. Contact support for volume pricing.`}
+        />
+      );
+    }
+
     return (
       <ConnectStep
         liveConfigured={isLiveConfigured()}
