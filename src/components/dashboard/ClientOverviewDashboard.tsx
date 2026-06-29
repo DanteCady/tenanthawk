@@ -37,6 +37,7 @@ export async function ClientOverviewDashboard() {
     trend,
     isPro,
     tenantLabel,
+    mspAccess,
   } = await getDashboardSnapshot();
 
   let drift = null;
@@ -124,13 +125,15 @@ export async function ClientOverviewDashboard() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Link
-            href={`/dashboard/client/scorecard?connection=${conn.id}`}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
-          >
-            <FileText className="h-4 w-4" />
-            Scorecard
-          </Link>
+          {mspAccess.entitled ? (
+            <Link
+              href={`/dashboard/client/scorecard?connection=${conn.id}`}
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+            >
+              <FileText className="h-4 w-4" />
+              Scorecard
+            </Link>
+          ) : null}
           <ExportMenu isPro={isPro} />
           <RescanButton />
         </div>

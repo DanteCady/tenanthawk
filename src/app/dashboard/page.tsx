@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 import { requireVerifiedSession } from "@/lib/session";
-import { getConnections } from "@/lib/queries";
 import { getMspOverview } from "@/lib/connection/msp-overview";
+import { getMspConsoleAccess } from "@/lib/entitlements/msp-console";
 import { MspOverviewDashboard } from "@/components/dashboard/MspOverviewDashboard";
 import { ClientOverviewDashboard } from "@/components/dashboard/ClientOverviewDashboard";
+import { EnterpriseConsoleBanner } from "@/components/dashboard/EnterpriseConsoleBanner";
 
 export default async function DashboardPage({
   searchParams,
@@ -11,10 +12,10 @@ export default async function DashboardPage({
   searchParams: Promise<{ connection?: string }>;
 }) {
   const session = await requireVerifiedSession();
-  const connections = await getConnections(session.user.id);
+  const mspAccess = await getMspConsoleAccess(session.user.id, session.user.email);
   const { connection } = await searchParams;
 
-  if (connections.length > 1) {
+  if (mspAccess.showConsole) {
     if (connection) {
       redirect(`/dashboard/client?connection=${connection}`);
     }
@@ -22,5 +23,10 @@ export default async function DashboardPage({
     return <MspOverviewDashboard overview={overview} />;
   }
 
-  return <ClientOverviewDashboard />;
+  return (
+    <div className="space-y-5">
+      {mspAccess.multiTenant && !mspAccess.entitled ? <EnterpriseConsoleBanner /> : null}
+      <ClientOverviewDashboard />
+    </div>
+  );
 }

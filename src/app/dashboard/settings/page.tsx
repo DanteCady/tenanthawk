@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { getSession } from "@/lib/session";
 import { getPlan, hasProFeatures } from "@/lib/entitlements";
+import { getMspConsoleAccess } from "@/lib/entitlements/msp-console";
 import { getActiveConnection, getConnections } from "@/lib/queries";
 import { connectionLabel } from "@/lib/connection/label";
 import { PlanBadge } from "@/components/app/PlanBadge";
@@ -79,6 +80,7 @@ export default async function SettingsPage() {
 
   const plan = await getPlan(session.user.id);
   const isPro = hasProFeatures(plan);
+  const mspAccess = await getMspConsoleAccess(session.user.id, session.user.email);
   const alertPrefs = await getAlertPreferences(session.user.id);
   const connections = await getConnections(session.user.id);
   const activeConn = await getActiveConnection(session.user.id);
@@ -214,7 +216,7 @@ export default async function SettingsPage() {
                 Add client tenant
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              {connections.length > 1 ? (
+              {mspAccess.showConsole ? (
                 <Link
                   href="/dashboard/clients"
                   className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"

@@ -4,6 +4,7 @@ import type { RemediationEnriched } from "@/lib/remediation/types";
 import type { FindingDTO } from "@/components/app/FindingsTable";
 import { getSession } from "@/lib/session";
 import { getPlan, hasProFeatures } from "@/lib/entitlements";
+import { getMspConsoleAccess } from "@/lib/entitlements/msp-console";
 import {
   getActiveConnection,
   getLatestScan,
@@ -37,6 +38,7 @@ export async function getDashboardSnapshot() {
   const findings = await getFindings(scan.id);
   const plan = await getPlan(session.user.id);
   const isPro = hasProFeatures(plan);
+  const mspAccess = await getMspConsoleAccess(session.user.id, session.user.email);
   const statuses = isPro ? await getFindingStatuses(conn.id) : new Map();
 
   const activeFindings = findings.filter((f) => {
@@ -81,6 +83,7 @@ export async function getDashboardSnapshot() {
     history,
     isPro,
     plan,
+    mspAccess,
     dtos,
     tenantLabel,
   };

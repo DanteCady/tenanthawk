@@ -2,20 +2,26 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Building2, FileText, Plus } from "lucide-react";
 import { requireVerifiedSession } from "@/lib/session";
-import { getActiveConnection, getConnections } from "@/lib/queries";
+import { getActiveConnection } from "@/lib/queries";
 import { getClientPortfolio } from "@/lib/connection/portfolio";
+import { getMspConsoleAccess } from "@/lib/entitlements/msp-console";
 import { connectionLabel } from "@/lib/connection/label";
 import { ScoreRing } from "@/components/app/ScoreRing";
 import { timeAgo } from "@/lib/time";
 import { formatUsd } from "@/lib/format";
 import { OpenClientButton } from "@/components/dashboard/MspOverviewDashboard";
 import { ClientRescanButton } from "@/components/dashboard/ClientRescanButton";
+import { EnterpriseConsoleUpsell } from "@/components/dashboard/EnterpriseConsoleUpsell";
 
 export default async function ClientsPage() {
   const session = await requireVerifiedSession();
-  const connections = await getConnections(session.user.id);
+  const mspAccess = await getMspConsoleAccess(session.user.id, session.user.email);
 
-  if (connections.length <= 1) {
+  if (!mspAccess.entitled) {
+    return <EnterpriseConsoleUpsell />;
+  }
+
+  if (mspAccess.connectionCount <= 1) {
     redirect("/dashboard");
   }
 

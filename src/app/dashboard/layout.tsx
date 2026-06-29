@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { requireVerifiedSession } from "@/lib/session";
 import { getPlan, hasProFeatures } from "@/lib/entitlements";
-import { getActiveConnection, getConnections } from "@/lib/queries";
+import { getMspConsoleAccess } from "@/lib/entitlements/msp-console";
+import { getActiveConnection } from "@/lib/queries";
 import { connectionLabel } from "@/lib/connection/label";
 import { ThemeLogo } from "@/components/theme/ThemeLogo";
 import { PlanBadge } from "@/components/app/PlanBadge";
@@ -19,12 +20,11 @@ export default async function DashboardLayout({
 }) {
   const session = await requireVerifiedSession();
   const plan = await getPlan(session.user.id);
-  const connections = await getConnections(session.user.id);
+  const mspAccess = await getMspConsoleAccess(session.user.id, session.user.email);
   const conn = await getActiveConnection(session.user.id);
   const connectionHealth = conn ? await getConnectionHealth(conn) : null;
   const tenantLabel = conn ? connectionLabel(conn) : null;
   const isPro = hasProFeatures(plan);
-  const isMsp = connections.length > 1;
 
   return (
     <div className="app-shell flex min-h-screen flex-col">
@@ -34,7 +34,7 @@ export default async function DashboardLayout({
             <ThemeLogo />
           </Link>
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-            {!isMsp && connectionHealth ? (
+            {!mspAccess.showConsole && connectionHealth ? (
               <ConnectionStatusBlip
                 health={connectionHealth}
                 tenantLabel={tenantLabel}
@@ -55,9 +55,9 @@ export default async function DashboardLayout({
       </header>
 
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-8 lg:flex-row lg:gap-8">
-        <DashboardNav isPro={isPro} showClients={isMsp} />
+        <DashboardNav isPro={isPro} showClients={mspAccess.showConsole} />
         <main className="min-w-0 flex-1">
-          {isMsp && conn && tenantLabel ? (
+          {mspAccess.showConsole && conn && tenantLabel ? (
             <ClientContextBar
               show
               connectionId={conn.id}

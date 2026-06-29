@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, FileText } from "lucide-react";
 import { getDashboardSnapshot } from "@/lib/dashboard/context";
+import { EnterpriseConsoleUpsell } from "@/components/dashboard/EnterpriseConsoleUpsell";
 import { ScoreRing } from "@/components/app/ScoreRing";
 import { GradeBadge } from "@/components/app/GradeBadge";
 import { SeverityBadge } from "@/components/app/SeverityBadge";
@@ -14,8 +15,17 @@ import { formatUsd } from "@/lib/format";
 const SEVERITY_ORDER = { high: 0, medium: 1, low: 2 } as const;
 
 export default async function ClientScorecardPage() {
-  const { conn, scan, activeFindings, summary, isPro, tenantLabel } =
+  const { conn, scan, activeFindings, summary, isPro, tenantLabel, mspAccess } =
     await getDashboardSnapshot();
+
+  if (!mspAccess.entitled) {
+    return (
+      <EnterpriseConsoleUpsell
+        title="Client scorecards"
+        description="Shareable per-client scorecards with top findings and grades are included on Enterprise."
+      />
+    );
+  }
 
   const topFindings = [...activeFindings]
     .sort(

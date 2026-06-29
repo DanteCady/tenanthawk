@@ -41,10 +41,25 @@ Switch API: `POST /api/connection/switch` with `{ "connectionId": "..." }` — s
 ## UI guards
 
 - **Tenant switcher** — removed; use **Clients** page to switch
-- **Clients nav** — shown when `connections.length > 1`
-- **Context bar** — on findings/roadmap/reports: “Client: {name} · Switch client”
+- **Clients nav + context bar** — Enterprise (`msp` plan) with 2+ connections
+- **Portfolio roll-up** on `/dashboard` — same gate as clients nav
+- **Scorecards** — Enterprise only
+- Pro users with multiple tenants keep per-tenant Pro access; switching via Settings
 
 Solo users with one connection see no MSP chrome.
+
+## Enterprise entitlement (Phase 4)
+
+Access to the multi-tenant console requires **`msp` plan** (shown as **Enterprise** in the UI) or an email on **`MSP_ENTITLEMENT_ALLOWLIST`** (comma-separated env var for design partners).
+
+| Check | Location |
+|-------|----------|
+| `hasMspConsoleEntitlement()` | `src/lib/entitlements/msp-console.ts` |
+| `getMspConsoleAccess()` | Combines entitlement + connection count → `showConsole` |
+
+Dev plan cycling (no Stripe): Billing → Dev tools toggles Free → Pro → Enterprise.
+
+Until Stripe org billing (Phase 7), grant Enterprise via `pnpm seed:msp`, `/api/dev/plan { "plan": "msp" }`, or the allowlist.
 
 ## Local MSP test user
 
@@ -63,10 +78,6 @@ pnpm seed:msp
 | **Portfolio** | `/dashboard/clients` |
 
 Override with `SEED_MSP_EMAIL` / `SEED_MSP_PASSWORD`. Idempotent — safe to re-run.
-
-## Enterprise entitlement (Phase 4)
-
-`Plan = "free" | "pro" | "msp"` — `msp` is the Enterprise / MSP tier (multi-tenant console). Early design partners via dev subscription or env allowlist until Stripe org billing (Phase 7).
 
 ## Better Auth (Phase 6+)
 
