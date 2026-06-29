@@ -7,7 +7,7 @@ Tenant Hawk scopes scan data by **`connection`** (one Microsoft 365 tenant per r
 | Layer | Model | Switching |
 |-------|--------|-----------|
 | **MSP workspace** | Better Auth organization (Phase 6) | Org switcher — staff, billing |
-| **Client tenant** | `connection` row | Active connection cookie + header switcher |
+| **Client tenant** | `connection` row | Workspaces page + active connection cookie |
 
 Phases 1–3 implement **client tenant switching** only.
 
