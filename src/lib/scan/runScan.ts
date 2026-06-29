@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import { db } from "@/db";
 import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
 import { invalidateConnectionHealth } from "@/lib/connect/health";
+import { fireMarketingWebhook } from "@/lib/marketing/webhook";
 import { parseLicensePricing } from "@/lib/licenses/pricing-overrides";
 import { checks } from "./checks";
 import { getDemoFindings } from "./demo";
@@ -95,6 +96,14 @@ export async function runScan(
       })
       .where("id", "=", scanId)
       .execute();
+
+    await fireMarketingWebhook({
+      scanId,
+      conn,
+      drafts,
+      score: overall,
+      source: options?.source ?? "manual",
+    });
 
     return scanId;
   } catch (err) {
