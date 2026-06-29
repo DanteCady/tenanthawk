@@ -2,7 +2,12 @@ import "server-only";
 import { db } from "@/db";
 import { readActiveConnectionCookie } from "@/lib/connection/active";
 import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
+import { resolveWorkspaceDataUserId } from "@/lib/enterprise/workspace";
 import { isLiveConfigured } from "@/lib/scan/graph";
+
+async function dataUserId(userId: string): Promise<string> {
+  return resolveWorkspaceDataUserId(userId);
+}
 
 async function maybeEnrichConnection(
   conn: Awaited<ReturnType<typeof getConnections>>[number],
@@ -24,11 +29,12 @@ async function maybeEnrichConnection(
 }
 
 export async function getConnectionById(userId: string, connectionId: string) {
+  const ownerId = await dataUserId(userId);
   const conn = await db
     .selectFrom("connection")
     .selectAll()
     .where("id", "=", connectionId)
-    .where("user_id", "=", userId)
+    .where("user_id", "=", ownerId)
     .executeTakeFirst();
   if (!conn) return undefined;
   return maybeEnrichConnection(conn);
@@ -87,10 +93,11 @@ export async function getPrimaryConnection(userId: string) {
 }
 
 export async function getConnections(userId: string) {
+  const ownerId = await dataUserId(userId);
   return db
     .selectFrom("connection")
     .selectAll()
-    .where("user_id", "=", userId)
+    .where("user_id", "=", ownerId)
     .orderBy("created_at", "desc")
     .execute();
 }

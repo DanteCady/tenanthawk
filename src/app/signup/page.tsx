@@ -1,6 +1,5 @@
-import { Suspense } from "react";
-import { AuthShell } from "@/components/auth/AuthShell";
-import { AuthForm } from "@/components/auth/AuthForm";
+import { SignupPageClient } from "@/components/auth/SignupPageClient";
+import { accountTypeFromSearchParam } from "@/lib/onboarding/account-type";
 import { buildPageMetadata } from "@/lib/seo/site";
 
 export const metadata = buildPageMetadata({
@@ -10,15 +9,13 @@ export const metadata = buildPageMetadata({
   path: "/signup",
 });
 
-export default function SignupPage() {
-  return (
-    <AuthShell
-      title="Start your free scan"
-      subtitle="Create an account, enter the verification code from your email, then connect a tenant."
-    >
-      <Suspense>
-        <AuthForm mode="signup" />
-      </Suspense>
-    </AuthShell>
-  );
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string; intent?: string }>;
+}) {
+  const { type, intent } = await searchParams;
+  const initialAccountType = accountTypeFromSearchParam(type, intent);
+
+  return <SignupPageClient initialAccountType={initialAccountType} />;
 }

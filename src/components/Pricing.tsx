@@ -56,6 +56,7 @@ const tiers = [
       "Full platform on every client tenant",
       "Up to 10 client tenants (Starter)",
       "Multi-tenant console & roll-ups",
+      "Branded subdomain + SSO",
       "Per-client scorecards",
       "Priority support",
     ],
@@ -200,7 +201,7 @@ export function Pricing() {
                   </ul>
 
                   <a
-                    href="/signup"
+                    href={"msp" in t && t.msp ? "/signup?type=msp" : "/signup"}
                     className={`mt-7 inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
                       t.highlight
                         ? "btn-primary w-full shadow-none hover:shadow-md"

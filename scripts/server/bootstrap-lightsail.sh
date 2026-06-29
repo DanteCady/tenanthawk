@@ -33,7 +33,26 @@ cat >/etc/nginx/sites-available/tenanthawk <<'NGINX'
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name tenanthawk.io www.tenanthawk.io;
+    server_name tenanthawk.io www.tenanthawk.io *.tenanthawk.io;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name tenanthawk.io www.tenanthawk.io *.tenanthawk.io;
+
+    ssl_certificate /etc/letsencrypt/live/tenanthawk.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/tenanthawk.io/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
         proxy_pass http://127.0.0.1:3000;
@@ -47,6 +66,8 @@ server {
     }
 }
 NGINX
+
+mkdir -p /var/www/certbot
 
 ln -sf /etc/nginx/sites-available/tenanthawk /etc/nginx/sites-enabled/tenanthawk
 rm -f /etc/nginx/sites-enabled/default
@@ -81,5 +102,9 @@ fi
 
 echo "Done. Next:"
 echo "  1. Edit $APP_ROOT/.env with production secrets"
-echo "  2. Add GitHub Actions secrets (LIGHTSAIL_HOST, LIGHTSAIL_USER, LIGHTSAIL_SSH_KEY)"
-echo "  3. Push to main to trigger deploy"
+echo "  2. Issue TLS (apex + subdomains on HTTP-01):"
+echo "     certbot certonly --webroot -w /var/www/certbot -d tenanthawk.io -d www.tenanthawk.io -d admin.tenanthawk.io -d demo.tenanthawk.io"
+echo "     For all MSP slugs use DNS-01 wildcard: certbot certonly --manual --preferred-challenges dns -d tenanthawk.io -d '*.tenanthawk.io'"
+echo "  3. Set ENTERPRISE_COOKIE_DOMAIN=.tenanthawk.io in $APP_ROOT/.env"
+echo "  4. Add GitHub Actions secrets (LIGHTSAIL_HOST, LIGHTSAIL_USER, LIGHTSAIL_SSH_KEY)"
+echo "  5. Push to main to trigger deploy"

@@ -14,6 +14,7 @@
     "stripe:founding-promo": "node scripts/stripe-create-founding-promo.mjs"
   },
   "dependencies": {
+    "@better-auth/sso": "^1.6.22",
     "@better-auth/stripe": "^1.6.20",
     "better-auth": "^1.6.20",
     "exceljs": "^4.4.0",

@@ -47,8 +47,8 @@ export function DisconnectTenantButton({
         disabled={loading}
         className={
           compact
-            ? "inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 transition-colors hover:border-red-300 hover:bg-red-100 disabled:opacity-60"
-            : "inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2 text-sm font-medium text-red-700 transition-colors hover:border-red-300 hover:bg-red-100 disabled:opacity-60"
+            ? "btn-destructive-outline px-2.5 py-1.5 text-xs"
+            : "btn-destructive-outline px-3.5 py-2 text-sm"
         }
       >
         {loading ? (

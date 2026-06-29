@@ -8,28 +8,28 @@ const STATUS_STYLE: Record<
 > = {
   connected: {
     dot: "bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.25)]",
-    chip: "border-emerald-200 bg-emerald-50",
-    text: "text-emerald-800",
+    chip: "border-[color-mix(in_srgb,#34d399_35%,var(--th-border))] bg-[color-mix(in_srgb,#34d399_12%,var(--th-surface))]",
+    text: "text-emerald-600",
   },
   demo: {
-    dot: "bg-blue-500 shadow-[0_0_0_3px_rgba(59,130,246,0.2)]",
-    chip: "border-blue-200 bg-blue-50",
-    text: "text-blue-800",
+    dot: "bg-[var(--th-brand)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--th-brand)_25%,transparent)]",
+    chip: "border-[var(--th-brand-muted-border)] bg-[var(--th-brand-muted)]",
+    text: "text-[var(--th-brand-text)]",
   },
   app_removed: {
     dot: "bg-red-500 shadow-[0_0_0_3px_rgba(239,68,68,0.25)]",
-    chip: "border-red-200 bg-red-50",
-    text: "text-red-800",
+    chip: "border-[color-mix(in_srgb,#ef4444_35%,var(--th-border))] bg-[color-mix(in_srgb,#ef4444_12%,var(--th-surface))]",
+    text: "text-red-600",
   },
   consent_revoked: {
     dot: "bg-amber-500 shadow-[0_0_0_3px_rgba(245,158,11,0.25)]",
-    chip: "border-amber-200 bg-amber-50",
-    text: "text-amber-900",
+    chip: "border-[color-mix(in_srgb,#f59e0b_35%,var(--th-border))] bg-[color-mix(in_srgb,#f59e0b_12%,var(--th-surface))]",
+    text: "text-amber-700",
   },
   error: {
     dot: "bg-amber-500 shadow-[0_0_0_3px_rgba(245,158,11,0.25)]",
-    chip: "border-amber-200 bg-amber-50",
-    text: "text-amber-900",
+    chip: "border-[color-mix(in_srgb,#f59e0b_35%,var(--th-border))] bg-[color-mix(in_srgb,#f59e0b_12%,var(--th-surface))]",
+    text: "text-amber-700",
   },
 };
 

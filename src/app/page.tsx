@@ -1,4 +1,7 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { parseHostContext } from "@/lib/platform/admin";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Stats } from "@/components/Stats";
@@ -23,7 +26,12 @@ export const metadata = buildPageMetadata({
   path: "/",
 });
 
-export default function Home() {
+export default async function Home() {
+  const ctx = parseHostContext((await headers()).get("host"));
+  if (ctx.kind === "platform-admin") {
+    redirect("/admin");
+  }
+
   return (
     <>
       <JsonLd

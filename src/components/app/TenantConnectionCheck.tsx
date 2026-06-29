@@ -43,11 +43,11 @@ export function TenantConnectionCheck({
   }
 
   return (
-    <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+    <div className="mt-3 rounded-xl border border-[var(--th-border)] bg-[var(--th-surface)] p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">Connection check</h3>
-          <p className="mt-1 text-xs text-slate-600">
+          <h3 className="text-sm font-semibold text-[var(--th-text)]">Connection check</h3>
+          <p className="mt-1 text-xs text-[var(--th-text-muted)]">
             Verifies Tenant Hawk can still authenticate to your Microsoft 365 tenant
             (e.g. if the enterprise app was deleted or consent was revoked).
           </p>
@@ -56,7 +56,7 @@ export function TenantConnectionCheck({
           type="button"
           onClick={refresh}
           disabled={loading}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700 disabled:opacity-60"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--th-border)] bg-[var(--th-muted-bg)] px-3 py-1.5 text-xs font-medium text-[var(--th-text-muted)] transition-colors hover:border-[var(--th-brand-muted-border)] hover:text-[var(--th-brand-text)] disabled:opacity-60"
         >
           {loading ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -69,12 +69,12 @@ export function TenantConnectionCheck({
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <ConnectionStatusBlip health={health} tenantLabel={tenantLabel} />
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-[var(--th-text-faint)]">
           Last checked {formatCheckedAt(health.checkedAt)}
         </span>
       </div>
 
-      <p className="mt-2 text-xs text-slate-600">{health.detail}</p>
+      <p className="mt-2 text-xs text-[var(--th-text-muted)]">{health.detail}</p>
     </div>
   );
 }

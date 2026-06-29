@@ -160,6 +160,38 @@ async function seedScan(pool, connectionId, targetScore) {
   }
 }
 
+async function ensureEnterpriseOrganization(pool, userId) {
+  const existing = await pool.query(
+    `SELECT o.id, o.slug FROM organization o
+     INNER JOIN member m ON m."organizationId" = o.id
+     WHERE m."userId" = $1 AND m.role = 'owner'
+     LIMIT 1`,
+    [userId],
+  );
+  if (existing.rows[0]) {
+    console.log(`• Enterprise org exists (${existing.rows[0].slug}.tenanthawk.io)`);
+    return existing.rows[0].id;
+  }
+
+  const orgId = randomUUID();
+  const memberId = randomUUID();
+  const now = new Date();
+  const slug = process.env.SEED_MSP_ORG_SLUG || "demo";
+
+  await pool.query(
+    `INSERT INTO organization (id, name, slug, logo, metadata, "createdAt")
+     VALUES ($1, $2, $3, NULL, NULL, $4)`,
+    [orgId, "MSP Demo Workspace", slug, now],
+  );
+  await pool.query(
+    `INSERT INTO member (id, "organizationId", "userId", role, "createdAt")
+     VALUES ($1, $2, $3, 'owner', $4)`,
+    [memberId, orgId, userId, now],
+  );
+  console.log(`✓ Created Enterprise org → ${slug}.tenanthawk.io`);
+  return orgId;
+}
+
 async function main() {
   if (!DATABASE_URL) {
     console.error("✗ DATABASE_URL is required.");
@@ -170,6 +202,8 @@ async function main() {
   try {
     const userId = await ensureUser(pool);
     await ensureEnterprisePlan(pool, userId);
+    const orgSlug = process.env.SEED_MSP_ORG_SLUG || "demo";
+    await ensureEnterpriseOrganization(pool, userId);
 
     for (const client of CLIENTS) {
       const connectionId = await ensureConnection(pool, userId, client);
@@ -198,6 +232,7 @@ async function main() {
     console.log(`  Email:     ${USER.email}`);
     console.log(`  Password:  ${USER.password}`);
     console.log(`  Plan:      Enterprise (msp)`);
+    console.log(`  Workspace: https://${orgSlug}.tenanthawk.io/login (local: http://${orgSlug}.localhost:3000/login)`);
     console.log(`  Portfolio: ${base}/dashboard/clients`);
     console.log("────────────────────────────────\n");
   } finally {

@@ -6,12 +6,11 @@ import {
   ArrowRight,
   Building2,
   CreditCard,
-  Lock,
   Mail,
   User,
 } from "lucide-react";
 import { getSession } from "@/lib/session";
-import { getPlan, hasProFeatures } from "@/lib/entitlements";
+import { getPlan, hasProFeatures, isEnterprisePlan } from "@/lib/entitlements";
 import { getMspConsoleAccess } from "@/lib/entitlements/msp-console";
 import { getActiveConnection, getConnections } from "@/lib/queries";
 import { connectionLabel } from "@/lib/connection/label";
@@ -43,9 +42,9 @@ function SettingsSection({
 }) {
   return (
     <section className="surface-card p-6">
-      <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+      <h2 className="text-lg font-semibold text-[var(--th-text)]">{title}</h2>
       {description && (
-        <p className="mt-1 text-sm text-slate-600">{description}</p>
+        <p className="mt-1 text-sm text-[var(--th-text-muted)]">{description}</p>
       )}
       <div className="mt-5">{children}</div>
     </section>
@@ -62,13 +61,13 @@ function DetailRow({
   value: ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-3 border-b border-slate-100 py-3 last:border-0 last:pb-0 first:pt-0">
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+    <div className="flex items-start gap-3 border-b border-[var(--th-border-subtle)] py-3 last:border-0 last:pb-0 first:pt-0">
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--th-text-faint)]" />
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+        <p className="text-xs font-medium uppercase tracking-wide text-[var(--th-text-faint)]">
           {label}
         </p>
-        <p className="mt-0.5 text-sm text-slate-900">{value}</p>
+        <p className="mt-0.5 text-sm text-[var(--th-text)]">{value}</p>
       </div>
     </div>
   );
@@ -131,6 +130,22 @@ export default async function SettingsPage() {
         <DetailRow icon={Mail} label="Email" value={session.user.email} />
       </SettingsSection>
 
+      {isEnterprisePlan(plan) && (
+        <SettingsSection
+          title="Enterprise workspace"
+          description="Branded subdomain, SSO, and team invites."
+        >
+          <Link
+            href="/dashboard/settings/enterprise"
+            className="inline-flex items-center gap-2 rounded-lg border border-[var(--th-border)] bg-[var(--th-surface)] px-4 py-2.5 text-sm font-medium text-[var(--th-text)] transition-colors hover:border-[var(--th-brand-muted-border)] hover:text-[var(--th-brand-text)]"
+          >
+            <Building2 className="h-4 w-4" />
+            Configure subdomain &amp; SSO
+            <ArrowRight className="ml-auto h-4 w-4 text-slate-400" />
+          </Link>
+        </SettingsSection>
+      )}
+
       <SettingsSection
         title={connections.length > 1 ? "Connected clients" : "Connected tenant"}
         description="Read-only Microsoft 365 / Entra access for scanning. We never store credentials."
@@ -144,14 +159,14 @@ export default async function SettingsPage() {
                   key={conn.id}
                   className={`rounded-xl border p-4 ${
                     isActive
-                      ? "border-blue-200 bg-blue-50/40"
-                      : "border-slate-200 bg-slate-50/50"
+                      ? "border-[var(--th-brand-muted-border)] bg-[var(--th-brand-muted)]"
+                      : "border-[var(--th-border)] bg-[var(--th-muted-bg)]"
                   }`}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-medium text-slate-900">{label}</p>
-                      <p className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                      <p className="font-medium text-[var(--th-text)]">{label}</p>
+                      <p className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-[var(--th-text-faint)]">
                         <span
                           className={
                             conn.mode === "live"
@@ -162,7 +177,7 @@ export default async function SettingsPage() {
                           {conn.mode === "live" ? "Live" : "Demo"}
                         </span>
                         {isActive ? (
-                          <span className="font-medium text-blue-700">Active client</span>
+                          <span className="font-medium text-[var(--th-brand-text)]">Active client</span>
                         ) : null}
                         · connected {timeAgo(conn.created_at)}
                       </p>
@@ -170,7 +185,7 @@ export default async function SettingsPage() {
                     {!isActive ? (
                       <Link
                         href={`/dashboard/client?connection=${conn.id}`}
-                        className="text-xs font-medium text-blue-700 hover:text-blue-800"
+                        className="text-xs font-medium text-[var(--th-brand-text)] hover:text-[var(--th-brand-text-soft)]"
                       >
                         Switch to this client
                       </Link>
@@ -178,7 +193,7 @@ export default async function SettingsPage() {
                   </div>
 
                   {conn.tenant_id ? (
-                    <p className="mt-2 break-all font-mono text-xs text-slate-600">
+                    <p className="mt-2 break-all font-mono text-xs text-[var(--th-text-muted)]">
                       {conn.tenant_id}
                     </p>
                   ) : null}
@@ -193,7 +208,7 @@ export default async function SettingsPage() {
                     {liveConfigured && conn.mode === "live" && (
                       <a
                         href="/api/connect/start?return=clients"
-                        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+                        className="inline-flex items-center gap-2 rounded-lg border border-[var(--th-border)] bg-[var(--th-surface)] px-3 py-1.5 text-xs font-medium text-[var(--th-text-muted)] transition-colors hover:border-[var(--th-brand-muted-border)] hover:text-[var(--th-brand-text)]"
                       >
                         Re-consent
                       </a>
@@ -211,7 +226,7 @@ export default async function SettingsPage() {
             <div className="flex flex-wrap gap-2 pt-2">
               <Link
                 href="/onboarding?mode=add-client"
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+                className="inline-flex items-center gap-2 rounded-lg border border-[var(--th-border)] bg-[var(--th-surface)] px-3.5 py-2 text-sm font-medium text-[var(--th-text-muted)] transition-colors hover:border-[var(--th-brand-muted-border)] hover:text-[var(--th-brand-text)]"
               >
                 Add client tenant
                 <ArrowRight className="h-4 w-4" />
@@ -219,7 +234,7 @@ export default async function SettingsPage() {
               {mspAccess.showConsole ? (
                 <Link
                   href="/dashboard/clients"
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[var(--th-border)] bg-[var(--th-surface)] px-3.5 py-2 text-sm font-medium text-[var(--th-text-muted)] transition-colors hover:border-[var(--th-brand-muted-border)] hover:text-[var(--th-brand-text)]"
                 >
                   <Building2 className="h-4 w-4" />
                   All clients
@@ -228,8 +243,8 @@ export default async function SettingsPage() {
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
-            <p className="text-sm text-slate-600">No tenant connected yet.</p>
+          <div className="rounded-xl border border-dashed border-[var(--th-border)] bg-[var(--th-muted-bg)] px-4 py-6 text-center">
+            <p className="text-sm text-[var(--th-text-muted)]">No tenant connected yet.</p>
             <Link
               href="/onboarding"
               className="btn-primary mt-4 inline-flex text-sm shadow-none hover:shadow-md"
@@ -275,7 +290,7 @@ export default async function SettingsPage() {
           </div>
           <Link
             href="/dashboard/billing"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+            className="inline-flex items-center gap-2 rounded-lg border border-[var(--th-border)] bg-[var(--th-surface)] px-3.5 py-2 text-sm font-medium text-[var(--th-text-muted)] transition-colors hover:border-[var(--th-brand-muted-border)] hover:text-[var(--th-brand-text)]"
           >
             <CreditCard className="h-4 w-4" />
             Manage billing

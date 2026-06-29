@@ -21,26 +21,43 @@ The payload the app sends (compute happens app-side from real scan data):
 `scan.score`, `scan.severityHighCount`, `scan.topFinding`,
 `scan.licenseWasteMonthly`, `scan.expiringSoonCount`.
 
-## Setup (one time)
+## Status: already created in n8n
 
-1. **Import the workflow.** In n8n: *Workflows → Import from File →*
-   `n8n-postscan-lifecycle.json`.
-2. **Set up SMTP credentials.** Create an SMTP credential (ideally a `marketing.`
-   subdomain / separate stream from the app's `alerts@` sender to protect
-   deliverability). Open each red "A#/B#" email node and select it — they all
-   reference one credential named **"Tenant Hawk Marketing SMTP"**.
+The workflow is live in n8n (built via the n8n MCP, not imported):
+- **Workflow ID:** `HMWPVqlwGXUmqFaE`
+- **URL:** http://localhost:5678/workflow/HMWPVqlwGXUmqFaE
+- **Webhook path:** `tenanthawk-scan-completed`
+
+`n8n-postscan-lifecycle.json` is kept as a portable backup/reference only — the
+source of truth is now the workflow in n8n. Edit there, or ask Claude to update
+it via the MCP.
+
+## Finish setup (the workflow exists but is inactive)
+
+1. **Create the SMTP credential.** In n8n: *Credentials → New → SMTP*. Name it
+   exactly **"Tenant Hawk Marketing SMTP"** (use a `marketing.` subdomain /
+   separate stream from the app's `alerts@` sender to protect deliverability).
+   The 8 email nodes already reference this credential by name — open one and
+   confirm it's attached (the MCP created it as a placeholder).
    - Update `fromEmail` on the nodes if you don't use `hello@tenanthawk.io`.
-3. **Set the shared secret.** Open the **Verify secret** node and replace
+2. **Set the shared secret.** Open the **Verify secret** node and replace
    `REPLACE_WITH_SHARED_SECRET` with a strong random value (`openssl rand -hex 24`).
-4. **Activate** the workflow (toggle top-right). Copy the **Production** webhook
+3. **Activate** the workflow (toggle top-right). Copy the **Production** webhook
    URL from the Webhook node.
-5. **Point the app at it.** In the app environment (Vercel):
+4. **Point the app at it.** In the app environment (Vercel):
    ```
    MARKETING_WEBHOOK_URL=https://<your-n8n>/webhook/tenanthawk-scan-completed
-   MARKETING_WEBHOOK_SECRET=<the same secret from step 3>
+   MARKETING_WEBHOOK_SECRET=<the same secret from step 2>
    ```
    Redeploy. Until these are set, `fireMarketingWebhook` is a silent no-op, so
    nothing changes in production prematurely.
+
+> **Reachability caveat:** your n8n is currently on `localhost:5678`. The
+> deployed app (Vercel) cannot POST to `localhost`. Either (a) expose n8n with a
+> tunnel like `ngrok http 5678` / a public host, and use that URL in
+> `MARKETING_WEBHOOK_URL`, or (b) test end-to-end by running the app locally
+> (`pnpm dev`) so it can reach local n8n. For production you'll need n8n on a
+> publicly reachable URL.
 
 ## Test it
 

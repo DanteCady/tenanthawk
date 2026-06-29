@@ -1,6 +1,9 @@
 import { betterAuth } from "better-auth";
 import { emailOTP } from "better-auth/plugins/email-otp";
+import { admin } from "better-auth/plugins/admin";
+import { organization } from "better-auth/plugins/organization";
 import { stripe } from "@better-auth/stripe";
+import { sso } from "@better-auth/sso";
 import Stripe from "stripe";
 import { pool } from "../db";
 import {
@@ -13,9 +16,14 @@ import {
   promotionCodeFromUpgradeMetadata,
   resolveCheckoutDiscountParams,
 } from "./billing/stripe-checkout";
+import {
+  getAuthAllowedHosts,
+  getEnterpriseCookieDomain,
+  getTenantHawkAdminUserIds,
+  isEnterpriseSsoEnabled,
+} from "./enterprise/config";
+import { getPlan, isEnterprisePlan } from "./entitlements";
 
-// Placeholder keys keep schema generation + demo mode working before real
-// Stripe keys are added. Real checkout/webhook activate once env is set.
 const stripeClient = new Stripe(
   process.env.STRIPE_SECRET_KEY || "sk_test_placeholder",
 );
@@ -23,8 +31,34 @@ const stripeClient = new Stripe(
 export const PRO_PLAN = "pro";
 export const ENTERPRISE_PLAN = "msp";
 
+const authFallbackUrl =
+  process.env.BETTER_AUTH_URL?.trim() || "http://localhost:3000";
+
+const cookieDomain = getEnterpriseCookieDomain();
+
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: {
+    allowedHosts: getAuthAllowedHosts(),
+    fallback: authFallbackUrl,
+    protocol: "auto",
+  },
+  trustedOrigins: [
+    authFallbackUrl,
+    "http://localhost:3000",
+    "http://*.localhost:3000",
+    "https://tenanthawk.io",
+    "https://*.tenanthawk.io",
+    "http://tenanthawk.io",
+    "http://*.tenanthawk.io",
+  ],
+  advanced: cookieDomain
+    ? {
+        crossSubDomainCookies: {
+          enabled: true,
+          domain: cookieDomain,
+        },
+      }
+    : undefined,
   database: pool,
   emailAndPassword: {
     enabled: true,
@@ -35,6 +69,14 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
   },
   user: {
+    additionalFields: {
+      accountType: {
+        type: "string",
+        required: false,
+        defaultValue: "individual",
+        input: true,
+      },
+    },
     deleteUser: {
       enabled: true,
       beforeDelete: async (user) => {
@@ -44,6 +86,28 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    admin({
+      adminUserIds: getTenantHawkAdminUserIds(),
+    }),
+    organization({
+      allowUserToCreateOrganization: async (user) => {
+        const plan = await getPlan(user.id);
+        if (isEnterprisePlan(plan)) return true;
+        const accountType = (user as { accountType?: string | null }).accountType;
+        return accountType === "msp";
+      },
+      organizationLimit: 1,
+      creatorRole: "owner",
+    }),
+    ...(isEnterpriseSsoEnabled()
+      ? [
+          sso({
+            organizationProvisioning: {
+              defaultRole: "member",
+            },
+          }),
+        ]
+      : []),
     emailOTP({
       overrideDefaultEmailVerification: true,
       sendVerificationOnSignUp: true,

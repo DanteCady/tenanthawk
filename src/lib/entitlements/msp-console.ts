@@ -1,5 +1,5 @@
 import "server-only";
-import { isMsp } from "@/lib/entitlements";
+import { userHasEnterpriseEntitlement } from "@/lib/enterprise/workspace";
 import { getConnections } from "@/lib/queries";
 
 function parseAllowlist(): Set<string> {
@@ -22,8 +22,7 @@ export async function hasMspConsoleEntitlement(
   userId: string,
   email: string,
 ): Promise<boolean> {
-  if (await isMsp(userId)) return true;
-  return isEmailMspAllowlisted(email);
+  return userHasEnterpriseEntitlement(userId, email);
 }
 
 export type MspConsoleAccess = {

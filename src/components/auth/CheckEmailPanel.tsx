@@ -2,9 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Loader2, Mail } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import type { AccountType } from "@/lib/onboarding/account-type";
+import {
+  clearAccountIntent,
+  isAccountType,
+  readAccountIntent,
+} from "@/lib/onboarding/account-type";
 
 const inputClass =
   "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/25";
@@ -17,11 +22,12 @@ const RESEND_COOLDOWN_SEC = 60;
 export function CheckEmailPanel({
   email: initialEmail,
   errorCode,
+  intent,
 }: {
   email?: string;
   errorCode?: string;
+  intent?: AccountType;
 }) {
-  const router = useRouter();
   const [email, setEmail] = useState(initialEmail ?? "");
   const [otp, setOtp] = useState("");
   const [verifying, setVerifying] = useState(false);
@@ -32,6 +38,19 @@ export function CheckEmailPanel({
 
   useEffect(() => {
     if (initialEmail) setEmail(initialEmail);
+  }, [initialEmail]);
+
+  useEffect(() => {
+    const target = initialEmail?.trim().toLowerCase();
+    if (!target) return;
+
+    void (async () => {
+      const { data } = await authClient.getSession();
+      const current = data?.user?.email?.trim().toLowerCase();
+      if (current && current !== target) {
+        await authClient.signOut();
+      }
+    })();
   }, [initialEmail]);
 
   useEffect(() => {
@@ -87,11 +106,17 @@ export function CheckEmailPanel({
 
     if (verifyError) {
       setError(verifyError.message ?? "Invalid code. Try again or request a new one.");
+      setVerifying(false);
       return;
     }
 
-    router.push("/onboarding");
-    router.refresh();
+    const accountType =
+      (intent && isAccountType(intent) ? intent : null) ??
+      readAccountIntent() ??
+      "individual";
+    clearAccountIntent();
+    const path = accountType === "msp" ? "/onboarding/workspace" : "/onboarding";
+    window.location.assign(path);
   }
 
   const linkError =

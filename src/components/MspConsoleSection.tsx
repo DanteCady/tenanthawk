@@ -1,4 +1,4 @@
-import { ArrowRight, Building2, LayoutDashboard, PieChart } from "lucide-react";
+import { ArrowRight, Building2, KeyRound, LayoutDashboard, PieChart } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { ENTERPRISE_CLIENT_CAP_DEFAULT } from "@/lib/billing/pricing";
 
@@ -14,6 +14,12 @@ const features = [
     title: "Client list & switching",
     body: "Connect each tenant read-only, jump between clients in one click, and rescan any portfolio tenant from the console.",
     chip: "bg-green-50 text-green-600",
+  },
+  {
+    icon: KeyRound,
+    title: "Branded subdomain + SSO",
+    body: "Your team signs in at acme.tenanthawk.io with your IdP — Okta, Entra, or SAML.",
+    chip: "bg-violet-50 text-violet-600",
   },
   {
     icon: PieChart,

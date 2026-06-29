@@ -11,6 +11,8 @@ import { summarize, type FindingRow } from "@/lib/summary";
 import { isLiveConfigured } from "@/lib/scan/graph";
 import { requireVerifiedSession } from "@/lib/session";
 import { connectionLabel } from "@/lib/connection/label";
+import { getOwnedEnterpriseOrganization } from "@/lib/enterprise/workspace";
+import { getUserAccountType } from "@/lib/onboarding/user-account";
 import { ConnectStep } from "@/components/onboarding/ConnectStep";
 import { ResultsStep } from "@/components/onboarding/ResultsStep";
 import { EnterpriseConsoleUpsell } from "@/components/dashboard/EnterpriseConsoleUpsell";
@@ -36,6 +38,16 @@ export default async function OnboardingPage({
   const session = await requireVerifiedSession();
   const { connect, mode } = await searchParams;
   const addClientMode = mode === "add-client";
+
+  if (!addClientMode) {
+    const accountType = await getUserAccountType(session.user.id);
+    if (accountType === "msp") {
+      const org = await getOwnedEnterpriseOrganization(session.user.id);
+      if (!org) {
+        redirect("/onboarding/workspace");
+      }
+    }
+  }
 
   if (addClientMode) {
     const limit = await getEnterpriseClientLimit(session.user.id, session.user.email);

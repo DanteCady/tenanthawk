@@ -16,7 +16,7 @@ export function AuthShell({
     <main className="app-shell relative flex min-h-screen flex-col items-center justify-center px-6 py-16">
       <div className="theme-aura pointer-events-none absolute inset-0 -z-10" />
       <Link href="/" className="mb-8">
-        <ThemeLogo />
+        <ThemeLogo tone="light" />
       </Link>
       <div className="surface-card w-full max-w-md p-8">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{title}</h1>

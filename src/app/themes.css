@@ -628,6 +628,48 @@ html[data-theme="hawk"] .light-grid {
   color: var(--th-text-muted);
 }
 
+.btn-destructive-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in srgb, #ef4444 32%, var(--th-border));
+  background-color: color-mix(in srgb, #ef4444 8%, var(--th-surface));
+  font-weight: 500;
+  color: #dc2626;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+
+.btn-destructive-outline:hover:not(:disabled) {
+  border-color: color-mix(in srgb, #ef4444 45%, var(--th-border));
+  background-color: color-mix(in srgb, #ef4444 14%, var(--th-surface));
+}
+
+.btn-destructive-outline:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+html[data-theme="dark"] .btn-destructive-outline,
+html[data-theme="hawk"] .btn-destructive-outline {
+  color: #f87171;
+}
+
+html[data-theme="dark"] .text-emerald-600,
+html[data-theme="hawk"] .text-emerald-600 {
+  color: #34d399 !important;
+}
+
+html[data-theme="dark"] .text-red-600,
+html[data-theme="hawk"] .text-red-600 {
+  color: #f87171 !important;
+}
+
+html[data-theme="dark"] .text-amber-700,
+html[data-theme="hawk"] .text-amber-700 {
+  color: #fbbf24 !important;
+}
+
 .finding-row {
   display: flex;
   align-items: flex-start;

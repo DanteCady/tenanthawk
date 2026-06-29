@@ -4,15 +4,26 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { signIn, signUp, VERIFY_CALLBACK } from "@/lib/auth-client";
+import { signIn, signUp, signOut, VERIFY_CALLBACK } from "@/lib/auth-client";
+import type { AccountType } from "@/lib/onboarding/account-type";
+import { persistAccountIntent } from "@/lib/onboarding/account-type";
 
 const inputClass =
   "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/25";
 
-export function AuthForm({ mode }: { mode: "login" | "signup" }) {
+export function AuthForm({
+  mode,
+  defaultRedirect,
+  accountType = "individual",
+}: {
+  mode: "login" | "signup";
+  /** Used when the URL has no `redirect` query param (e.g. platform admin login). */
+  defaultRedirect?: string;
+  accountType?: AccountType;
+}) {
   const router = useRouter();
   const params = useSearchParams();
-  const redirect = params.get("redirect");
+  const redirect = params.get("redirect") ?? defaultRedirect;
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,13 +38,18 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     setError("");
     setLoading(true);
 
+    if (isSignup) {
+      await signOut();
+    }
+
     const result = isSignup
       ? await signUp.email({
           name: name || email.split("@")[0],
           email,
           password,
           callbackURL: VERIFY_CALLBACK,
-        })
+          accountType,
+        } as Parameters<typeof signUp.email>[0])
       : await signIn.email({
           email,
           password,
@@ -53,7 +69,9 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     }
 
     if (isSignup) {
-      router.push(`/check-email?email=${encodeURIComponent(email)}`);
+      persistAccountIntent(accountType);
+      const intent = encodeURIComponent(accountType);
+      router.push(`/check-email?email=${encodeURIComponent(email)}&intent=${intent}`);
       return;
     }
 

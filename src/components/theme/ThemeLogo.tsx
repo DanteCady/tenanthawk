@@ -4,9 +4,11 @@ import { Logo } from "@/components/Logo";
 export function ThemeLogo({
   className,
   showWordmark = true,
+  tone = "auto",
 }: {
   className?: string;
   showWordmark?: boolean;
+  tone?: "auto" | "dark" | "light";
 }) {
-  return <Logo className={className} showWordmark={showWordmark} tone="auto" />;
+  return <Logo className={className} showWordmark={showWordmark} tone={tone} />;
 }

@@ -6,10 +6,110 @@ Tenant Hawk scopes scan data by **`connection`** (one Microsoft 365 tenant per r
 
 | Layer | Model | Switching |
 |-------|--------|-----------|
-| **MSP organization** | Better Auth organization (Phase 6) | Org switcher — staff, billing |
+| **MSP organization** | Better Auth `organization` plugin | Staff invites, SSO, branded subdomain |
 | **Client tenant** | `connection` row | Clients page + active connection cookie |
 
-Phases 1–3 implement **client tenant switching** only. In the UI we say **client**, not workspace.
+Phases 1–5 implement **client tenant switching**. Phase 6 adds **Enterprise workspace** (subdomain + SSO + invites). In the UI we say **client**, not workspace, for M365 tenants.
+
+## Enterprise workspace (Phase 6)
+
+Each Enterprise MSP gets one Better Auth **organization** with:
+
+| Feature | Route / URL |
+|---------|-------------|
+| Branded subdomain | `https://{slug}.tenanthawk.io` |
+| SSO login | `{slug}.tenanthawk.io/login` |
+| Workspace settings | `/dashboard/settings/enterprise` |
+| Team invites | Same settings page |
+
+**Platform admin** (Tenant Hawk owner) uses a **separate subdomain** — not an MSP org:
+
+| Feature | URL |
+|---------|-----|
+| Console | `https://admin.tenanthawk.io` |
+| Login | `admin.tenanthawk.io/login` |
+| Env | `PLATFORM_ADMIN_SUBDOMAIN=admin` (default), `TENANT_HAWK_ADMIN_USER_ID` |
+
+The Better Auth **`admin`** plugin powers user list and impersonation. Visiting `/admin` on the apex domain redirects to the admin subdomain.
+
+Invited org members inherit the owner's client portfolio (`resolveWorkspaceDataUserId` in `src/lib/enterprise/workspace.ts`).
+
+### SSO (self-serve)
+
+MSPs configure SAML 2.0 or OIDC in **Settings → Enterprise workspace**. Better Auth `@better-auth/sso` plugin stores providers linked to `organizationId`.
+
+### Production DNS / TLS
+
+#### 1. Wildcard DNS (at your domain registrar / DNS host)
+
+Point **apex**, **www**, and **all subdomains** at your Lightsail static IP (e.g. from GitHub secret `LIGHTSAIL_HOST`):
+
+| Type | Name / Host | Value |
+|------|-------------|--------|
+| `A` | `@` (or `tenanthawk.io`) | `<LIGHTSAIL_STATIC_IP>` |
+| `A` | `www` | `<LIGHTSAIL_STATIC_IP>` |
+| `A` | `*` | `<LIGHTSAIL_STATIC_IP>` |
+
+The `*` record is what makes `demo.tenanthawk.io`, `admin.tenanthawk.io`, etc. work without per-MSP DNS.
+
+Verify (may take a few minutes to propagate):
+
+```bash
+dig +short tenanthawk.io
+dig +short admin.tenanthawk.io
+dig +short demo.tenanthawk.io
+```
+
+All should return your static IP.
+
+**Cloudflare tip:** use “DNS only” (grey cloud) for these records while debugging TLS; orange-cloud proxy can complicate cert issuance unless you use Cloudflare origin certs.
+
+#### 2. Nginx
+
+`scripts/server/bootstrap-lightsail.sh` already sets `server_name tenanthawk.io www.tenanthawk.io *.tenanthawk.io` and proxies to port 3000.
+
+#### 3. Wildcard TLS (Let's Encrypt DNS-01)
+
+HTTP validation **cannot** issue `*.tenanthawk.io`. Use **DNS-01** with certbot and your DNS provider plugin, e.g. Cloudflare:
+
+```bash
+sudo apt install certbot python3-certbot-dns-cloudflare
+# credentials file: dns_cloudflare_api_token = <token with Zone:DNS:Edit>
+sudo certbot certonly --dns-cloudflare \
+  --dns-cloudflare-credentials /root/.secrets/cloudflare.ini \
+  -d tenanthawk.io -d '*.tenanthawk.io'
+```
+
+Then enable HTTPS in nginx (add `listen 443 ssl`, cert paths under `/etc/letsencrypt/live/tenanthawk.io/`, and redirect 80 → 443).
+
+Renewal cron is installed by the bootstrap script.
+
+#### 4. Production env
+
+On the server (`/var/www/tenanthawk/.env`):
+
+```env
+ENTERPRISE_ROOT_DOMAIN=tenanthawk.io
+ENTERPRISE_COOKIE_DOMAIN=.tenanthawk.io
+BETTER_AUTH_URL=https://tenanthawk.io
+NEXT_PUBLIC_APP_URL=https://tenanthawk.io
+```
+
+`ENTERPRISE_COOKIE_DOMAIN` lets sessions work across `tenanthawk.io`, `admin.tenanthawk.io`, and `{msp-slug}.tenanthawk.io`.
+
+#### Reserved workspace slugs
+
+MSPs cannot claim infrastructure subdomains. Built-in reserved slugs include `admin`, `app`, `api`, `support`, `platform`, `portal`, `console`, `login`, `dashboard`, and others — see `DEFAULT_RESERVED` in `src/lib/enterprise/config.ts`. Add more via `ENTERPRISE_RESERVED_SLUGS=foo,bar` in env.
+
+### Env vars
+
+| Env | Purpose |
+|-----|---------|
+| `ENTERPRISE_ROOT_DOMAIN` | Root domain (default `tenanthawk.io`) |
+| `ENTERPRISE_COOKIE_DOMAIN` | Session cookie domain (e.g. `.tenanthawk.io`) |
+| `ENTERPRISE_SSO_ENABLED` | Enable SSO plugin (default true) |
+| `TENANT_HAWK_ADMIN_USER_ID` | Platform owner for admin plugin |
+| `PLATFORM_ADMIN_SUBDOMAIN` | Operator console subdomain (default `admin`) |
 
 ## Active connection resolution
 
@@ -94,11 +194,15 @@ pnpm seed:msp
 | **Email** | `msp@tenanthawk.app` |
 | **Password** | `TenantHawk!MSP1` |
 | **Plan** | Enterprise (`msp` dev subscription) |
+| **Workspace** | `demo.tenanthawk.io` (slug `demo`; override with `SEED_MSP_ORG_SLUG`) |
 | **Clients** | Contoso Holdings, Fabrikam Legal, Northwind Traders (demo) |
 | **Portfolio** | `/dashboard/clients` |
+| **Enterprise settings** | `/dashboard/settings/enterprise` |
 
-Override with `SEED_MSP_EMAIL` / `SEED_MSP_PASSWORD`. Idempotent — safe to re-run.
+Override with `SEED_MSP_EMAIL` / `SEED_MSP_PASSWORD` / `SEED_MSP_ORG_SLUG`. Idempotent — safe to re-run.
 
-## Better Auth (Phase 6+)
+Local subdomain testing: set `ENTERPRISE_ROOT_DOMAIN=localhost`, then use `http://demo.localhost:3000/login` (MSP) or `http://admin.localhost:3000/login` (platform owner).
 
-Adopt the **organization** plugin for staff invites and roles. Keep M365 **clients** as `connection` rows — do not use org Teams for customer tenants.
+## M365 clients vs MSP org
+
+Keep M365 **clients** as `connection` rows — do not map customer tenants to Better Auth organization teams.
