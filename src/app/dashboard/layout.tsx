@@ -55,7 +55,13 @@ export default async function DashboardLayout({
       </header>
 
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-8 lg:flex-row lg:gap-8">
-        <DashboardNav isPro={isPro} showWorkspaces={isMsp} />
+        <DashboardNav
+          isPro={isPro}
+          showWorkspaces={isMsp}
+          workspaceHref={
+            conn ? `/dashboard/client?connection=${conn.id}` : null
+          }
+        />
         <main className="min-w-0 flex-1">
           {isMsp && conn && tenantLabel ? (
             <ClientContextBar

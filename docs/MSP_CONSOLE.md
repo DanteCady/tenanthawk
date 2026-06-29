@@ -33,7 +33,7 @@ Switch API: `POST /api/connection/switch` with `{ "connectionId": "..." }` — s
 |-------|---------|
 | `/dashboard` | MSP roll-up overview — avg score, totals, clients needing attention |
 | `/dashboard/workspaces` | Workspace picker — switch and open client tenants |
-| `/dashboard/client?connection=` | Single-workspace health overview |
+| `/dashboard/client/scorecard?connection=` | Per-client scorecard — top findings, grades, share link |
 | `/onboarding?mode=add-client` | Connect another tenant without solo onboarding flow |
 | `/dashboard?connection=<id>` | Deep link to a client overview |
 

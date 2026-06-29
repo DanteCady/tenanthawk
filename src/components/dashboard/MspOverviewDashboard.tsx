@@ -83,7 +83,7 @@ export function MspOverviewDashboard({
         </div>
       )}
 
-      {overview.attentionClients.length > 0 && (
+      {overview.attentionClients.length > 0 ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-semibold text-slate-900">Needs attention</h2>
@@ -100,6 +100,10 @@ export function MspOverviewDashboard({
             ))}
           </div>
         </section>
+      ) : (
+        <div className="surface-card border border-emerald-200/80 bg-emerald-50/40 px-5 py-4 text-sm text-emerald-900">
+          All workspaces look healthy — no stale scans or urgent findings flagged.
+        </div>
       )}
 
       <section className="space-y-3">
@@ -169,6 +173,14 @@ function WorkspaceMiniCard({ client }: { client: ClientPortfolioRow }) {
         </span>
       </div>
       <OpenWorkspaceButton connectionId={client.id} label="Open workspace" />
+      {client.score != null ? (
+        <Link
+          href={`/dashboard/client/scorecard?connection=${client.id}`}
+          className="text-center text-xs font-medium text-blue-700 hover:text-blue-800"
+        >
+          View scorecard
+        </Link>
+      ) : null}
     </div>
   );
 }

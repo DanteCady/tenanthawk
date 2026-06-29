@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Building2, Plus } from "lucide-react";
+import { Building2, FileText, Plus } from "lucide-react";
 import { requireVerifiedSession } from "@/lib/session";
 import { getActiveConnection, getConnections } from "@/lib/queries";
 import { getClientPortfolio } from "@/lib/connection/portfolio";
@@ -10,6 +10,7 @@ import { GradeBadge } from "@/components/app/GradeBadge";
 import { timeAgo } from "@/lib/time";
 import { formatUsd } from "@/lib/format";
 import { OpenWorkspaceButton } from "@/components/dashboard/MspOverviewDashboard";
+import { WorkspaceRescanButton } from "@/components/dashboard/WorkspaceRescanButton";
 
 export default async function WorkspacesPage() {
   const session = await requireVerifiedSession();
@@ -109,10 +110,23 @@ export default async function WorkspacesPage() {
                     <p className="text-slate-500">recoverable / mo</p>
                   </div>
 
-                  <OpenWorkspaceButton
-                    connectionId={client.id}
-                    label={isActive ? "Open workspace" : "Switch & open"}
-                  />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <WorkspaceRescanButton connectionId={client.id} compact />
+                    {client.score != null ? (
+                      <Link
+                        href={`/dashboard/client/scorecard?connection=${client.id}`}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+                      >
+                        <FileText className="h-3.5 w-3.5" />
+                        Scorecard
+                      </Link>
+                    ) : null}
+                    <OpenWorkspaceButton
+                      connectionId={client.id}
+                      label={isActive ? "Open" : "Switch & open"}
+                      compact
+                    />
+                  </div>
                 </div>
               </div>
             </div>
