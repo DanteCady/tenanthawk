@@ -12,7 +12,8 @@ import {
 } from "lucide-react";
 import { getSession } from "@/lib/session";
 import { getPlan } from "@/lib/entitlements";
-import { getConnections } from "@/lib/queries";
+import { getActiveConnection, getConnections } from "@/lib/queries";
+import { connectionLabel } from "@/lib/connection/label";
 import { PlanBadge } from "@/components/app/PlanBadge";
 import { DisconnectTenantButton } from "@/components/app/DisconnectTenantButton";
 import { DeleteAccountButton } from "@/components/app/DeleteAccountButton";
@@ -80,26 +81,25 @@ export default async function SettingsPage() {
   const isPro = plan === "pro";
   const alertPrefs = await getAlertPreferences(session.user.id);
   const connections = await getConnections(session.user.id);
-  const connection = connections[0];
+  const activeConn = await getActiveConnection(session.user.id);
   const liveConfigured = isLiveConfigured();
 
-  const tenantLabel =
-    connection?.tenant_domain ??
-    connection?.display_name ??
-    (connection?.mode === "demo" ? "Contoso (demo)" : "Microsoft 365");
-
-  const connectionHealth = connection
-    ? await getConnectionHealth(connection)
-    : null;
-
-  const licensePricing = connection
-    ? parseLicensePricing(connection.license_pricing)
+  const licensePricing = activeConn
+    ? parseLicensePricing(activeConn.license_pricing)
     : null;
   const listPrices = Object.fromEntries(
     COMMON_LICENSE_PRICING_FIELDS.map(({ code }) => [
       code,
       microsoftListPriceForSku(code),
     ]),
+  );
+
+  const connectionRows = await Promise.all(
+    connections.map(async (conn) => ({
+      conn,
+      label: connectionLabel(conn),
+      health: await getConnectionHealth(conn),
+    })),
   );
 
   return (
@@ -116,7 +116,7 @@ export default async function SettingsPage() {
           Settings
         </h1>
         <p className="mt-1 text-sm text-slate-600">
-          Account, tenant connection, and billing preferences.
+          Account, client tenants, and billing preferences.
         </p>
       </div>
 
@@ -130,74 +130,101 @@ export default async function SettingsPage() {
       </SettingsSection>
 
       <SettingsSection
-        title="Connected tenant"
+        title={connections.length > 1 ? "Connected clients" : "Connected tenant"}
         description="Read-only Microsoft 365 / Entra access for scanning. We never store credentials."
       >
-        {connection ? (
-          <>
-            <DetailRow
-              icon={Building2}
-              label="Tenant"
-              value={
-                <span className="flex flex-wrap items-center gap-2">
-                  {tenantLabel}
-                  <span
-                    className={
-                      connection.mode === "live"
-                        ? "rounded-full border border-[var(--th-brand-muted-border)] bg-[var(--th-brand-muted)] px-2 py-0.5 text-xs font-medium text-[var(--th-brand-text)]"
-                        : "badge-free"
-                    }
-                  >
-                    {connection.mode === "live" ? "Live" : "Demo"}
-                  </span>
-                </span>
-              }
-            />
-            {connection.tenant_id && (
-              <DetailRow
-                icon={Lock}
-                label="Tenant ID"
-                value={
-                  <code className="break-all text-xs text-slate-700">
-                    {connection.tenant_id}
-                  </code>
-                }
-              />
-            )}
-            <DetailRow
-              icon={Lock}
-              label="Connected"
-              value={timeAgo(connection.created_at)}
-            />
-
-            {connectionHealth ? (
-              <TenantConnectionCheck
-                initial={connectionHealth}
-                tenantLabel={tenantLabel}
-              />
-            ) : null}
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              {liveConfigured && connection.mode === "live" && (
-                <a
-                  href="/api/connect/start"
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+        {connectionRows.length > 0 ? (
+          <div className="space-y-4">
+            {connectionRows.map(({ conn, label, health }) => {
+              const isActive = activeConn?.id === conn.id;
+              return (
+                <div
+                  key={conn.id}
+                  className={`rounded-xl border p-4 ${
+                    isActive
+                      ? "border-blue-200 bg-blue-50/40"
+                      : "border-slate-200 bg-slate-50/50"
+                  }`}
                 >
-                  Re-consent
-                </a>
-              )}
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium text-slate-900">{label}</p>
+                      <p className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                        <span
+                          className={
+                            conn.mode === "live"
+                              ? "rounded-full border border-[var(--th-brand-muted-border)] bg-[var(--th-brand-muted)] px-2 py-0.5 font-medium text-[var(--th-brand-text)]"
+                              : "badge-free"
+                          }
+                        >
+                          {conn.mode === "live" ? "Live" : "Demo"}
+                        </span>
+                        {isActive ? (
+                          <span className="font-medium text-blue-700">Active client</span>
+                        ) : null}
+                        · connected {timeAgo(conn.created_at)}
+                      </p>
+                    </div>
+                    {!isActive ? (
+                      <Link
+                        href={`/dashboard/client?connection=${conn.id}`}
+                        className="text-xs font-medium text-blue-700 hover:text-blue-800"
+                      >
+                        Switch to this client
+                      </Link>
+                    ) : null}
+                  </div>
+
+                  {conn.tenant_id ? (
+                    <p className="mt-2 break-all font-mono text-xs text-slate-600">
+                      {conn.tenant_id}
+                    </p>
+                  ) : null}
+
+                  {health ? (
+                    <div className="mt-3">
+                      <TenantConnectionCheck initial={health} tenantLabel={label} />
+                    </div>
+                  ) : null}
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {liveConfigured && conn.mode === "live" && (
+                      <a
+                        href="/api/connect/start?return=clients"
+                        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+                      >
+                        Re-consent
+                      </a>
+                    )}
+                    <DisconnectTenantButton
+                      connectionId={conn.id}
+                      label={label}
+                      compact
+                    />
+                  </div>
+                </div>
+              );
+            })}
+
+            <div className="flex flex-wrap gap-2 pt-2">
               <Link
-                href="/onboarding"
+                href="/onboarding?mode=add-client"
                 className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
               >
-                Connect another
+                Add client tenant
+                <ArrowRight className="h-4 w-4" />
               </Link>
+              {connections.length > 1 ? (
+                <Link
+                  href="/dashboard/workspaces"
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+                >
+                  <Building2 className="h-4 w-4" />
+                  All workspaces
+                </Link>
+              ) : null}
             </div>
-
-            <div className="mt-4 border-t border-slate-100 pt-4">
-              <DisconnectTenantButton />
-            </div>
-          </>
+          </div>
         ) : (
           <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
             <p className="text-sm text-slate-600">No tenant connected yet.</p>
@@ -227,7 +254,7 @@ export default async function SettingsPage() {
 
       <SettingsSection
         title="License pricing"
-        description="Contracted per-seat rates for recoverable spend estimates (Pro)."
+        description="Contracted per-seat rates for the active client (Pro)."
       >
         <LicensePricingForm
           isPro={isPro}

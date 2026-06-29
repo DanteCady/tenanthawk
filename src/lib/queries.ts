@@ -1,18 +1,13 @@
 import "server-only";
 import { db } from "@/db";
+import { readActiveConnectionCookie } from "@/lib/connection/active";
 import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
 import { isLiveConfigured } from "@/lib/scan/graph";
 
-export async function getPrimaryConnection(userId: string) {
-  const conn = await db
-    .selectFrom("connection")
-    .selectAll()
-    .where("user_id", "=", userId)
-    .orderBy("created_at", "desc")
-    .executeTakeFirst();
-
+async function maybeEnrichConnection(
+  conn: Awaited<ReturnType<typeof getConnections>>[number],
+) {
   if (
-    conn &&
     conn.mode === "live" &&
     conn.tenant_id &&
     !conn.tenant_domain &&
@@ -25,8 +20,70 @@ export async function getPrimaryConnection(userId: string) {
       .where("id", "=", conn.id)
       .executeTakeFirst();
   }
-
   return conn;
+}
+
+export async function getConnectionById(userId: string, connectionId: string) {
+  const conn = await db
+    .selectFrom("connection")
+    .selectAll()
+    .where("id", "=", connectionId)
+    .where("user_id", "=", userId)
+    .executeTakeFirst();
+  if (!conn) return undefined;
+  return maybeEnrichConnection(conn);
+}
+
+async function resolveDefaultConnectionId(userId: string): Promise<string | undefined> {
+  const connections = await getConnections(userId);
+  if (connections.length === 0) return undefined;
+  if (connections.length === 1) return connections[0].id;
+
+  const ranked = await Promise.all(
+    connections.map(async (conn) => ({
+      id: conn.id,
+      createdAt: conn.created_at,
+      latestScan: await getLatestScan(conn.id),
+    })),
+  );
+
+  ranked.sort((a, b) => {
+    const aTime = a.latestScan?.started_at
+      ? new Date(a.latestScan.started_at).getTime()
+      : 0;
+    const bTime = b.latestScan?.started_at
+      ? new Date(b.latestScan.started_at).getTime()
+      : 0;
+    if (aTime !== bTime) return bTime - aTime;
+    return b.createdAt.getTime() - a.createdAt.getTime();
+  });
+
+  return ranked[0]?.id;
+}
+
+export async function getActiveConnection(
+  userId: string,
+  preferredId?: string | null,
+) {
+  const owned = new Set((await getConnections(userId)).map((c) => c.id));
+
+  if (preferredId && owned.has(preferredId)) {
+    return getConnectionById(userId, preferredId);
+  }
+
+  const cookieId = await readActiveConnectionCookie();
+  if (cookieId && owned.has(cookieId)) {
+    return getConnectionById(userId, cookieId);
+  }
+
+  const fallbackId = await resolveDefaultConnectionId(userId);
+  if (!fallbackId) return undefined;
+  return getConnectionById(userId, fallbackId);
+}
+
+/** @deprecated Use getActiveConnection — kept for gradual migration. */
+export async function getPrimaryConnection(userId: string) {
+  return getActiveConnection(userId);
 }
 
 export async function getConnections(userId: string) {

@@ -5,7 +5,7 @@ import type { FindingDTO } from "@/components/app/FindingsTable";
 import { getSession } from "@/lib/session";
 import { getPlan } from "@/lib/entitlements";
 import {
-  getPrimaryConnection,
+  getActiveConnection,
   getLatestScan,
   getFindings,
   getScanTrend,
@@ -14,6 +14,7 @@ import {
 import { summarize } from "@/lib/summary";
 import { getFindingStatuses, isFindingHidden } from "@/lib/findings/status";
 import { findingStatusKey } from "@/lib/findings/key";
+import { connectionLabel } from "@/lib/connection/label";
 
 function parseRemediationEnriched(raw: unknown): RemediationEnriched | null {
   if (!raw || typeof raw !== "object") return null;
@@ -27,7 +28,7 @@ export async function getDashboardSnapshot() {
   const session = await getSession();
   if (!session) redirect("/login");
 
-  const conn = await getPrimaryConnection(session.user.id);
+  const conn = await getActiveConnection(session.user.id);
   if (!conn) redirect("/onboarding");
 
   const scan = await getLatestScan(conn.id);
@@ -67,10 +68,7 @@ export async function getDashboardSnapshot() {
     };
   });
 
-  const tenantLabel =
-    conn.mode === "demo"
-      ? "Contoso (demo tenant)"
-      : conn.tenant_domain ?? "Microsoft 365";
+  const tenantLabel = connectionLabel(conn);
 
   return {
     session,

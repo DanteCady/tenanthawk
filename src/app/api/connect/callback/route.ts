@@ -5,8 +5,14 @@ import { getSession } from "@/lib/session";
 import { runScan } from "@/lib/scan/runScan";
 import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
 import { invalidateConnectionHealth } from "@/lib/connect/health";
+import {
+  activeConnectionCookieOptions,
+  ACTIVE_CONNECTION_COOKIE,
+} from "@/lib/connection/constants";
 
 export const runtime = "nodejs";
+
+const CONNECT_RETURN_COOKIE = "th_connect_return";
 
 // Microsoft redirects here after admin consent with admin_consent + tenant.
 export async function GET(req: NextRequest) {
@@ -20,12 +26,15 @@ export async function GET(req: NextRequest) {
   const tenant = searchParams.get("tenant");
   const state = searchParams.get("state");
   const expectedState = req.cookies.get("th_connect_state")?.value;
+  const returnTo = req.cookies.get(CONNECT_RETURN_COOKIE)?.value;
 
   const fail = (reason: string) => {
-    const res = NextResponse.redirect(
-      new URL(`/onboarding?connect=${reason}`, req.url),
-    );
+    const url = new URL("/onboarding", req.url);
+    if (returnTo === "clients") url.searchParams.set("mode", "add-client");
+    url.searchParams.set("connect", reason);
+    const res = NextResponse.redirect(url);
     res.cookies.delete("th_connect_state");
+    res.cookies.delete(CONNECT_RETURN_COOKIE);
     return res;
   };
 
@@ -79,7 +88,14 @@ export async function GET(req: NextRequest) {
     return fail("scan_failed");
   }
 
-  const res = NextResponse.redirect(new URL("/onboarding", req.url));
+  const redirectPath =
+    returnTo === "clients"
+      ? `/dashboard/workspaces?connection=${conn.id}`
+      : "/onboarding";
+
+  const res = NextResponse.redirect(new URL(redirectPath, req.url));
   res.cookies.delete("th_connect_state");
+  res.cookies.delete(CONNECT_RETURN_COOKIE);
+  res.cookies.set(ACTIVE_CONNECTION_COOKIE, conn.id, activeConnectionCookieOptions());
   return res;
 }

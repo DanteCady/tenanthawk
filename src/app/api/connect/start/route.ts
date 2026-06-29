@@ -6,6 +6,8 @@ import { RATE_LIMITS } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
+const CONNECT_RETURN_COOKIE = "th_connect_return";
+
 // Kicks off the Microsoft admin-consent flow for our multi-tenant,
 // read-only, app-only Entra app.
 export async function GET(req: NextRequest) {
@@ -36,6 +38,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  const returnTo = req.nextUrl.searchParams.get("return");
   const state = crypto.randomUUID();
   const consentUrl =
     `https://login.microsoftonline.com/common/adminconsent` +
@@ -50,5 +53,13 @@ export async function GET(req: NextRequest) {
     maxAge: 600,
     path: "/",
   });
+  if (returnTo === "clients") {
+    res.cookies.set(CONNECT_RETURN_COOKIE, "clients", {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 600,
+      path: "/",
+    });
+  }
   return res;
 }

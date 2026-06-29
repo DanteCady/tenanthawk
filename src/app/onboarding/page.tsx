@@ -1,5 +1,9 @@
 import { redirect } from "next/navigation";
-import { getPrimaryConnection, getLatestScan, getFindings } from "@/lib/queries";
+import {
+  getActiveConnection,
+  getLatestScan,
+  getFindings,
+} from "@/lib/queries";
 import { getPlan } from "@/lib/entitlements";
 import { summarize, type FindingRow } from "@/lib/summary";
 import { isLiveConfigured } from "@/lib/scan/graph";
@@ -21,15 +25,26 @@ const CONNECT_ERRORS: Record<string, string> = {
 export default async function OnboardingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ connect?: string }>;
+  searchParams: Promise<{ connect?: string; mode?: string }>;
 }) {
   const session = await requireVerifiedSession();
+  const { connect, mode } = await searchParams;
+  const addClientMode = mode === "add-client";
 
-  const conn = await getPrimaryConnection(session.user.id);
+  if (addClientMode) {
+    return (
+      <ConnectStep
+        liveConfigured={isLiveConfigured()}
+        showDevSetup={!isLiveConfigured() && process.env.NODE_ENV === "development"}
+        error={connect ? CONNECT_ERRORS[connect] : undefined}
+        addClientMode
+      />
+    );
+  }
+  const conn = await getActiveConnection(session.user.id);
   const scan = conn ? await getLatestScan(conn.id) : undefined;
 
   if (!conn || !scan) {
-    const { connect } = await searchParams;
     return (
       <ConnectStep
         liveConfigured={isLiveConfigured()}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Building2,
   ClipboardList,
   FileOutput,
   LayoutDashboard,
@@ -14,6 +15,12 @@ import {
 
 const NAV = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
+  {
+    href: "/dashboard/workspaces",
+    label: "Workspaces",
+    icon: Building2,
+    msp: true,
+  },
   { href: "/dashboard/findings", label: "Findings", icon: ClipboardList },
   { href: "/dashboard/roadmap", label: "Roadmap", icon: Route, pro: true },
   { href: "/dashboard/compliance", label: "Compliance", icon: Shield, pro: true },
@@ -22,13 +29,26 @@ const NAV = [
   { href: "/dashboard/billing", label: "Billing", icon: CreditCard },
 ] as const;
 
-export function DashboardNav({ isPro }: { isPro: boolean }) {
+export function DashboardNav({
+  isPro,
+  showWorkspaces = false,
+}: {
+  isPro: boolean;
+  showWorkspaces?: boolean;
+}) {
   const pathname = usePathname();
 
   function isActive(href: string, exact?: boolean) {
+    if (href === "/dashboard" && exact) {
+      return pathname === "/dashboard";
+    }
     if (exact) return pathname === href;
     return pathname === href || pathname.startsWith(`${href}/`);
   }
+
+  const items = NAV.filter(
+    (item) => !("msp" in item && item.msp) || showWorkspaces,
+  );
 
   return (
     <>
@@ -38,7 +58,7 @@ export function DashboardNav({ isPro }: { isPro: boolean }) {
         aria-label="Dashboard"
       >
         <ul className="sticky top-20 space-y-0.5">
-          {NAV.map((item) => {
+          {items.map((item) => {
             const locked = "pro" in item && item.pro && !isPro;
             const active = !locked && isActive(item.href, "exact" in item ? item.exact : false);
             const Icon = item.icon;
@@ -73,7 +93,7 @@ export function DashboardNav({ isPro }: { isPro: boolean }) {
         className="-mx-6 mb-6 flex gap-1 overflow-x-auto border-b border-slate-200 px-6 pb-3 lg:hidden"
         aria-label="Dashboard"
       >
-        {NAV.map((item) => {
+        {items.map((item) => {
           const locked = "pro" in item && item.pro && !isPro;
           const active = !locked && isActive(item.href, "exact" in item ? item.exact : false);
           return (

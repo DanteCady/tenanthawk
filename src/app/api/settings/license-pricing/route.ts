@@ -9,7 +9,7 @@ import {
   type LicensePricingOverrides,
 } from "@/lib/licenses/pricing-overrides";
 import { microsoftListPriceForSku } from "@/lib/licenses/sku-pricing";
-import { getPrimaryConnection } from "@/lib/queries";
+import { getActiveConnection } from "@/lib/queries";
 
 export const runtime = "nodejs";
 
@@ -28,7 +28,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const conn = await getPrimaryConnection(session.user.id);
+  const conn = await getActiveConnection(session.user.id);
   if (!conn) {
     return NextResponse.json({ error: "No connection" }, { status: 404 });
   }
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Pro plan required" }, { status: 403 });
   }
 
-  const conn = await getPrimaryConnection(session.user.id);
+  const conn = await getActiveConnection(session.user.id);
   if (!conn) {
     return NextResponse.json({ error: "No connection" }, { status: 404 });
   }

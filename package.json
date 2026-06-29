@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "seed": "node scripts/seed.mjs",
+    "seed:msp": "node --experimental-strip-types --env-file=.env scripts/seed-msp.mjs",
     "icons": "node scripts/generate-icons.mjs",
     "stripe:founding-promo": "node scripts/stripe-create-founding-promo.mjs"
   },

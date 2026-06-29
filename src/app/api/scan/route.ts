@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
-import { getPrimaryConnection } from "@/lib/queries";
+import { getActiveConnection } from "@/lib/queries";
 import { getPlan } from "@/lib/entitlements";
 import { enforceRateLimit } from "@/lib/rate-limit-http";
 import { RATE_LIMITS } from "@/lib/rate-limit";
@@ -14,7 +14,7 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const conn = await getPrimaryConnection(session.user.id);
+  const conn = await getActiveConnection(session.user.id);
   if (!conn) {
     return NextResponse.json({ error: "No connection" }, { status: 404 });
   }

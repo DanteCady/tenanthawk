@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db";
+import { requireSession } from "@/lib/session";
 import {
   clearActiveConnectionCookie,
   readActiveConnectionCookie,
@@ -7,7 +7,6 @@ import {
 } from "@/lib/connection/active";
 import { getConnectionById, getConnections } from "@/lib/queries";
 import { invalidateConnectionHealth } from "@/lib/connect/health";
-import { requireSession } from "@/lib/session";
 
 export const runtime = "nodejs";
 
@@ -31,18 +30,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Connection not found" }, { status: 404 });
   }
 
-  invalidateConnectionHealth(connectionId);
-
-  await db.deleteFrom("connection").where("id", "=", connectionId).execute();
-
-  const activeId = await readActiveConnectionCookie();
-  if (activeId === connectionId) {
-    await clearActiveConnectionCookie();
-    const remaining = await getConnections(session.user.id);
-    if (remaining.length > 0) {
-      await setActiveConnectionCookie(remaining[0].id);
-    }
-  }
-
-  return NextResponse.json({ ok: true });
+  await setActiveConnectionCookie(connectionId);
+  return NextResponse.json({ ok: true, connectionId });
 }

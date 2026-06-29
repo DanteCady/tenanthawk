@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getSession } from "@/lib/session";
 import { isPro } from "@/lib/entitlements";
 import {
-  getPrimaryConnection,
+  getActiveConnection,
   getLatestScan,
   getFindings,
 } from "@/lib/queries";
@@ -17,7 +17,7 @@ export default async function ReportPage() {
   if (!session) redirect("/login");
   if (!(await isPro(session.user.id))) redirect("/dashboard/billing");
 
-  const conn = await getPrimaryConnection(session.user.id);
+  const conn = await getActiveConnection(session.user.id);
   if (!conn) redirect("/onboarding");
   const scan = await getLatestScan(conn.id);
   if (!scan) redirect("/onboarding");

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { isPro } from "@/lib/entitlements";
-import { getPrimaryConnection } from "@/lib/queries";
+import { getActiveConnection } from "@/lib/queries";
 import { setFindingStatus } from "@/lib/findings/status";
 
 export const runtime = "nodejs";
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Pro plan required" }, { status: 403 });
   }
 
-  const conn = await getPrimaryConnection(session.user.id);
+  const conn = await getActiveConnection(session.user.id);
   if (!conn) {
     return NextResponse.json({ error: "No connection" }, { status: 404 });
   }

@@ -115,10 +115,12 @@ function ConnectOptions({
   liveConfigured,
   onDemo,
   demoLoading,
+  connectStartHref = "/api/connect/start",
 }: {
   liveConfigured: boolean;
   onDemo: () => void;
   demoLoading: boolean;
+  connectStartHref?: string;
 }) {
   const reduceMotion = useReducedMotion();
 
@@ -126,7 +128,7 @@ function ConnectOptions({
     <div className="space-y-4">
       {liveConfigured && (
         <motion.a
-          href="/api/connect/start"
+          href={connectStartHref}
           variants={fadeUp}
           className="group relative block transition-all hover:opacity-95"
           whileHover={reduceMotion ? {} : { y: -2 }}
@@ -194,10 +196,12 @@ export function ConnectStep({
   liveConfigured,
   showDevSetup,
   error,
+  addClientMode = false,
 }: {
   liveConfigured: boolean;
   showDevSetup: boolean;
   error?: string;
+  addClientMode?: boolean;
 }) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
@@ -223,7 +227,7 @@ export function ConnectStep({
         setDemoError("Demo scan failed. Check that the server and database are running.");
         return;
       }
-      router.push("/onboarding");
+      router.push(addClientMode ? "/dashboard/workspaces" : "/onboarding");
       router.refresh();
     } catch {
       setScanning(false);
@@ -259,12 +263,14 @@ export function ConnectStep({
         >
           <motion.div variants={fadeUp} className="text-center">
             <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
-              Connect your tenant
+              {addClientMode ? "Add a client tenant" : "Connect your tenant"}
             </h1>
             <p className="mx-auto mt-2 max-w-md text-slate-600">
-              {liveConfigured
-                ? "Sign in with Microsoft to grant read-only access — your health score in about a minute."
-                : "Try a demo scan now, or connect your real tenant once Microsoft sign-in is enabled."}
+              {addClientMode
+                ? "Connect another Microsoft 365 tenant to your portfolio. Each client stays scoped separately."
+                : liveConfigured
+                  ? "Sign in with Microsoft to grant read-only access — your health score in about a minute."
+                  : "Try a demo scan now, or connect your real tenant once Microsoft sign-in is enabled."}
             </p>
           </motion.div>
 
@@ -284,6 +290,9 @@ export function ConnectStep({
               liveConfigured={liveConfigured}
               onDemo={runDemo}
               demoLoading={scanning}
+              connectStartHref={
+                addClientMode ? "/api/connect/start?return=clients" : "/api/connect/start"
+              }
             />
           </div>
 

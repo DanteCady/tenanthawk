@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { requireVerifiedSession } from "@/lib/session";
 import { getPlan } from "@/lib/entitlements";
-import { getPrimaryConnection } from "@/lib/queries";
-import { getConnectionHealth } from "@/lib/connect/health";
-import { exportTenantLabel } from "@/lib/export/payload";
+import { getActiveConnection, getConnections } from "@/lib/queries";
+import { connectionLabel } from "@/lib/connection/label";
 import { ThemeLogo } from "@/components/theme/ThemeLogo";
 import { PlanBadge } from "@/components/app/PlanBadge";
 import { ConnectionStatusBlip } from "@/components/app/ConnectionStatusBlip";
+import { ClientContextBar } from "@/components/app/ClientContextBar";
 import { SignOutButton } from "@/components/app/SignOutButton";
 import { AppFooter } from "@/components/AppFooter";
 import { DashboardNav } from "@/components/app/DashboardNav";
+import { getConnectionHealth } from "@/lib/connect/health";
 
 export default async function DashboardLayout({
   children,
@@ -18,10 +19,12 @@ export default async function DashboardLayout({
 }) {
   const session = await requireVerifiedSession();
   const plan = await getPlan(session.user.id);
-  const conn = await getPrimaryConnection(session.user.id);
+  const connections = await getConnections(session.user.id);
+  const conn = await getActiveConnection(session.user.id);
   const connectionHealth = conn ? await getConnectionHealth(conn) : null;
-  const tenantLabel = conn ? exportTenantLabel(conn) : null;
+  const tenantLabel = conn ? connectionLabel(conn) : null;
   const isPro = plan === "pro";
+  const isMsp = connections.length > 1;
 
   return (
     <div className="app-shell flex min-h-screen flex-col">
@@ -30,8 +33,8 @@ export default async function DashboardLayout({
           <Link href="/dashboard" aria-label="Dashboard">
             <ThemeLogo />
           </Link>
-          <div className="flex items-center gap-2 sm:gap-3">
-            {connectionHealth ? (
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+            {!isMsp && connectionHealth ? (
               <ConnectionStatusBlip
                 health={connectionHealth}
                 tenantLabel={tenantLabel}
@@ -52,8 +55,17 @@ export default async function DashboardLayout({
       </header>
 
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-8 lg:flex-row lg:gap-8">
-        <DashboardNav isPro={isPro} />
-        <main className="min-w-0 flex-1">{children}</main>
+        <DashboardNav isPro={isPro} showWorkspaces={isMsp} />
+        <main className="min-w-0 flex-1">
+          {isMsp && conn && tenantLabel ? (
+            <ClientContextBar
+              show
+              connectionId={conn.id}
+              label={tenantLabel}
+            />
+          ) : null}
+          {children}
+        </main>
       </div>
 
       <AppFooter />
