@@ -38,6 +38,15 @@ Invited org members inherit the owner's client portfolio (`resolveWorkspaceDataU
 
 MSPs configure SAML 2.0 or OIDC in **Settings → Enterprise workspace**. Better Auth `@better-auth/sso` plugin stores providers linked to `organizationId`.
 
+**Email domain verification** is required before SSO sign-in works. After saving a provider, add a DNS **TXT** record:
+
+| Field | Value |
+|-------|--------|
+| Host | `_tenanthawk-token-{providerId}.{your-domain}` |
+| Value | `_tenanthawk-token-{providerId}={token}` |
+
+The settings UI shows the exact host/value and a **Check DNS & verify** button. SSO sign-in stays blocked until verification succeeds.
+
 ### Production DNS / TLS
 
 #### 1. Wildcard DNS (at your domain registrar / DNS host)

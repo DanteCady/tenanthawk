@@ -19,6 +19,7 @@ import {
 import {
   getAuthAllowedHosts,
   getEnterpriseCookieDomain,
+  getSsoDomainVerificationOptions,
   getTenantHawkAdminUserIds,
   isEnterpriseSsoEnabled,
 } from "./enterprise/config";
@@ -105,6 +106,7 @@ export const auth = betterAuth({
             organizationProvisioning: {
               defaultRole: "member",
             },
+            domainVerification: getSsoDomainVerificationOptions(),
           }),
         ]
       : []),

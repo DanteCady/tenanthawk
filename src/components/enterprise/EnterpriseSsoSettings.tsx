@@ -4,25 +4,41 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { buildEnterpriseSubdomainUrl } from "@/lib/enterprise/config";
+import { SsoDomainVerification } from "@/components/enterprise/SsoDomainVerification";
 
 const inputClass =
   "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/25";
 
 type SsoMode = "oidc" | "saml";
 
+export type ExistingSsoProvider = {
+  providerId: string;
+  domain: string;
+  domainVerified: boolean;
+};
+
+type RegisterResponse = {
+  providerId: string;
+  domain: string;
+  domainVerified?: boolean;
+  domainVerificationToken?: string;
+};
+
 export function EnterpriseSsoSettings({
   organizationId,
   organizationSlug,
-  existingDomain,
+  existingProvider,
 }: {
   organizationId: string;
   organizationSlug: string;
-  existingDomain?: string | null;
+  existingProvider?: ExistingSsoProvider | null;
 }) {
   const [mode, setMode] = useState<SsoMode>("oidc");
-  const [providerId, setProviderId] = useState(`${organizationSlug}-sso`);
+  const [providerId, setProviderId] = useState(
+    existingProvider?.providerId ?? `${organizationSlug}-sso`,
+  );
   const [issuer, setIssuer] = useState("");
-  const [domain, setDomain] = useState(existingDomain ?? "");
+  const [domain, setDomain] = useState(existingProvider?.domain ?? "");
   const [clientId, setClientId] = useState("");
   const [clientSecret, setClientSecret] = useState("");
   const [entryPoint, setEntryPoint] = useState("");
@@ -30,6 +46,14 @@ export function EnterpriseSsoSettings({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [savedProvider, setSavedProvider] = useState<ExistingSsoProvider | null>(
+    existingProvider ?? null,
+  );
+  const [pendingToken, setPendingToken] = useState<string | null>(null);
+
+  const activeProvider = savedProvider;
+  const showVerification =
+    activeProvider && !activeProvider.domainVerified && activeProvider.domain;
 
   const callbackBase = buildEnterpriseSubdomainUrl(organizationSlug, "");
 
@@ -37,6 +61,7 @@ export function EnterpriseSsoSettings({
     e.preventDefault();
     setError(null);
     setMessage(null);
+    setPendingToken(null);
     setSaving(true);
 
     const body =
@@ -64,9 +89,10 @@ export function EnterpriseSsoSettings({
             },
           };
 
-    const result = await authClient.$fetch("/sso/register", {
+    const endpoint = existingProvider ? "/sso/update-provider" : "/sso/register";
+    const result = await authClient.$fetch<RegisterResponse>(endpoint, {
       method: "POST",
-      body,
+      body: existingProvider ? { ...body, providerId: existingProvider.providerId } : body,
     });
 
     setSaving(false);
@@ -76,13 +102,42 @@ export function EnterpriseSsoSettings({
       return;
     }
 
-    setMessage("SSO provider saved. Test sign-in from your workspace login URL.");
+    const data = result.data;
+    if (!data) {
+      setError("Unexpected response from server.");
+      return;
+    }
+
+    const normalizedDomain = domain.trim().toLowerCase();
+    const domainChanged =
+      existingProvider &&
+      normalizedDomain !== existingProvider.domain.trim().toLowerCase();
+
+    setSavedProvider({
+      providerId: existingProvider?.providerId ?? data.providerId,
+      domain: normalizedDomain,
+      domainVerified: domainChanged ? false : Boolean(existingProvider?.domainVerified),
+    });
+    setPendingToken(data.domainVerificationToken ?? null);
+    setMessage(
+      data.domainVerified
+        ? "SSO provider saved."
+        : "SSO provider saved. Verify your email domain below to enable sign-in.",
+    );
   }
 
   const metadataUrl = `${callbackBase}/api/auth/sso/saml2/sp/metadata?providerId=${encodeURIComponent(providerId)}`;
 
   return (
     <div className="space-y-5">
+      {activeProvider?.domainVerified && (
+        <SsoDomainVerification
+          providerId={activeProvider.providerId}
+          domain={activeProvider.domain}
+          domainVerified
+        />
+      )}
+
       <div className="flex gap-2">
         {(["oidc", "saml"] as const).map((value) => (
           <button
@@ -112,6 +167,7 @@ export function EnterpriseSsoSettings({
               value={providerId}
               onChange={(e) => setProviderId(e.target.value)}
               className={inputClass}
+              disabled={Boolean(existingProvider)}
             />
           </div>
           <div>
@@ -126,13 +182,14 @@ export function EnterpriseSsoSettings({
               onChange={(e) => setDomain(e.target.value)}
               className={inputClass}
             />
+            <p className="mt-1 text-xs text-slate-500">
+              Users with this email domain can use SSO after DNS verification.
+            </p>
           </div>
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
-            Issuer URL
-          </label>
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">Issuer URL</label>
           <input
             type="url"
             required
@@ -146,9 +203,7 @@ export function EnterpriseSsoSettings({
         {mode === "oidc" ? (
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                Client ID
-              </label>
+              <label className="mb-1.5 block text-sm font-medium text-slate-700">Client ID</label>
               <input
                 type="text"
                 required
@@ -199,7 +254,12 @@ export function EnterpriseSsoSettings({
             </div>
             <p className="text-xs text-slate-500">
               SP metadata:{" "}
-              <a href={metadataUrl} className="text-blue-600 hover:underline" target="_blank" rel="noreferrer">
+              <a
+                href={metadataUrl}
+                className="text-blue-600 hover:underline"
+                target="_blank"
+                rel="noreferrer"
+              >
                 download XML
               </a>
             </p>
@@ -215,9 +275,22 @@ export function EnterpriseSsoSettings({
           className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60"
         >
           {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-          Save SSO configuration
+          {existingProvider ? "Update SSO configuration" : "Save SSO configuration"}
         </button>
       </form>
+
+      {showVerification && activeProvider && (
+        <SsoDomainVerification
+          providerId={activeProvider.providerId}
+          domain={activeProvider.domain}
+          initialToken={pendingToken}
+          onVerified={() => {
+            setSavedProvider({ ...activeProvider, domainVerified: true });
+            setMessage("Domain verified — SSO sign-in is now enabled.");
+            setPendingToken(null);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -21,10 +21,22 @@ export default async function EnterpriseSettingsPage() {
   const org = await getOwnedEnterpriseOrganization(session.user.id);
   if (!org) redirect("/onboarding/workspace");
 
-  const ssoRow = await pool.query<{ domain: string }>(
-    `SELECT domain FROM "ssoProvider" WHERE "organizationId" = $1 LIMIT 1`,
+  const ssoRow = await pool.query<{
+    providerId: string;
+    domain: string;
+    domainVerified: boolean | null;
+  }>(
+    `SELECT "providerId", domain, "domainVerified" FROM "ssoProvider" WHERE "organizationId" = $1 LIMIT 1`,
     [org.id],
   );
+
+  const existingSso = ssoRow.rows[0]
+    ? {
+        providerId: ssoRow.rows[0].providerId,
+        domain: ssoRow.rows[0].domain,
+        domainVerified: Boolean(ssoRow.rows[0].domainVerified),
+      }
+    : null;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -73,7 +85,7 @@ export default async function EnterpriseSettingsPage() {
           <EnterpriseSsoSettings
             organizationId={org.id}
             organizationSlug={org.slug}
-            existingDomain={ssoRow.rows[0]?.domain}
+            existingProvider={existingSso}
           />
         </div>
       </section>

@@ -9,7 +9,7 @@ import { stripe } from "@better-auth/stripe";
 import { sso } from "@better-auth/sso";
 import Stripe from "stripe";
 import { pool } from "./src/db";
-import { getAuthAllowedHosts } from "./src/lib/enterprise/config";
+import { getAuthAllowedHosts, getSsoDomainVerificationOptions } from "./src/lib/enterprise/config";
 
 const stripeClient = new Stripe(
   process.env.STRIPE_SECRET_KEY || "sk_test_placeholder",
@@ -39,7 +39,9 @@ export const auth = betterAuth({
   plugins: [
     admin(),
     organization(),
-    sso(),
+    sso({
+      domainVerification: getSsoDomainVerificationOptions(),
+    }),
     stripe({
       stripeClient,
       stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "whsec_placeholder",

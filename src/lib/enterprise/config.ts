@@ -58,6 +58,16 @@ export function isEnterpriseSsoEnabled(): boolean {
   return true;
 }
 
+/** DNS TXT prefix for SSO domain ownership (`_tenanthawk-token-{providerId}.domain`). */
+export const SSO_DOMAIN_VERIFICATION_TOKEN_PREFIX = "tenanthawk-token";
+
+export function getSsoDomainVerificationOptions() {
+  return {
+    enabled: true,
+    tokenPrefix: SSO_DOMAIN_VERIFICATION_TOKEN_PREFIX,
+  } as const;
+}
+
 export function buildEnterpriseSubdomainUrl(slug: string, path = "/"): string {
   const root = getEnterpriseRootDomain();
   const isLocal = root.includes("localhost");
