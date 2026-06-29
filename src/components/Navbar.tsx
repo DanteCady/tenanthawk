@@ -10,6 +10,7 @@ const links = [
   { href: "/why", label: "Why Tenant Hawk" },
   { href: "/#categories", label: "What it scans" },
   { href: "/#how", label: "How it works" },
+  { href: "/#msp", label: "For MSPs" },
   { href: "/#pricing", label: "Pricing" },
   { href: "/guides", label: "Guides" },
 ] as const;

@@ -78,6 +78,10 @@ export function Hero() {
             </span>
             <span className="hidden h-4 w-px bg-slate-200 sm:block" />
             <span>Connect in 2 minutes · no credit card</span>
+            <span className="hidden h-4 w-px bg-slate-200 sm:block" />
+            <a href="#msp" className="font-medium text-blue-600 hover:text-blue-700">
+              MSP console available on Enterprise →
+            </a>
           </motion.div>
         </motion.div>
 

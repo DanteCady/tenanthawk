@@ -5,6 +5,7 @@ import { Stats } from "@/components/Stats";
 import { ProblemSection } from "@/components/ProblemSection";
 import { Categories } from "@/components/Categories";
 import { HowItWorks } from "@/components/HowItWorks";
+import { MspConsoleSection } from "@/components/MspConsoleSection";
 import { Pricing } from "@/components/Pricing";
 import { WaitlistSection } from "@/components/WaitlistSection";
 import { Footer } from "@/components/Footer";
@@ -18,7 +19,7 @@ import {
 export const metadata = buildPageMetadata({
   title: "Microsoft 365 & Azure tenant health scanner",
   description:
-    "Find security misconfigurations, wasted M365 licenses, and expiring secrets in minutes. Tenant Hawk gives admins and MSPs one health score and a prioritized fix list — read-only, no agents.",
+    "Find security misconfigurations, wasted M365 licenses, and expiring secrets in minutes. Tenant Hawk gives admins and MSPs one health score, a prioritized fix list, and an Enterprise multi-tenant console — read-only, no agents.",
   path: "/",
 });
 
@@ -40,6 +41,7 @@ export default function Home() {
           <ProblemSection />
           <Categories />
           <HowItWorks />
+          <MspConsoleSection />
           <Pricing />
           <WaitlistSection />
         </main>

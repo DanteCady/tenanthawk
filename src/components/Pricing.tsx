@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { Reveal } from "./Reveal";
 import {
+  ENTERPRISE_ANNUAL_MONTHLY_EQUIV,
+  ENTERPRISE_ANNUAL_SAVINGS_PERCENT,
+  ENTERPRISE_ANNUAL_SAVINGS_USD,
   ENTERPRISE_ANNUAL_USD,
   ENTERPRISE_CLIENT_CAP_DEFAULT,
   ENTERPRISE_MONTHLY_USD,
@@ -56,9 +59,9 @@ const tiers = [
       "Per-client scorecards",
       "Priority support",
     ],
-    cta: "Coming soon",
+    cta: "Get started",
     highlight: false,
-    comingSoon: true,
+    msp: true,
   },
 ] as const;
 
@@ -74,10 +77,11 @@ export function Pricing() {
             Pricing
           </p>
           <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            Start free. Scale per tenant.
+            Start free. Scale when you&apos;re ready.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            Founding customers lock early pricing for life — use{" "}
+            Pro is per internal tenant. Enterprise is flat-rate for MSPs — up to{" "}
+            {ENTERPRISE_CLIENT_CAP_DEFAULT} clients on Starter. Founding customers:{" "}
             <span className="font-mono text-sm font-semibold text-amber-700">EARLYBIRD26</span>{" "}
             for 25% off Pro (first 20 customers).
           </p>
@@ -126,7 +130,9 @@ export function Pricing() {
                 ? `$${formatUsd(PRO_ANNUAL_USD)}`
                 : `$${PRO_MONTHLY_USD}`
               : isEnterprise
-                ? `$${ENTERPRISE_MONTHLY_USD}`
+                ? annual
+                  ? `$${formatUsd(ENTERPRISE_ANNUAL_USD)}`
+                  : `$${ENTERPRISE_MONTHLY_USD}`
                 : "price" in t
                   ? t.price
                   : "";
@@ -135,7 +141,9 @@ export function Pricing() {
                 ? "/ tenant / yr"
                 : "/tenant / mo"
               : isEnterprise
-                ? `/mo · ${ENTERPRISE_CLIENT_CAP_DEFAULT} clients`
+                ? annual
+                  ? `/yr · ${ENTERPRISE_CLIENT_CAP_DEFAULT} clients`
+                  : `/mo · ${ENTERPRISE_CLIENT_CAP_DEFAULT} clients`
                 : "cadence" in t
                   ? t.cadence
                   : "";
@@ -144,9 +152,11 @@ export function Pricing() {
                 ? `$${formatUsd(PRO_ANNUAL_USD)}/yr (save ${PRO_ANNUAL_SAVINGS_PERCENT}%)`
                 : isPro && annual
                   ? `$${PRO_ANNUAL_MONTHLY_EQUIV}/mo equivalent · save $${formatUsd(PRO_ANNUAL_SAVINGS_USD)}/yr`
-                  : isEnterprise
-                    ? `$${formatUsd(ENTERPRISE_ANNUAL_USD)}/yr annual · contact for 10+ client tiers`
-                    : null;
+                  : isEnterprise && !annual
+                    ? `$${formatUsd(ENTERPRISE_ANNUAL_USD)}/yr (save ${ENTERPRISE_ANNUAL_SAVINGS_PERCENT}%)`
+                    : isEnterprise && annual
+                      ? `$${ENTERPRISE_ANNUAL_MONTHLY_EQUIV}/mo equivalent · save $${formatUsd(ENTERPRISE_ANNUAL_SAVINGS_USD)}/yr`
+                      : null;
 
             return (
               <Reveal key={t.name} delay={i * 0.08} className="h-full">
@@ -162,9 +172,9 @@ export function Pricing() {
                       Most popular
                     </span>
                   )}
-                  {"comingSoon" in t && t.comingSoon && (
-                    <span className="mb-4 inline-flex w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                      Coming soon
+                  {"msp" in t && t.msp && (
+                    <span className="mb-4 inline-flex w-fit rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">
+                      For MSPs
                     </span>
                   )}
                   <h3 className="text-lg font-bold text-slate-900">{t.name}</h3>
@@ -189,25 +199,18 @@ export function Pricing() {
                     ))}
                   </ul>
 
-                  {"comingSoon" in t && t.comingSoon ? (
-                    <span
-                      aria-disabled="true"
-                      className="mt-7 inline-flex cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm font-semibold text-slate-400"
-                    >
-                      {t.cta}
-                    </span>
-                  ) : (
-                    <a
-                      href="/signup"
-                      className={`mt-7 inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
-                        t.highlight
-                          ? "btn-primary w-full shadow-none hover:shadow-md"
+                  <a
+                    href="/signup"
+                    className={`mt-7 inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
+                      t.highlight
+                        ? "btn-primary w-full shadow-none hover:shadow-md"
+                        : "msp" in t && t.msp
+                          ? "w-full bg-slate-900 text-white hover:bg-slate-800"
                           : "border border-slate-300 text-slate-900 hover:border-slate-400"
-                      }`}
-                    >
-                      {t.cta}
-                    </a>
-                  )}
+                    }`}
+                  >
+                    {t.cta}
+                  </a>
                 </div>
               </Reveal>
             );

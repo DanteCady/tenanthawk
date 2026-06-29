@@ -246,8 +246,8 @@ export function WhyTenantHawk() {
                   <li>
                     <p className="font-semibold text-slate-900">MSPs &amp; consultants</p>
                     <p className="mt-1 text-sm text-slate-600">
-                      Quick tenant assessment before onboarding. Multi-tenant console
-                      coming soon.
+                      Portfolio roll-ups, client scorecards, and per-tenant switching
+                      on Enterprise — Pro stays for a single internal tenant.
                     </p>
                   </li>
                   <li>
