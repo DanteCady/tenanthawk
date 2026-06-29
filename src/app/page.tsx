@@ -12,7 +12,7 @@ import { MspConsoleSection } from "@/components/MspConsoleSection";
 import { Pricing } from "@/components/Pricing";
 import { WaitlistSection } from "@/components/WaitlistSection";
 import { Footer } from "@/components/Footer";
-import { buildPageMetadata } from "@/lib/seo/site";
+import { buildPageMetadata, HOMEPAGE_KEYWORDS } from "@/lib/seo/site";
 import {
   organizationSchema,
   softwareApplicationSchema,
@@ -20,10 +20,11 @@ import {
 } from "@/lib/seo/schemas";
 
 export const metadata = buildPageMetadata({
-  title: "Microsoft 365 & Azure tenant health scanner",
+  title: "M365 tenant cleanup tool & health overview",
   description:
-    "Find security misconfigurations, wasted M365 licenses, and expiring secrets in minutes. Tenant Hawk gives admins and MSPs one health score, a prioritized fix list, and an Enterprise multi-tenant console — read-only, no agents.",
+    "Clean up Microsoft 365 in minutes — find inactive users, unused licenses, security misconfigurations, and expiring secrets. One read-only scan, one health score, and a prioritized fix list for admins and MSPs.",
   path: "/",
+  keywords: HOMEPAGE_KEYWORDS,
 });
 
 export default async function Home() {

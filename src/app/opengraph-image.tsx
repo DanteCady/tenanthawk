@@ -10,8 +10,8 @@ export default function OpenGraphImage() {
   return new ImageResponse(
     (
       <OgBrandLayout
-        title="Microsoft 365 & Azure tenant health scanner"
-        subtitle="One health score for security, license waste, expiring secrets, and tenant hygiene — read-only, no agents."
+        title="M365 tenant cleanup tool & health overview"
+        subtitle="Find inactive users, unused licenses, security gaps, and hygiene drift — one read-only scan, one health score."
       />
     ),
     { ...size },

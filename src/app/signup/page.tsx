@@ -3,9 +3,9 @@ import { accountTypeFromSearchParam } from "@/lib/onboarding/account-type";
 import { buildPageMetadata } from "@/lib/seo/site";
 
 export const metadata = buildPageMetadata({
-  title: "Start a free Microsoft 365 tenant health scan",
+  title: "Start a free M365 tenant cleanup scan",
   description:
-    "Create a free Tenant Hawk account and run a read-only scan of your Microsoft 365 tenant. See security gaps, license waste, and expiring secrets in minutes.",
+    "Create a free Tenant Hawk account and run a read-only Microsoft 365 cleanup scan. See inactive users, unused licenses, security gaps, and hygiene issues in minutes.",
   path: "/signup",
 });
 

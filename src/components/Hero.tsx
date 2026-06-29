@@ -40,7 +40,16 @@ export function Hero() {
 
           <motion.p
             variants={item}
-            className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600"
+            className="mt-4 text-lg font-medium text-slate-700"
+          >
+            The M365 tenant cleanup tool that gives you a full health overview —
+            inactive users, unused licenses, security gaps, and hygiene drift in
+            one read-only scan.
+          </motion.p>
+
+          <motion.p
+            variants={item}
+            className="mt-4 max-w-xl text-lg leading-relaxed text-slate-600"
           >
             Expired secrets. Licenses nobody uses. Risky access that crept in
             years ago. You know it&apos;s in there somewhere, but with

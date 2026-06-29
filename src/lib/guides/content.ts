@@ -18,13 +18,103 @@ export type Guide = {
 
 export const GUIDES: Guide[] = [
   {
-    slug: "m365-tenant-health-checklist",
-    title: "Microsoft 365 tenant health checklist",
+    slug: "m365-tenant-cleanup",
+    title: "How to clean up your Microsoft 365 tenant",
     description:
-      "A practical checklist for M365 admins — security, cost, reliability, and hygiene checks you should run regularly.",
+      "Step-by-step M365 cleanup for admins — inactive users, unused licenses, stale groups, security drift, and tenant hygiene. Know where to start before you delete anything.",
+    readTime: "9 min read",
+    category: "overview",
+    relatedSlugs: [
+      "m365-tenant-health-checklist",
+      "find-wasted-m365-licenses",
+      "m365-tenant-hygiene",
+    ],
+    sections: [
+      {
+        title: "Why M365 tenants need a cleanup",
+        paragraphs: [
+          "Every Microsoft 365 tenant accumulates clutter. People leave but accounts stay enabled. Licenses keep billing after offboarding. Project Teams sit empty for years. Conditional Access policies pile up with exceptions nobody remembers approving.",
+          "Searching for \"M365 clean up\" or \"clean Microsoft 365 tenant\" usually means you already feel the pain — rising license costs, security questionnaires you cannot answer, or a tenant handed down from a previous admin. A structured cleanup gives you an overview of what is wrong before you start deleting things.",
+        ],
+      },
+      {
+        title: "Start with an overview, not a purge",
+        paragraphs: [
+          "The biggest mistake in tenant cleanup is acting before you understand scope. Block sign-in on the wrong account and you break a workflow. Remove a license from a shared mailbox and mail stops flowing.",
+          "Begin with a read-only inventory across four areas: identity and access, license spend, reliability risks, and directory hygiene. Tenant Hawk runs this overview in minutes — or you can work through the checklist below manually.",
+        ],
+      },
+      {
+        title: "Step 1 — Clean up inactive users and orphaned accounts",
+        paragraphs: [
+          "Inactive users are the fastest win in any M365 cleanup. They waste licenses, inflate MFA coverage reports, and create standing access risk if credentials are compromised.",
+        ],
+        bullets: [
+          "Find enabled accounts with no sign-in in 90+ days (adjust to your policy)",
+          "Identify disabled accounts that still hold paid license assignments",
+          "Flag never-signed-in users with E3, E5, or Business Premium SKUs",
+          "Review guest accounts inactive beyond your collaboration retention window",
+          "Block sign-in immediately on confirmed leavers; remove licenses before deletion",
+        ],
+      },
+      {
+        title: "Step 2 — Reclaim unused M365 licenses",
+        paragraphs: [
+          "License sprawl is invisible until finance asks — or until renewal season hits. Microsoft does not auto-reclaim seats when accounts are disabled.",
+        ],
+        bullets: [
+          "Export assigned licenses vs. active sign-in activity",
+          "Target disabled users, never-signed-in accounts, and 90-day inactive users first",
+          "Look for oversized SKUs — E5 where E3 or Business Premium would suffice",
+          "Document reclaimable monthly spend before bulk removal",
+          "Tie license removal to your offboarding workflow going forward",
+        ],
+      },
+      {
+        title: "Step 3 — Fix security drift before hygiene clutter",
+        paragraphs: [
+          "Security gaps should rank above empty groups. Attackers exploit legacy auth and over-privileged admins long before anyone notices a stale Team.",
+        ],
+        bullets: [
+          "Block legacy authentication tenant-wide if not already enforced",
+          "Confirm MFA is required for all admins and ideally all users",
+          "Reduce Global Administrators to two to four with documented break-glass",
+          "Audit Conditional Access policies in report-only mode that never switched to enforce",
+          "Review app registrations with expiring secrets and high-privilege Graph permissions",
+        ],
+      },
+      {
+        title: "Step 4 — Clean up groups, Teams, and devices",
+        paragraphs: [
+          "Hygiene work reduces noise in every future admin task. Tackle it in small batches so removals are predictable and politically safe.",
+        ],
+        bullets: [
+          "Archive or delete M365 groups with no members or no activity in 12+ months",
+          "Review SharePoint sites with anonymous or anyone-link sharing enabled",
+          "Remove duplicate or stale Intune device records",
+          "Tighten org-wide external sharing defaults if they drifted during onboarding",
+          "Publish simple cleanup criteria (e.g. \"no sign-in 180 days, manager approved\") before bulk actions",
+        ],
+      },
+      {
+        title: "Step 5 — Set a cleanup cadence",
+        paragraphs: [
+          "M365 tenants drift toward chaos by default. One cleanup pass is not enough — schedule quarterly reviews at minimum, or monthly if you are preparing for an audit or managing rapid growth.",
+          "After major events — mergers, admin turnover, large hiring waves — run an ad-hoc cleanup within a week. Automate the overview so you catch drift before it compounds.",
+          "Tenant Hawk gives you a full M365 tenant overview read-only: one health score, prioritized fixes, and estimated dollar impact — so you know exactly where to start cleaning up.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "m365-tenant-health-checklist",
+    title: "Microsoft 365 tenant health overview & checklist",
+    description:
+      "A practical M365 health overview and checklist for admins — security, cost, reliability, and hygiene checks you should run regularly.",
     readTime: "8 min read",
     category: "overview",
     relatedSlugs: [
+      "m365-tenant-cleanup",
       "m365-security-misconfigurations",
       "find-wasted-m365-licenses",
       "prepare-for-m365-audit",
@@ -304,12 +394,13 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "m365-tenant-hygiene",
-    title: "Microsoft 365 tenant hygiene best practices",
+    title: "Microsoft 365 tenant cleanup & hygiene best practices",
     description:
-      "Clean up orphaned groups, stale accounts, unmanaged devices, and sharing defaults before clutter slows every admin task.",
+      "Clean up orphaned groups, stale accounts, inactive guests, unmanaged devices, and sharing defaults before clutter slows every admin task.",
     readTime: "6 min read",
     category: "hygiene",
     relatedSlugs: [
+      "m365-tenant-cleanup",
       "m365-tenant-health-checklist",
       "find-wasted-m365-licenses",
       "m365-security-misconfigurations",

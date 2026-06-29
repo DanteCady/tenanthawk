@@ -12,7 +12,7 @@ export function Footer() {
         <div className="flex flex-col items-center gap-2 sm:items-start">
           <ThemeLogo />
           <p className="text-sm text-[var(--th-text-muted)]">
-            The hawk-eye view of your Microsoft 365 &amp; Azure tenant.
+            M365 tenant cleanup &amp; health overview for admins and MSPs.
           </p>
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
             <Link href="/why" className={footerLinkClass}>

@@ -7,9 +7,9 @@ import { GuideCta } from "@/components/guides/GuideCta";
 import { GUIDES } from "@/lib/guides/content";
 
 export const metadata = buildPageMetadata({
-  title: "Microsoft 365 tenant health guides for admins & MSPs",
+  title: "M365 cleanup & tenant health guides for admins",
   description:
-    "Free evergreen guides: M365 tenant health checklists, security misconfigurations, license waste, expiring app secrets, hygiene cleanup, and audit prep — then automate the checks with Tenant Hawk.",
+    "Free guides for Microsoft 365 cleanup: inactive users, unused licenses, tenant hygiene, security misconfigurations, expiring secrets, and audit prep — then automate the checks with a free Tenant Hawk scan.",
   path: "/guides",
 });
 
@@ -24,12 +24,12 @@ export default function GuidesIndexPage() {
               Resources
             </p>
             <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-              M365 tenant health guides
+              M365 cleanup &amp; tenant health guides
             </h1>
             <p className="mt-4 text-lg text-slate-600">
-              Practical checklists for admins and MSPs — security, cost, reliability,
-              and hygiene. No fluff, no dated blog posts. Run the same checks
-              automatically with a{" "}
+              Practical guides for cleaning up Microsoft 365 — inactive users,
+              license waste, security drift, and tenant hygiene. No fluff. Run
+              the same checks automatically with a{" "}
               <Link href="/signup" className="font-medium text-blue-700 hover:underline">
                 free Tenant Hawk scan
               </Link>

@@ -50,9 +50,11 @@ export function softwareApplicationSchema() {
       },
     ],
     featureList: [
+      "M365 tenant cleanup overview — inactive users, licenses, and hygiene in one scan",
       "Read-only Microsoft 365 and Entra ID tenant scan",
       "Unified health score across security, cost, reliability, and hygiene",
       "License waste detection with estimated recoverable spend",
+      "Inactive and orphaned account detection",
       "Expiring secrets, certificates, and domain monitoring",
       "Prioritized remediation roadmap with Microsoft doc links",
       "CIS and NIST compliance mapping (Pro)",

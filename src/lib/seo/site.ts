@@ -5,13 +5,13 @@ import { COMPANY_LEGAL_NAME, SUPPORT_EMAIL } from "@/lib/brand";
 export const SITE_NAME = "Tenant Hawk";
 
 export const DEFAULT_TITLE =
-  "Tenant Hawk | Microsoft 365 & Azure tenant health scanner";
+  "Tenant Hawk | M365 tenant cleanup tool & health overview";
 
 export const DEFAULT_DESCRIPTION =
-  "Tenant Hawk scans Microsoft 365, Entra ID, and Azure for security gaps, wasted license spend, expiring secrets, and hygiene drift. One health score, prioritized fixes, and recoverable dollars — built for M365 admins, MSPs, and IT leaders.";
+  "Clean up your Microsoft 365 tenant with one read-only scan. Tenant Hawk finds inactive users, unused licenses, security gaps, expiring secrets, and hygiene drift — then gives you one health score and a prioritized fix list for M365 admins, MSPs, and IT leaders.";
 
 export const OG_IMAGE_ALT =
-  "Tenant Hawk — Microsoft 365 and Azure tenant health scanner for admins and MSPs";
+  "Tenant Hawk — M365 tenant cleanup tool and health overview for admins and MSPs";
 
 export const OG_IMAGE = {
   url: "/opengraph-image",
@@ -21,23 +21,58 @@ export const OG_IMAGE = {
   type: "image/png" as const,
 };
 
-/** Keywords aligned with how admins search for tenant health tools. */
+/**
+ * Keywords aligned with how admins actually search — cleanup, overview,
+ * hygiene, and audit terms from Reddit, Spiceworks, and competitor content.
+ */
 export const TARGET_KEYWORDS = [
+  // Cleanup & overview (high-volume, problem-aware searches)
+  "M365 clean up",
+  "M365 cleanup",
+  "M365 clean up tool",
+  "clean Microsoft 365 tenant",
+  "Microsoft 365 tenant cleanup",
+  "M365 tenant cleanup tool",
+  "M365 overview",
+  "Microsoft 365 tenant overview",
+  "M365 tenant audit",
+  "Microsoft 365 health check",
+  // Inactive users & license reclamation
+  "inactive users M365 cleanup",
+  "clean up inactive users Microsoft 365",
+  "unused M365 licenses",
+  "reclaim M365 licenses",
+  "Microsoft 365 license waste",
+  "orphaned accounts Microsoft 365",
+  // Security & hygiene
   "Microsoft 365 tenant health",
   "M365 security assessment",
+  "M365 tenant hygiene",
+  "tenant hygiene Microsoft 365",
   "Entra ID security audit",
-  "Azure tenant health check",
-  "Microsoft 365 license waste",
-  "unused M365 licenses",
+  "Conditional Access audit",
+  "Microsoft Secure Score alternative",
+  // MSP & tooling
   "M365 admin tools",
   "MSP Microsoft 365 monitoring",
-  "Microsoft Secure Score alternative",
-  "Conditional Access audit",
-  "expiring app registration secrets",
-  "Microsoft 365 compliance checklist",
-  "tenant hygiene",
-  "Microsoft 365 cost optimization",
   "read-only M365 scan",
+  "Microsoft 365 compliance checklist",
+  "Azure tenant health check",
+  "expiring app registration secrets",
+  "Microsoft 365 cost optimization",
+];
+
+/** Homepage-specific keywords — broader cleanup + overview intent. */
+export const HOMEPAGE_KEYWORDS = [
+  "M365 clean up tool",
+  "M365 cleanup tool",
+  "clean M365 tenant",
+  "Microsoft 365 cleanup",
+  "M365 tenant overview",
+  "M365 health overview",
+  "Microsoft 365 tenant health scanner",
+  "M365 audit tool",
+  ...TARGET_KEYWORDS,
 ];
 
 export function getMetadataBase(): URL {
