@@ -54,23 +54,32 @@ export function Navbar() {
       className="fixed inset-x-0 top-0 z-50"
     >
       <div
-        className={`mx-auto flex max-w-6xl items-center justify-between px-6 py-4 transition-all duration-300 ${
+        className={`mx-auto flex max-w-6xl items-center gap-3 px-4 transition-all duration-300 sm:px-6 ${
+          scrolled ? "py-2.5" : "py-4"
+        } ${
           scrolled
-            ? "mt-2 rounded-2xl border border-[var(--th-border)] bg-[var(--th-surface)]/80 shadow-sm backdrop-blur-xl md:max-w-5xl"
+            ? "mt-2 rounded-2xl border border-[var(--th-border)] bg-[var(--th-surface)]/80 shadow-sm backdrop-blur-xl"
             : "border border-transparent"
         }`}
       >
-        <Link href="/" aria-label="Tenant Hawk home">
+        <Link href="/" aria-label="Tenant Hawk home" className="shrink-0">
           <ThemeLogo />
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
+        <nav
+          className={`hidden min-w-0 flex-1 items-center justify-center md:flex ${
+            scrolled ? "gap-3 lg:gap-4" : "gap-5 lg:gap-8"
+          }`}
+          aria-label="Main"
+        >
           {links.map((l) =>
             l.href.includes("#") ? (
               <a
                 key={l.href}
                 href={l.href}
-                className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+                className={`whitespace-nowrap font-medium text-slate-600 transition-colors hover:text-slate-900 ${
+                  scrolled ? "text-[13px]" : "text-sm"
+                }`}
               >
                 {l.label}
               </a>
@@ -78,7 +87,9 @@ export function Navbar() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+                className={`whitespace-nowrap font-medium text-slate-600 transition-colors hover:text-slate-900 ${
+                  scrolled ? "text-[13px]" : "text-sm"
+                }`}
               >
                 {l.label}
               </Link>
@@ -86,16 +97,20 @@ export function Navbar() {
           )}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
           <a
             href="/login"
-            className="hidden rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline-flex"
+            className={`hidden whitespace-nowrap rounded-full px-3 font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline-flex ${
+              scrolled ? "py-1.5 text-[13px]" : "px-4 py-2 text-sm"
+            }`}
           >
             Sign in
           </a>
           <a
             href="/signup"
-            className="btn-primary hidden rounded-full px-4 py-2 text-sm shadow-none hover:shadow-md md:inline-flex"
+            className={`btn-primary hidden whitespace-nowrap rounded-full shadow-none hover:shadow-md md:inline-flex ${
+              scrolled ? "px-3.5 py-1.5 text-[13px]" : "px-4 py-2 text-sm"
+            }`}
           >
             Start free scan
           </a>

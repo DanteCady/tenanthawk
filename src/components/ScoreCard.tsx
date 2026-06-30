@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, motion, useInView } from "framer-motion";
 import { KeyRound, ShieldAlert, Sparkles, Wallet } from "lucide-react";
+import { SCAN_CHECK_COUNT, SCORE_SCALE } from "@/lib/scan/catalog";
+import { ScoreExplainer } from "@/components/app/ScoreExplainer";
 
 const SCORE = 72;
 const RADIUS = 52;
@@ -17,8 +19,8 @@ const categories = [
 
 const findings = [
   { dot: "#ef4444", text: "3 app secrets expire in 14 days" },
-  { dot: "#22c55e", text: "$1,840/mo in unused M365 licenses" },
-  { dot: "#3b82f6", text: "Conditional Access policy changed 2d ago" },
+  { dot: "#22c55e", text: "$22,080/yr in unused M365 licenses" },
+  { dot: "#3b82f6", text: "2 Global Admins should be removed" },
 ];
 
 function Gauge() {
@@ -63,7 +65,10 @@ function Gauge() {
         </defs>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-bold text-slate-900">{display}</span>
+        <span className="text-3xl font-bold text-slate-900">
+          {display}
+          <span className="text-lg font-semibold text-slate-400">/{SCORE_SCALE}</span>
+        </span>
         <span className="text-[0.65rem] font-medium uppercase tracking-widest text-slate-400">
           Health
         </span>
@@ -82,7 +87,9 @@ export function ScoreCard() {
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
           <div>
             <p className="text-sm font-semibold text-slate-900">contoso.onmicrosoft.com</p>
-            <p className="text-xs text-slate-500">Last scan · 6 min ago · 214 checks</p>
+            <p className="text-xs text-slate-500">
+              Last scan · 6 min ago · {SCAN_CHECK_COUNT} checks
+            </p>
           </div>
           <span className="flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
             <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> Monitoring
@@ -119,6 +126,10 @@ export function ScoreCard() {
               </motion.div>
             ))}
           </div>
+        </div>
+
+        <div className="border-t border-slate-100 px-5 py-3">
+          <ScoreExplainer variant="block" />
         </div>
 
         {/* findings */}

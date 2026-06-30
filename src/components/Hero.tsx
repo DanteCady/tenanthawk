@@ -2,7 +2,8 @@
 
 import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Lock, ScanLine } from "lucide-react";
-import { ScoreCard } from "./ScoreCard";
+import { SCAN_CHECK_COUNT } from "@/lib/scan/catalog";
+import { HeroDashboardPreview } from "./HeroDashboardPreview";
 
 const container: Variants = {
   hidden: {},
@@ -16,12 +17,17 @@ const item: Variants = {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pt-36 pb-24 sm:pt-44">
+    <section className="relative overflow-hidden pt-32 pb-8 sm:pt-40 sm:pb-12">
       <div className="theme-aura pointer-events-none absolute inset-0 -z-10" />
-      <div className="theme-grid pointer-events-none absolute inset-0 -z-10 h-[640px]" />
+      <div className="theme-grid pointer-events-none absolute inset-0 -z-10 h-[720px]" />
 
-      <div className="mx-auto grid max-w-6xl items-center gap-14 px-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <motion.div variants={container} initial="hidden" animate="show">
+      <div className="relative mx-auto max-w-6xl px-6">
+        <motion.div
+          className="mx-auto max-w-3xl text-center"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
           <motion.div
             variants={item}
             className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm"
@@ -32,40 +38,26 @@ export function Hero() {
 
           <motion.h1
             variants={item}
-            className="mt-6 text-balance text-5xl font-bold leading-[1.03] tracking-tight text-slate-900 sm:text-6xl"
+            className="mt-6 text-balance text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl"
           >
-            Your tenant is{" "}
-            <span className="text-rainbow">messier</span> than you think.
+            Recover wasted spend and close security gaps{" "}
+            <span className="text-gradient">in one scan</span>.
           </motion.h1>
 
           <motion.p
             variants={item}
-            className="mt-4 text-lg font-medium text-slate-700"
+            className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-600 sm:text-xl"
           >
-            The M365 tenant cleanup tool that gives you a full health overview —
-            inactive users, unused licenses, security gaps, and hygiene drift in
-            one read-only scan.
+            {SCAN_CHECK_COUNT} read-only checks across M365, Entra, and Intune.
+            One health score, dollar impact on every finding, and a prioritized
+            fix-it list in minutes.
           </motion.p>
 
-          <motion.p
+          <motion.div
             variants={item}
-            className="mt-4 max-w-xl text-lg leading-relaxed text-slate-600"
+            className="mt-8 flex flex-wrap items-center justify-center gap-3"
           >
-            Expired secrets. Licenses nobody uses. Risky access that crept in
-            years ago. You know it&apos;s in there somewhere, but with
-            hundreds of settings across M365, Entra, and Azure, where do you even
-            start?
-            <span className="mt-3 block font-medium text-slate-900">
-              Tenant Hawk connects read-only and hands you one clear health score
-              and a prioritized fix-it list in minutes.
-            </span>
-          </motion.p>
-
-          <motion.div variants={item} className="mt-8 flex flex-wrap items-center gap-3">
-            <a
-              href="/signup"
-              className="group btn-primary px-6 py-3.5"
-            >
+            <a href="/signup" className="group btn-primary px-6 py-3.5">
               Run a free scan
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </a>
@@ -79,7 +71,7 @@ export function Hero() {
 
           <motion.div
             variants={item}
-            className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500"
+            className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-slate-500"
           >
             <span className="inline-flex items-center gap-2">
               <Lock className="h-4 w-4 text-green-500" />
@@ -87,19 +79,16 @@ export function Hero() {
             </span>
             <span className="hidden h-4 w-px bg-slate-200 sm:block" />
             <span>Connect in 2 minutes · no credit card</span>
-            <span className="hidden h-4 w-px bg-slate-200 sm:block" />
-            <a href="#msp" className="font-medium text-blue-600 hover:text-blue-700">
-              MSP console available on Enterprise →
-            </a>
           </motion.div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 24, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+          className="mt-12 sm:mt-14 lg:mt-16"
+          initial={{ opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.75, ease: "easeOut", delay: 0.22 }}
         >
-          <ScoreCard />
+          <HeroDashboardPreview />
         </motion.div>
       </div>
     </section>

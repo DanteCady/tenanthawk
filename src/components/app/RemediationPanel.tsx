@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ExternalLink, Loader2, Sparkles, Wrench } from "lucide-react";
 import type { RemediationEnriched } from "@/lib/remediation/types";
 import { isAiRemediation } from "@/lib/remediation/display";
+import { RemediationQuickActions } from "./RemediationQuickActions";
 
 function TemplateRemediation({ text, error }: { text: string; error?: string | null }) {
   return (
@@ -19,11 +20,13 @@ function TemplateRemediation({ text, error }: { text: string; error?: string | n
 
 export function RemediationPanel({
   findingId,
+  checkId,
   templateRemediation,
   initialEnriched,
   onEnriched,
 }: {
   findingId: string;
+  checkId?: string;
   templateRemediation: string;
   initialEnriched?: RemediationEnriched | null;
   onEnriched?: (enriched: RemediationEnriched) => void;
@@ -84,28 +87,48 @@ export function RemediationPanel({
   }, [findingId, initialEnriched, mounted]);
 
   if (!mounted) {
-    return <TemplateRemediation text={templateRemediation} />;
+    return (
+      <div className="space-y-3">
+        {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+        <TemplateRemediation text={templateRemediation} />
+      </div>
+    );
   }
 
   if (loading) {
     return (
-      <div className="remediation-loading">
-        <Loader2 className="h-4 w-4 animate-spin text-[var(--th-brand-text)]" />
-        Generating AI-guided fix steps…
+      <div className="space-y-3">
+        {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+        <div className="remediation-loading">
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--th-brand-text)]" />
+          Generating AI-guided fix steps…
+        </div>
       </div>
     );
   }
 
   if (error || !enriched) {
-    return <TemplateRemediation text={templateRemediation} error={error} />;
+    return (
+      <div className="space-y-3">
+        {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+        <TemplateRemediation text={templateRemediation} error={error} />
+      </div>
+    );
   }
 
   if (!isAiRemediation(enriched.model)) {
-    return <TemplateRemediation text={enriched.steps[0] ?? templateRemediation} />;
+    return (
+      <div className="space-y-3">
+        {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+        <TemplateRemediation text={enriched.steps[0] ?? templateRemediation} />
+      </div>
+    );
   }
 
   return (
-    <div className="remediation-ai space-y-3">
+    <div className="space-y-3">
+      {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+      <div className="remediation-ai space-y-3">
       <div className="remediation-ai-label flex items-center gap-2">
         <Sparkles className="h-3.5 w-3.5" />
         AI-guided remediation
@@ -137,6 +160,7 @@ export function RemediationPanel({
           </ul>
         </div>
       )}
+    </div>
     </div>
   );
 }

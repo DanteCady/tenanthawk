@@ -1,7 +1,9 @@
 import type { Category, Severity, CategoryScores } from "@/db/types";
 import type { FindingDraft } from "./types";
 
-const PENALTY: Record<Severity, number> = { high: 18, medium: 7, low: 3 };
+import { SCORE_PENALTIES } from "./catalog";
+
+const PENALTY: Record<Severity, number> = SCORE_PENALTIES;
 const CATEGORIES: Category[] = ["security", "cost", "reliability", "hygiene"];
 
 export function scoreFindings(findings: FindingDraft[]): {

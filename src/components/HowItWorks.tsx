@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowRight, Clock, ListChecks, Plug, ScanSearch } from "lucide-react";
+import { SCAN_CHECK_COUNT } from "@/lib/scan/catalog";
 
 const steps = [
   {
@@ -19,7 +20,7 @@ const steps = [
     step: "02",
     icon: ScanSearch,
     title: "See the whole picture",
-    body: "200+ checks across M365, Entra, and Azure roll into one health score, graded A–F in every category.",
+    body: `${SCAN_CHECK_COUNT} checks across M365, Entra, and Intune roll into one health score (out of 100), graded A–F in every category.`,
     accent: "yellow",
     grad: "from-amber-400 to-yellow-500",
     chip: "bg-yellow-50 text-yellow-700 ring-yellow-100",

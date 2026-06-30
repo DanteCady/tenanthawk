@@ -84,7 +84,7 @@ export function WhyTenantHawk() {
             </p>
             <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
               Microsoft gives you dashboards.{" "}
-              <span className="text-rainbow">We give you a checklist.</span>
+              <span className="text-gradient">We give you a checklist.</span>
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-slate-600">
               Tenant Hawk is the independent health layer for Microsoft 365: one

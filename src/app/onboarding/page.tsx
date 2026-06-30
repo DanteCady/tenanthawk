@@ -8,6 +8,7 @@ import { getPlan, hasProFeatures } from "@/lib/entitlements";
 import { getEnterpriseClientLimit } from "@/lib/billing/enterprise-limits";
 import { getEnterpriseClientCap } from "@/lib/billing/pricing";
 import { summarize, type FindingRow } from "@/lib/summary";
+import { isUrgentExpiryFinding } from "@/lib/scan/expiry";
 import { isLiveConfigured } from "@/lib/scan/graph";
 import { requireVerifiedSession } from "@/lib/session";
 import { connectionLabel } from "@/lib/connection/label";
@@ -97,12 +98,21 @@ export default async function OnboardingPage({
 
   const findings = (await getFindings(scan.id)) as FindingRow[];
   const summary = summarize(findings, scan.category_scores);
+  const urgentExpiryCount = findings.filter((f) =>
+    isUrgentExpiryFinding({
+      check_id: (f as { check_id?: string }).check_id ?? "",
+      severity: f.severity,
+      title: "",
+      impact: f.impact as { daysUntil?: number } | null,
+    }),
+  ).length;
 
   return (
     <ResultsStep
       summary={summary}
       score={scan.score ?? 0}
       tenant={connectionLabel(conn)}
+      urgentExpiryCount={urgentExpiryCount}
     />
   );
 }

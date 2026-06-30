@@ -66,7 +66,7 @@ export function ProblemSection() {
           <div className="mt-12 flex flex-col items-center gap-4 surface-highlight px-8 py-10 text-center">
             <h3 className="text-balance text-2xl font-bold text-slate-900 sm:text-3xl">
               You don&apos;t need to know where to start.{" "}
-              <span className="text-rainbow">Tenant Hawk does.</span>
+              <span className="text-gradient">Tenant Hawk does.</span>
             </h3>
             <p className="max-w-xl text-slate-600">
               One scan turns that vague dread into a clear, prioritized checklist

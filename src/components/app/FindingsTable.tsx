@@ -217,6 +217,7 @@ export function FindingsTable({
                   ) : null}
                   <RemediationPanel
                     findingId={f.id}
+                    checkId={f.checkId}
                     templateRemediation={f.remediation}
                     initialEnriched={
                       f.remediationEnriched ?? enrichedCache[f.id] ?? null

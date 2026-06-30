@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowRight, Lock } from "lucide-react";
 import { ThemeLogo } from "@/components/theme/ThemeLogo";
 import { ScoreRing } from "@/components/app/ScoreRing";
+import { ScoreExplainer } from "@/components/app/ScoreExplainer";
+import { OutcomeHighlights } from "@/components/app/OutcomeHighlights";
 import { isAnnualBillingConfigured } from "@/lib/billing/pricing";
 import { GradeBadge } from "@/components/app/GradeBadge";
 import { CATEGORY_META } from "@/components/app/categories";
@@ -20,10 +22,12 @@ export function ResultsStep({
   summary,
   score,
   tenant,
+  urgentExpiryCount = 0,
 }: {
   summary: ScanSummary;
   score: number;
   tenant: string;
+  urgentExpiryCount?: number;
 }) {
   const annualAvailable = isAnnualBillingConfigured();
 
@@ -42,36 +46,57 @@ export function ResultsStep({
               <span className="font-medium text-slate-700">{tenant}</span>
             </p>
 
+            <div className="mt-6">
+              <OutcomeHighlights
+                monthlyRecoverable={summary.usd}
+                urgentExpiryCount={urgentExpiryCount}
+                highSeverity={summary.high}
+                totalIssues={summary.total}
+                compact
+              />
+            </div>
+
             <div className="mt-6 flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-8">
               <ScoreRing score={score} size={140} />
               <div className="text-center sm:text-left">
                 <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-                  Your tenant health score
+                  Tenant health score
                 </h1>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:max-w-sm">
-                  We found{" "}
-                  <span className="font-semibold text-slate-900">
-                    {summary.total} issues
-                  </span>
-                  {summary.high > 0 && (
+                <ScoreExplainer className="mt-2" variant="block" />
+                <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:max-w-sm">
+                  {summary.total === 0 ? (
+                    "No issues flagged on this scan."
+                  ) : (
                     <>
-                      {" "}
-                      including{" "}
-                      <span className="font-semibold text-bad">
-                        {summary.high} high-severity
-                      </span>
+                      {summary.high > 0 && (
+                        <span className="block">
+                          Start with{" "}
+                          <span className="font-semibold text-bad">
+                            {summary.high} high-severity
+                          </span>{" "}
+                          {summary.high === 1 ? "item" : "items"}.
+                        </span>
+                      )}
+                      {summary.usd > 0 && (
+                        <span className="block">
+                          About{" "}
+                          <span className="font-semibold text-blue-700">
+                            ${(summary.usd * 12).toLocaleString()}/yr
+                          </span>{" "}
+                          looks recoverable.
+                        </span>
+                      )}
+                      {urgentExpiryCount > 0 && (
+                        <span className="block">
+                          <span className="font-semibold text-amber-700">
+                            {urgentExpiryCount}
+                          </span>{" "}
+                          {urgentExpiryCount === 1 ? "item is" : "items are"} expiring
+                          within 30 days.
+                        </span>
+                      )}
                     </>
                   )}
-                  {summary.usd > 0 && (
-                    <>
-                      , with{" "}
-                      <span className="font-semibold text-blue-700">
-                        ~${summary.usd.toLocaleString()}/mo
-                      </span>{" "}
-                      in recoverable spend
-                    </>
-                  )}
-                  .
                 </p>
               </div>
             </div>
@@ -119,7 +144,7 @@ export function ResultsStep({
                 </p>
                 <p className="mt-0.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
                   Upgrade to Pro for every finding, remediation steps, and daily
-                  monitoring — or continue free with your score and grades.
+                  monitoring. Or continue free with your score and grades.
                 </p>
               </div>
             </div>

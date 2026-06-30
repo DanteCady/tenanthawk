@@ -21,6 +21,8 @@ html:not([data-theme]) {
   --th-brand-muted-border: #bfdbfe;
   --th-brand-text: #1d4ed8;
   --th-brand-text-soft: #2563eb;
+  --th-accent: #f59e0b;
+  --th-accent-soft: #fbbf24;
   --th-header-bg: rgb(255 255 255 / 0.82);
   --th-footer-bg: rgb(255 255 255 / 0.6);
   --th-highlight-from: #eff6ff;
@@ -35,7 +37,12 @@ html:not([data-theme]) {
   --th-scrollbar-track: #f1f5f9;
   --th-scrollbar-thumb: #cbd5e1;
   --th-scrollbar-thumb-hover: #94a3b8;
-  --th-gradient-text: linear-gradient(110deg, #2563eb 0%, #16a34a 38%, #eab308 64%, #ef4444 100%);
+  --th-gradient-text: linear-gradient(
+    110deg,
+    var(--th-brand) 0%,
+    var(--th-brand-hover) 42%,
+    var(--th-accent) 100%
+  );
   --th-aura:
     radial-gradient(38% 34% at 12% 8%, rgba(59, 130, 246, 0.16), transparent 70%),
     radial-gradient(34% 32% at 88% 4%, rgba(245, 158, 11, 0.18), transparent 70%),
@@ -65,6 +72,8 @@ html[data-theme="dark"] {
   --th-brand-muted-border: rgb(59 130 246 / 0.28);
   --th-brand-text: #93c5fd;
   --th-brand-text-soft: #60a5fa;
+  --th-accent: #fbbf24;
+  --th-accent-soft: #fcd34d;
   --th-header-bg: rgb(9 9 11 / 0.92);
   --th-footer-bg: rgb(9 9 11 / 0.85);
   --th-highlight-from: rgb(59 130 246 / 0.1);
@@ -79,7 +88,12 @@ html[data-theme="dark"] {
   --th-scrollbar-track: #0f0f12;
   --th-scrollbar-thumb: #3f3f46;
   --th-scrollbar-thumb-hover: #52525b;
-  --th-gradient-text: linear-gradient(135deg, #fafafa 0%, #a1a1aa 45%, #60a5fa 100%);
+  --th-gradient-text: linear-gradient(
+    135deg,
+    var(--th-brand-text-soft) 0%,
+    var(--th-brand) 50%,
+    var(--th-accent) 100%
+  );
   --th-aura:
     radial-gradient(50% 45% at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 70%),
     radial-gradient(40% 40% at 100% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
@@ -107,6 +121,8 @@ html[data-theme="hawk"] {
   --th-brand-muted-border: rgb(245 158 11 / 0.4);
   --th-brand-text: #fcd34d;
   --th-brand-text-soft: #fbbf24;
+  --th-accent: #fde68a;
+  --th-accent-soft: #fef3c7;
   --th-header-bg: rgb(11 17 32 / 0.92);
   --th-footer-bg: rgb(7 11 20 / 0.88);
   --th-highlight-from: rgb(245 158 11 / 0.18);
@@ -121,7 +137,12 @@ html[data-theme="hawk"] {
   --th-scrollbar-track: #0b1120;
   --th-scrollbar-thumb: #b45309;
   --th-scrollbar-thumb-hover: #d97706;
-  --th-gradient-text: linear-gradient(135deg, #fde68a 0%, #f59e0b 55%, #b45309 100%);
+  --th-gradient-text: linear-gradient(
+    135deg,
+    var(--th-accent) 0%,
+    var(--th-brand) 55%,
+    var(--th-brand-hover) 100%
+  );
   --th-aura:
     radial-gradient(55% 50% at 50% 0%, rgba(245, 158, 11, 0.24) 0%, rgba(245, 158, 11, 0) 70%),
     radial-gradient(45% 45% at 85% 10%, rgba(251, 191, 36, 0.12) 0%, rgba(251, 191, 36, 0) 70%);

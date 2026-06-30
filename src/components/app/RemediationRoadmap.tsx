@@ -145,6 +145,7 @@ function StopNode({
           <div className="mt-3">
             <RemediationPanel
               findingId={stop.id}
+              checkId={stop.checkId}
               templateRemediation={stop.remediation}
               initialEnriched={stop.remediationEnriched}
             />
