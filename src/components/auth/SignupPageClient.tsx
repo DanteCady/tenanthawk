@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { AccountTypePicker } from "@/components/auth/AccountTypePicker";
@@ -24,9 +24,7 @@ export function SignupPageClient({
     >
       <div className="space-y-5">
         <AccountTypePicker value={accountType} onChange={setAccountType} />
-        <Suspense>
-          <AuthForm mode="signup" accountType={accountType} />
-        </Suspense>
+        <AuthForm mode="signup" accountType={accountType} />
       </div>
     </AuthShell>
   );

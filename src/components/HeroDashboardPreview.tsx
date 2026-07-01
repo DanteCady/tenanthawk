@@ -1,6 +1,6 @@
 /** Intrinsic pixels (2× CSS display size at max-w-5xl). */
 const SRC_WIDTH = 2048;
-const SRC_HEIGHT = 1264;
+const SRC_HEIGHT = 1760;
 
 export function HeroDashboardPreview() {
   return (
@@ -17,12 +17,11 @@ export function HeroDashboardPreview() {
           </span>
         </div>
 
-        {/* Native img + srcSet avoids next/image downscaling a 1x asset on retina. */}
         <img
           src="/marketing/hero-dashboard@2x.png"
           srcSet="/marketing/hero-dashboard.png 1024w, /marketing/hero-dashboard@2x.png 2048w"
           sizes="(max-width: 640px) 100vw, 1024px"
-          alt="Tenant Hawk client overview showing health score, open issues, recoverable spend, and category grades"
+          alt="Tenant Hawk dashboard showing health score, recoverable spend, category grades, and compliance findings"
           width={SRC_WIDTH}
           height={SRC_HEIGHT}
           className="block h-auto w-full"

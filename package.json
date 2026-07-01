@@ -11,7 +11,9 @@
     "seed": "node scripts/seed.mjs",
     "seed:msp": "node --experimental-strip-types --env-file=.env scripts/seed-msp.mjs",
     "icons": "node scripts/generate-icons.mjs",
-    "stripe:founding-promo": "node scripts/stripe-create-founding-promo.mjs"
+    "stripe:founding-promo": "node scripts/stripe-create-founding-promo.mjs",
+    "capture:hero": "node scripts/capture-hero-dashboard.mjs",
+    "capture:hero:install": "playwright install chromium"
   },
   "dependencies": {
     "@better-auth/sso": "^1.6.22",
@@ -43,6 +45,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "playwright": "^1.52.0",
     "sharp": "^0.35.2",
     "tailwindcss": "^4",
     "typescript": "^5"

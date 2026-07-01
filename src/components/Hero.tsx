@@ -19,7 +19,7 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden pt-32 pb-8 sm:pt-40 sm:pb-12">
       <div className="theme-aura pointer-events-none absolute inset-0 -z-10" />
-      <div className="theme-grid pointer-events-none absolute inset-0 -z-10 h-[720px]" />
+      <div className="theme-grid pointer-events-none absolute inset-0 -z-10 h-[960px]" />
 
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div

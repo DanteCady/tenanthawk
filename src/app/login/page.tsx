@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { headers } from "next/headers";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { AuthForm } from "@/components/auth/AuthForm";
@@ -9,11 +8,11 @@ import { parseHostContext } from "@/lib/platform/admin";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; redirect?: string }>;
 }) {
   const host = (await headers()).get("host");
   const ctx = parseHostContext(host);
-  const { error } = await searchParams;
+  const { error, redirect } = await searchParams;
 
   if (ctx.kind === "platform-admin") {
     return (
@@ -26,9 +25,7 @@ export default async function LoginPage({
             This account is not authorized for the platform console.
           </p>
         )}
-        <Suspense>
-          <AuthForm mode="login" defaultRedirect="/admin" />
-        </Suspense>
+        <AuthForm mode="login" redirectTo={redirect} defaultRedirect="/admin" />
       </AuthShell>
     );
   }
@@ -68,9 +65,7 @@ export default async function LoginPage({
       title="Welcome back"
       subtitle="Sign in to your Tenant Hawk dashboard."
     >
-      <Suspense>
-        <AuthForm mode="login" />
-      </Suspense>
+      <AuthForm mode="login" redirectTo={redirect} defaultRedirect="/dashboard" />
     </AuthShell>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { signIn, signUp, signOut, VERIFY_CALLBACK } from "@/lib/auth-client";
@@ -13,17 +13,19 @@ const inputClass =
 
 export function AuthForm({
   mode,
+  redirectTo,
   defaultRedirect,
   accountType = "individual",
 }: {
   mode: "login" | "signup";
+  /** Post-login path from `?redirect=` (pass from the server page for SSR-safe hydration). */
+  redirectTo?: string | null;
   /** Used when the URL has no `redirect` query param (e.g. platform admin login). */
   defaultRedirect?: string;
   accountType?: AccountType;
 }) {
   const router = useRouter();
-  const params = useSearchParams();
-  const redirect = params.get("redirect") ?? defaultRedirect;
+  const redirect = redirectTo ?? defaultRedirect;
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

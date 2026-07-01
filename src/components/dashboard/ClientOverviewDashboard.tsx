@@ -142,8 +142,8 @@ export async function ClientOverviewDashboard() {
       {isPro && <MonitoringStatus connectionId={conn.id} />}
       {isPro && drift && <DriftSummary drift={drift} />}
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="surface-highlight flex flex-col gap-3 p-4 sm:col-span-2 xl:col-span-1">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+        <div className="surface-highlight flex flex-col gap-3 p-4 sm:col-span-3 xl:col-span-1">
           <div className="flex items-center gap-3">
             <ScoreRing score={scan.score ?? 0} size={96} />
             <div className="min-w-0">
@@ -182,7 +182,7 @@ export async function ClientOverviewDashboard() {
         ))}
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {summary.categories.map((c) => {
           const meta = CATEGORY_META[c.category];
           const Icon = meta.icon;
