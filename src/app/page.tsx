@@ -4,6 +4,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { parseHostContext } from "@/lib/platform/admin";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
+import { HeroDashboardPreview } from "@/components/HeroDashboardPreview";
 import { Stats } from "@/components/Stats";
 import { ProblemSection } from "@/components/ProblemSection";
 import { Categories } from "@/components/Categories";
@@ -45,7 +46,7 @@ export default async function Home() {
       <div className="min-h-screen">
         <Navbar />
         <main className="flex-1">
-          <Hero />
+          <Hero dashboardPreview={<HeroDashboardPreview />} />
           <Stats />
           <ProblemSection />
           <Categories />

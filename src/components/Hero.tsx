@@ -3,7 +3,6 @@
 import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Lock, ScanLine } from "lucide-react";
 import { SCAN_CHECK_COUNT } from "@/lib/scan/catalog";
-import { HeroDashboardPreview } from "./HeroDashboardPreview";
 
 const container: Variants = {
   hidden: {},
@@ -15,7 +14,7 @@ const item: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
-export function Hero() {
+export function Hero({ dashboardPreview }: { dashboardPreview: React.ReactNode }) {
   return (
     <section className="relative overflow-hidden pt-32 pb-8 sm:pt-40 sm:pb-12">
       <div className="theme-aura pointer-events-none absolute inset-0 -z-10" />
@@ -88,7 +87,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, ease: "easeOut", delay: 0.22 }}
         >
-          <HeroDashboardPreview />
+          {dashboardPreview}
         </motion.div>
       </div>
     </section>

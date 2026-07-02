@@ -1,3 +1,6 @@
+/** Approx. Microsoft 365 E5 list price per user/month (ROI marketing copy). */
+export const E5_LICENSE_MONTHLY_USD_LIST = 57;
+
 /** Display pricing for Pro (must match Stripe Price amounts). */
 export const PRO_MONTHLY_USD = 49;
 

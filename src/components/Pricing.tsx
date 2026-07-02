@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { Reveal } from "./Reveal";
 import {
+  E5_LICENSE_MONTHLY_USD_LIST,
   ENTERPRISE_ANNUAL_MONTHLY_EQUIV,
   ENTERPRISE_ANNUAL_SAVINGS_PERCENT,
   ENTERPRISE_ANNUAL_SAVINGS_USD,
@@ -37,7 +38,8 @@ const tiers = [
   },
   {
     name: "Pro",
-    blurb: "The full hawk-eye view for internal IT teams.",
+    roiLead: "Recover one unused E5 license and Pro has already paid for itself.",
+    blurb: "Full visibility for internal IT teams — cost recovery, drift alerts, and executive-ready reports.",
     features: [
       "All four scan categories",
       "Daily scans + drift alerts",
@@ -51,7 +53,8 @@ const tiers = [
   },
   {
     name: "Enterprise",
-    blurb: "For MSPs and consultants — not Pro. Manage every client tenant from one console.",
+    roiLead: `One client portfolio often surfaces more reclaimable spend than $${ENTERPRISE_MONTHLY_USD}/mo.`,
+    blurb: "Flat-rate MSP platform — roll up savings across every client tenant from one console.",
     features: [
       "Full platform on every client tenant",
       "Up to 10 client tenants (Starter)",
@@ -73,18 +76,39 @@ export function Pricing() {
   return (
     <section id="pricing" className="scroll-mt-24 bg-white py-24">
       <div className="mx-auto max-w-6xl px-6">
-        <Reveal className="mx-auto max-w-2xl text-center">
+        <Reveal className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-semibold uppercase tracking-widest text-yellow-600">
             Pricing
           </p>
           <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            Start free. Scale when you&apos;re ready.
+            Think ROI, not subscription lines.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            Pro is per internal tenant. Enterprise is flat-rate for MSPs — up to{" "}
-            {ENTERPRISE_CLIENT_CAP_DEFAULT} clients on Starter. Founding customers:{" "}
-            <span className="font-mono text-sm font-semibold text-amber-700">EARLYBIRD26</span>{" "}
-            for 25% off Pro (first 20 customers).
+            Tenant Hawk surfaces reclaimable Microsoft 365 spend on every scan. Most teams
+            recover more in unused licenses than the platform costs.
+          </p>
+        </Reveal>
+
+        <Reveal className="mx-auto mt-10 max-w-3xl">
+          <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-b from-amber-50 to-white px-6 py-6 text-center shadow-sm sm:px-8">
+            <p className="text-balance text-lg font-semibold leading-snug text-slate-900 sm:text-xl">
+              If Tenant Hawk helps you recover one unused E5 license, it has already started
+              paying for itself.
+            </p>
+            <p className="mt-3 text-sm text-slate-600 sm:text-base">
+              Pro is ${PRO_MONTHLY_USD}/tenant/mo. One E5 license is about $
+              {E5_LICENSE_MONTHLY_USD_LIST}/mo at list. Typical scans surface far more than a
+              single seat.
+            </p>
+          </div>
+        </Reveal>
+
+        <Reveal className="mx-auto mt-8 max-w-2xl text-center">
+          <p className="text-sm text-slate-500">
+            Start free on one tenant. Pro is per internal tenant. Enterprise is flat-rate for
+            MSPs (up to {ENTERPRISE_CLIENT_CAP_DEFAULT} clients on Starter). Founding customers:{" "}
+            <span className="font-mono font-semibold text-amber-700">EARLYBIRD26</span> for 25%
+            off Pro (first 20 customers).
           </p>
         </Reveal>
 
@@ -179,9 +203,24 @@ export function Pricing() {
                     </span>
                   )}
                   <h3 className="text-lg font-bold text-slate-900">{t.name}</h3>
-                  <div className="mt-2 flex items-baseline gap-1.5">
-                    <span className="text-4xl font-bold text-slate-900">{price}</span>
-                    <span className="text-slate-500">{cadence}</span>
+                  {"roiLead" in t && t.roiLead && (
+                    <p className="mt-3 text-base font-semibold leading-snug text-amber-900">
+                      {t.roiLead}
+                    </p>
+                  )}
+                  <div
+                    className={`flex items-baseline gap-1.5 ${
+                      "roiLead" in t && t.roiLead ? "mt-3" : "mt-2"
+                    }`}
+                  >
+                    <span
+                      className={`font-bold text-slate-900 ${
+                        "roiLead" in t && t.roiLead ? "text-2xl" : "text-4xl"
+                      }`}
+                    >
+                      {price}
+                    </span>
+                    <span className="text-sm text-slate-500">{cadence}</span>
                   </div>
                   <p className="mt-3 text-sm text-slate-600">{t.blurb}</p>
                   {annualNote && (
