@@ -32,7 +32,7 @@ export function MspOverviewDashboard({
             MSP overview
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            Roll-up across {overview.clientCount} clients — open one for tenant detail.
+            Roll-up across {overview.clientCount} clients - open one for tenant detail.
           </p>
         </div>
         <Link
@@ -50,7 +50,7 @@ export function MspOverviewDashboard({
             <ScoreRing score={overview.avgScore} size={88} />
           ) : (
             <div className="flex h-[88px] w-[88px] items-center justify-center rounded-full bg-slate-100 text-sm text-slate-500">
-              —
+              -
             </div>
           )}
           <div>
@@ -102,7 +102,7 @@ export function MspOverviewDashboard({
         </section>
       ) : (
         <div className="surface-card border border-emerald-200/80 bg-emerald-50/40 px-5 py-4 text-sm text-emerald-900">
-          All clients look healthy — no stale scans or urgent findings flagged.
+          All clients look healthy - no stale scans or urgent findings flagged.
         </div>
       )}
 
@@ -163,7 +163,7 @@ function ClientMiniCard({ client }: { client: ClientPortfolioRow }) {
           </p>
         </div>
         {client.score != null ? (
-          <GradeBadge letter={client.grade ?? "—"} size="sm" />
+          <GradeBadge letter={client.grade ?? "-"} size="sm" />
         ) : null}
       </div>
       <div className="flex items-center justify-between text-xs text-slate-600">

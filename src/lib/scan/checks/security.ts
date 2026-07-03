@@ -85,7 +85,7 @@ export const adminRoles: Check = {
         checkId: adminRoles.id,
         severity: members.length >= 7 ? "high" : "medium",
         title: `${members.length} accounts with Global Administrator`,
-        description: `${members.length} users hold Global Administrator — more than the recommended 2–4 break-glass plus named admins.`,
+        description: `${members.length} users hold Global Administrator - more than the recommended 2–4 break-glass plus named admins.`,
         impact: { count: members.length, entities: names },
         remediation:
           "Reduce standing Global Admins and use Entra Privileged Identity Management for just-in-time elevation.",

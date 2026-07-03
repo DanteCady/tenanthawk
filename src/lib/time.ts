@@ -11,7 +11,7 @@ export function timeAgo(input: Date | string): string {
   return date.toLocaleDateString("en-US", { timeZone: "UTC" });
 }
 
-/** Fixed locale + UTC — safe for client components that SSR the same markup. */
+/** Fixed locale + UTC - safe for client components that SSR the same markup. */
 export function formatCheckedAt(input: Date | string): string {
   const date = typeof input === "string" ? new Date(input) : input;
   if (Number.isNaN(date.getTime())) return String(input);

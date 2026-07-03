@@ -4,7 +4,7 @@ import { ENTERPRISE_CONSOLE_FEATURES } from "@/lib/billing/plan-features";
 
 export function EnterpriseConsoleUpsell({
   title = "Enterprise multi-tenant console",
-  description = "MSPs and consultants use Enterprise — not Pro — to manage client tenants from one dashboard.",
+  description = "MSPs and consultants use Enterprise - not Pro - to manage client tenants from one dashboard.",
   compact = false,
 }: {
   title?: string;

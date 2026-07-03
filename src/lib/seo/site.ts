@@ -8,10 +8,10 @@ export const DEFAULT_TITLE =
   "Tenant Hawk | M365 tenant cleanup tool & health overview";
 
 export const DEFAULT_DESCRIPTION =
-  "Clean up your Microsoft 365 tenant with one read-only scan. Tenant Hawk finds inactive users, unused licenses, security gaps, expiring secrets, and hygiene drift — then gives you one health score and a prioritized fix list for M365 admins, MSPs, and IT leaders.";
+  "Clean up your Microsoft 365 tenant with one read-only scan. Tenant Hawk finds inactive users, unused licenses, security gaps, expiring secrets, and hygiene drift - then gives you one health score and a prioritized fix list for M365 admins, MSPs, and IT leaders.";
 
 export const OG_IMAGE_ALT =
-  "Tenant Hawk — M365 tenant cleanup tool and health overview for admins and MSPs";
+  "Tenant Hawk - M365 tenant cleanup tool and health overview for admins and MSPs";
 
 export const OG_IMAGE = {
   url: "/opengraph-image",
@@ -22,7 +22,7 @@ export const OG_IMAGE = {
 };
 
 /**
- * Keywords aligned with how admins actually search — cleanup, overview,
+ * Keywords aligned with how admins actually search - cleanup, overview,
  * hygiene, and audit terms from Reddit, Spiceworks, and competitor content.
  */
 export const TARGET_KEYWORDS = [
@@ -62,7 +62,7 @@ export const TARGET_KEYWORDS = [
   "Microsoft 365 cost optimization",
 ];
 
-/** Homepage-specific keywords — broader cleanup + overview intent. */
+/** Homepage-specific keywords - broader cleanup + overview intent. */
 export const HOMEPAGE_KEYWORDS = [
   "M365 clean up tool",
   "M365 cleanup tool",

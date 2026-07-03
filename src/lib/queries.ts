@@ -87,7 +87,7 @@ export async function getActiveConnection(
   return getConnectionById(userId, fallbackId);
 }
 
-/** @deprecated Use getActiveConnection — kept for gradual migration. */
+/** @deprecated Use getActiveConnection - kept for gradual migration. */
 export async function getPrimaryConnection(userId: string) {
   return getActiveConnection(userId);
 }

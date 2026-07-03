@@ -12,7 +12,7 @@ const links = [
   { href: "/#how", label: "How it works" },
   { href: "/#msp", label: "For MSPs" },
   { href: "/#pricing", label: "Pricing" },
-  { href: "/guides", label: "Guides" },
+  { href: "/learn", label: "Learn" },
 ] as const;
 
 const linkClass =

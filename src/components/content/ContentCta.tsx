@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { ArrowRight, Lock } from "lucide-react";
 
-export function GuideCta() {
+export function ContentCta() {
   return (
-    <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-8 shadow-sm">
+    <div className="light-surface rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-8 shadow-sm">
       <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
         Try it on your tenant
       </p>

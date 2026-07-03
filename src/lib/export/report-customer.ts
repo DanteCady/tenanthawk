@@ -39,7 +39,7 @@ export function reportCustomerRows(
 
   const rows: Array<{ label: string; value: string }> = [
     { label: "Organization", value: customer.organization },
-    { label: "Tenant domain", value: customer.tenantDomain ?? "—" },
+    { label: "Tenant domain", value: customer.tenantDomain ?? "-" },
     { label: "Scan type", value: modeLabel },
     { label: "Scanned", value: formatReportDate(customer.scannedAt) },
     { label: "Provider", value: "Microsoft Entra ID" },

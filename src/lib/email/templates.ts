@@ -11,7 +11,7 @@ import {
 } from "@/lib/email/layout";
 
 function formatScore(score: number | null, delta: number | null, deltaLabel: string) {
-  const scoreStr = score != null ? `${score} (${grade(score)})` : "—";
+  const scoreStr = score != null ? `${score} (${grade(score)})` : "-";
   const deltaStr =
     delta != null && delta !== 0
       ? `${delta > 0 ? "+" : ""}${delta} ${deltaLabel}`
@@ -59,7 +59,7 @@ export function driftAlertEmail(opts: {
   const { scoreStr, detail } = formatScore(score, scoreDelta, "since last scan");
   const summaryLines = driftSummaryLines(drift, scoreDelta);
   const summary = summaryLines.length > 0 ? summaryLines.join(" · ") : "Tenant health changed";
-  const subject = `Tenant Hawk: ${summary} — ${tenantName}`;
+  const subject = `Tenant Hawk: ${summary} - ${tenantName}`;
   const bullets = driftDetailBullets(drift);
 
   const bodyHtml = [
@@ -77,7 +77,7 @@ export function driftAlertEmail(opts: {
   });
 
   const text = [
-    `Tenant Hawk — health alert for ${tenantName}`,
+    `Tenant Hawk - health alert for ${tenantName}`,
     `Score: ${scoreStr}`,
     summary,
     ...bullets.map((b) => `  • ${b}`),
@@ -103,12 +103,12 @@ export function weeklyDigestEmail(opts: {
     drift.newCount > 0 || drift.resolvedCount > 0 || drift.changedCount > 0;
 
   const subject = changed
-    ? `Tenant Hawk weekly: ${drift.newCount} new, ${drift.resolvedCount} resolved — ${tenantName}`
-    : `Tenant Hawk weekly: all clear — ${tenantName}`;
+    ? `Tenant Hawk weekly: ${drift.newCount} new, ${drift.resolvedCount} resolved - ${tenantName}`
+    : `Tenant Hawk weekly: all clear - ${tenantName}`;
 
   const driftCopy = changed
     ? `Since your last weekly digest: ${drift.newCount} new, ${drift.resolvedCount} resolved${drift.changedCount > 0 ? `, ${drift.changedCount} severity changes` : ""}.`
-    : "No meaningful drift this week — your tenant looks stable.";
+    : "No meaningful drift this week - your tenant looks stable.";
 
   const bodyHtml = [
     renderStatBlock("Health score", scoreStr, detail),
@@ -125,7 +125,7 @@ export function weeklyDigestEmail(opts: {
   });
 
   const text = [
-    `Tenant Hawk — weekly digest for ${tenantName}`,
+    `Tenant Hawk - weekly digest for ${tenantName}`,
     `Score: ${scoreStr}`,
     `${openIssues} open issues, ${highIssues} high severity`,
     driftCopy,
@@ -157,7 +157,7 @@ export function verificationOtpEmail(opts: { otp: string }): EmailTemplate {
   });
 
   const text = [
-    "Tenant Hawk — verify your email",
+    "Tenant Hawk - verify your email",
     "",
     `Your verification code: ${opts.otp}`,
     "",
@@ -190,7 +190,7 @@ export function verificationEmail(opts: {
   });
 
   const text = [
-    "Tenant Hawk — verify your email",
+    "Tenant Hawk - verify your email",
     "",
     `Hi ${opts.name || "there"},`,
     "",
@@ -205,21 +205,21 @@ export function verificationEmail(opts: {
 }
 
 export function testAlertEmail(): EmailTemplate {
-  const subject = "Tenant Hawk — test alert";
+  const subject = "Tenant Hawk - test alert";
   const bodyHtml = `<p style="margin:0;font-size:15px;line-height:1.6;color:#475569;">
     This is a test alert from Tenant Hawk. If you received this, email delivery is working.
     You'll receive tenant health notifications at this address based on your alert preferences.
   </p>`;
 
   const html = renderEmailLayout({
-    preheader: "Test alert — email delivery is working",
+    preheader: "Test alert - email delivery is working",
     title: "Test alert",
     bodyHtml,
     cta: { label: "Open dashboard", href: emailDashboardUrl() },
   });
 
   const text = [
-    "Tenant Hawk — test alert",
+    "Tenant Hawk - test alert",
     "",
     "This is a test alert from Tenant Hawk. If you received this, email delivery is working.",
     "You'll receive tenant health notifications at this address based on your alert preferences.",

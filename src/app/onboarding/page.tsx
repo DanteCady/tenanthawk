@@ -57,7 +57,7 @@ export default async function OnboardingPage({
       return (
         <EnterpriseConsoleUpsell
           title="Add client tenants with Enterprise"
-          description="Pro is for a single internal IT team. MSPs and consultants need Enterprise — not Pro — to connect and manage client tenants."
+          description="Pro is for a single internal IT team. MSPs and consultants need Enterprise - not Pro - to connect and manage client tenants."
         />
       );
     }

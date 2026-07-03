@@ -53,7 +53,7 @@ export default async function ClientsPage() {
           </Link>
         ) : (
           <p className="text-sm text-amber-800">
-            Plan limit reached —{" "}
+            Plan limit reached -{" "}
             <a
               href="mailto:support@tenanthawk.io?subject=Enterprise%20volume%20pricing"
               className="font-medium text-violet-700 hover:text-violet-800"
@@ -154,7 +154,7 @@ export default async function ClientsPage() {
 
       {activeConn ? (
         <p className="text-center text-xs text-slate-500">
-          Selected client: {connectionLabel(activeConn)} — findings and exports use this
+          Selected client: {connectionLabel(activeConn)} - findings and exports use this
           tenant until you switch.
         </p>
       ) : null}

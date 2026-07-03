@@ -1,0 +1,63 @@
+---
+title: "How to prepare your M365 tenant for an audit"
+description: "What auditors ask for, where tenants usually fail, and a pre-audit checklist for security, licensing, and access controls."
+slug: "prepare-for-m365-audit"
+type: guide
+category: governance
+checkIds: ["security.conditional-access","security.mfa-registration","security.admin-roles","cost.disabled-user-licenses"]
+relatedSlugs: ["m365-tenant-health-checklist","m365-security-misconfigurations","find-wasted-m365-licenses"]
+readTime: "7 min read"
+publishedAt: "2026-03-01"
+updatedAt: "2026-07-03"
+quickAnswer: "What auditors ask for, where tenants usually fail, and a pre-audit checklist for security, licensing, and access controls."
+targetKeyword: "How to prepare your M365 tenant for an audit"
+faq:
+  - q: "How long does how to prepare your m365 tenant for an audit take?"
+    a: "Most admins can work through the core steps in one to two sessions. Tenant Hawk automates the inventory in under five minutes with a read-only scan."
+  - q: "Do I need Global Administrator to run these checks?"
+    a: "Many checks require Global Administrator or Security Administrator in Entra ID. Tenant Hawk uses read-only admin consent so you can assess the tenant without making changes."
+  - q: "How often should I repeat this review?"
+    a: "Run a full pass quarterly at minimum, or monthly before audits and renewal season. After major org changes, run an ad-hoc review within a week."
+---
+
+## What auditors care about in M365
+
+Whether the audit is SOC 2, ISO 27001, cyber insurance, or a customer security questionnaire, reviewers want evidence that you control identity, data access, and change over time. Microsoft 365 is usually in scope because it holds email, files, identity, and admin actions.
+
+They rarely care that you use Microsoft. They care that you know who has access, how it is enforced, and that you can show logs.
+
+## Identity and access evidence
+
+Prepare exports and screenshots before the auditor asks.
+
+- Conditional Access policy list with enforcement status
+- MFA registration coverage report for all users and admins
+- Privileged role assignments with PIM activation logs if used
+- Guest user inventory with sponsor and last sign-in date
+
+## Common audit failures
+
+These findings show up repeatedly across tenants of every size.
+
+- Legacy authentication still enabled
+- Excessive Global Administrators without MFA
+- No documented break-glass procedure
+- Over-permissioned third-party applications
+- Licenses assigned to terminated employees
+- Missing or incomplete audit log retention configuration
+
+## Documentation to have ready
+
+Policies matter as much as settings. Align your written standards with what is actually configured. Auditors notice gaps between policy and practice.
+
+- Access control and offboarding procedures
+- Guest and external collaboration policy
+- Admin account management standard
+- Incident response contacts and escalation path
+
+## Pre-audit timeline
+
+Eight weeks out: run a full tenant health scan and assign owners to critical findings. Four weeks out: close MFA and legacy auth gaps. Two weeks out: reconcile admin roster and guest list. One week out: export evidence pack and verify audit logging retention meets your framework.
+
+Running Tenant Hawk before an audit gives you a prioritized gap list with remediation steps, so you fix the highest-risk items first instead of guessing.
+

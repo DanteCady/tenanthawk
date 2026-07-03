@@ -1,4 +1,4 @@
-/** Customer-facing feature lists — Pro and Enterprise are separate tiers, not bundles. */
+/** Customer-facing feature lists - Pro and Enterprise are separate tiers, not bundles. */
 
 export const PRO_PLAN_FEATURES = [
   "Full findings with severity & dollar impact",
@@ -14,7 +14,7 @@ export const PRO_PLAN_FEATURES = [
 export const ENTERPRISE_PLAN_FEATURES = [
   "Full platform on every client tenant",
   "Multi-tenant portfolio roll-up dashboard",
-  "Clients console — switch, rescan, and open any tenant",
+  "Clients console - switch, rescan, and open any tenant",
   "Per-client scorecards for QBRs and client updates",
   "Up to 10 client tenants on Starter (volume tiers available)",
   "Priority support",

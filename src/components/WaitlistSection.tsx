@@ -15,7 +15,7 @@ export function WaitlistSection() {
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-slate-600">
               Run your first scan free. See your health score, your biggest
-              risks, and your wasted spend in minutes — then decide if you want
+              risks, and your wasted spend in minutes - then decide if you want
               the full fix-it list.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

@@ -57,7 +57,7 @@ const GRADE_COLORS: Record<string, [number, number, number]> = {
 
 type Doc = jsPDF & { lastAutoTable?: { finalY: number } };
 
-/** jsPDF Helvetica cannot render Unicode arrows — they break into spaced glyphs. */
+/** jsPDF Helvetica cannot render Unicode arrows - they break into spaced glyphs. */
 export function sanitizePdfText(text: string): string {
   return text
     .replace(/\u2192/g, " > ")
@@ -77,7 +77,7 @@ function formatImpact(f: ExportFinding): string {
     },
     entityRef: f.entityRef,
   });
-  if (val === "—") return "-";
+  if (val === "-") return "-";
   return sanitizePdfText(val);
 }
 

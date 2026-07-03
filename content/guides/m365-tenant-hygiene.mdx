@@ -1,0 +1,66 @@
+---
+title: "Microsoft 365 tenant cleanup & hygiene best practices"
+description: "Clean up orphaned groups, stale accounts, inactive guests, unmanaged devices, and sharing defaults before clutter slows every admin task."
+slug: "m365-tenant-hygiene"
+type: guide
+category: hygiene
+checkIds: ["hygiene.inactive-users","hygiene.empty-groups","hygiene.sharing","hygiene.intune-noncompliant"]
+relatedSlugs: ["m365-tenant-cleanup","m365-tenant-health-checklist","find-wasted-m365-licenses","m365-security-misconfigurations"]
+readTime: "6 min read"
+publishedAt: "2026-03-01"
+updatedAt: "2026-07-03"
+quickAnswer: "Clean up orphaned groups, stale accounts, inactive guests, unmanaged devices, and sharing defaults before clutter slows every admin task."
+targetKeyword: "Microsoft 365 tenant cleanup & hygiene best practices"
+faq:
+  - q: "How long does microsoft 365 tenant cleanup & hygiene best practices take?"
+    a: "Most admins can work through the core steps in one to two sessions. Tenant Hawk automates the inventory in under five minutes with a read-only scan."
+  - q: "Do I need Global Administrator to run these checks?"
+    a: "Many checks require Global Administrator or Security Administrator in Entra ID. Tenant Hawk uses read-only admin consent so you can assess the tenant without making changes."
+  - q: "How often should I repeat this review?"
+    a: "Run a full pass quarterly at minimum, or monthly before audits and renewal season. After major org changes, run an ad-hoc review within a week."
+---
+
+## Hygiene is compounding debt
+
+Empty groups, stale Teams, and inactive accounts do not usually cause immediate incidents. They inflate search results, confuse access reviews, and make license reclamation harder. The longer you wait, the more political it becomes to remove "someone might need this."
+
+## Groups and Teams
+
+Microsoft 365 groups multiply quickly. Project teams, distribution lists, Planner boards, and SharePoint sites all leave artifacts.
+
+- Groups with zero members or only the creator
+- Teams with no activity in 12+ months still open to all members
+- Dynamic groups with rules that no longer match intent
+- Mail-enabled security groups used once for a migration
+
+## Stale user accounts
+
+Distinguish hygiene from security: an inactive enabled account is both a license cost and an identity risk.
+
+- Users enabled but inactive beyond your retention threshold
+- Accounts without a manager attribute in large departments
+- Duplicate or test accounts in production directories
+- Former contractors whose access was partially removed
+
+## Devices and endpoints
+
+Intune and Entra device records drift when hardware is retired informally.
+
+- Duplicate device records for the same physical machine
+- Unmanaged devices with stale primary user assignments
+- Devices not checked in for 180+ days still marked compliant
+
+## Sharing and defaults
+
+Tenant-level sharing settings set during onboarding often never get revisited as the organization matures.
+
+- SharePoint default sharing more permissive than policy
+- Anyone links enabled on sites with sensitive content
+- Guest access settings inconsistent across teams and sites
+
+## A sustainable cleanup cadence
+
+Run hygiene passes in small batches, one department or one group type per sprint. Archive before delete where possible, and publish simple criteria ("no sign-in 180 days, manager approved") so removals are predictable.
+
+Tenant Hawk highlights hygiene findings alongside security and cost so cleanup priorities stay visible in one dashboard.
+

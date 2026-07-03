@@ -33,7 +33,7 @@ export function buildOverviewCsv(
 ): string {
   const lines: string[] = [];
 
-  lines.push(row(["Tenant Hawk — Tenant Health Report"]));
+  lines.push(row(["Tenant Hawk - Tenant Health Report"]));
   lines.push(row(["Generated", formatReportDate(new Date())]));
   lines.push(blank());
 
@@ -50,8 +50,8 @@ export function buildOverviewCsv(
   lines.push(blank());
 
   lines.push(row(["HEALTH SUMMARY"]));
-  const overallGrade = meta.score != null ? grade(meta.score) : "—";
-  lines.push(row(["Overall health score", meta.score ?? "—"]));
+  const overallGrade = meta.score != null ? grade(meta.score) : "-";
+  lines.push(row(["Overall health score", meta.score ?? "-"]));
   lines.push(row(["Overall grade", overallGrade]));
   lines.push(row(["Open findings", summary.total]));
   lines.push(row(["High severity findings", summary.high]));

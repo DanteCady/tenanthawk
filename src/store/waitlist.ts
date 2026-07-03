@@ -40,7 +40,7 @@ export const useWaitlist = create<WaitlistState>((set) => ({
         position: data.position ?? null,
         alreadyJoined: Boolean(data.alreadyJoined),
         message: data.alreadyJoined
-          ? "You're already on the list — we'll be in touch."
+          ? "You're already on the list - we'll be in touch."
           : "You're on the list!",
       });
     } catch {

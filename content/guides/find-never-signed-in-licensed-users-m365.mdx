@@ -1,0 +1,83 @@
+---
+title: "How to find never-signed-in licensed users in Microsoft 365"
+description: "Find M365 users who have licenses but never signed in. This is the fastest license waste in most tenants. Reclaim seats before renewal with sign-in reports and safe offboarding steps."
+slug: find-never-signed-in-licensed-users-m365
+type: guide
+category: cost
+checkIds: ["cost.unused-licenses", "cost.disabled-user-licenses", "hygiene.inactive-users"]
+relatedSlugs:
+  - find-wasted-m365-licenses
+  - m365-tenant-cleanup
+  - m365-tenant-health-checklist
+readTime: "6 min read"
+publishedAt: "2026-07-03"
+updatedAt: "2026-07-03"
+quickAnswer: "Never-signed-in licensed users are accounts with assigned Microsoft 365 seats but no successful interactive sign-in. Export licensed users, compare to Entra sign-in activity, and reclaim seats from never-used accounts first. It is usually the safest and fastest dollar recovery in any tenant."
+targetKeyword: "find users never signed in M365"
+sources:
+  - title: "signInActivity resource type"
+    url: "https://learn.microsoft.com/en-us/graph/api/resources/signinactivity?view=graph-rest-1.0"
+    publisher: "Microsoft Learn"
+  - title: "How to analyze activity logs with Microsoft Graph"
+    url: "https://learn.microsoft.com/en-us/entra/identity/monitoring-health/howto-analyze-activity-logs-with-microsoft-graph"
+    publisher: "Microsoft Learn"
+  - title: "Assign or unassign licenses for users in the Microsoft 365 admin center"
+    url: "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/assign-licenses-to-users?view=o365-worldwide"
+    publisher: "Microsoft Learn"
+  - title: "Assign Microsoft 365 licenses to user accounts with PowerShell"
+    url: "https://learn.microsoft.com/en-us/microsoft-365/enterprise/assign-licenses-to-user-accounts-with-microsoft-365-powershell?view=o365-worldwide"
+    publisher: "Microsoft Learn"
+faq:
+  - q: "What counts as never signed in?"
+    a: "An account with one or more license assignments and no interactive sign-in recorded in Entra ID, including users created for future hires who never started."
+  - q: "Is it safe to remove licenses from never-signed-in users?"
+    a: "Usually yes, but confirm with HR or the hiring manager first. Some accounts are pre-staged for onboarding. Disabled accounts with licenses are even safer to reclaim."
+  - q: "How much money can this save?"
+    a: "Each Business Premium or E3 seat is roughly $20–36/month; E5 can exceed $50. Ten never-signed-in E5 seats can waste $500+/month."
+  - q: "Where do I run the report in Microsoft 365?"
+    a: "Use Entra ID user list with sign-in activity, Microsoft 365 admin center active users, or PowerShell with Get-MgUser and signInActivity. Filter licensed + no last sign-in."
+  - q: "How is this different from inactive users?"
+    a: "Never-signed-in means zero usage ever. Inactive means they signed in once but not recently. Both waste licenses; never-signed-in is usually politically easier to reclaim."
+  - q: "Can Tenant Hawk find these automatically?"
+    a: "Yes. The cost scan flags never-signed-in licensed accounts and estimates monthly waste using your tenant's license mix."
+---
+
+## Why never-signed-in users are the fastest win
+
+Finance sees license counts. You see the truth: seats assigned to people who never logged in, pre-hire accounts that were never disabled, duplicate test users, or licenses copied from a template.
+
+This is narrower and higher-intent than a general license cleanup. It is also the easiest reclaim to defend in a budget meeting.
+
+## How to find never-signed-in licensed users manually
+
+- **Microsoft 365 admin center → Users → Active users:** add **Sign-in status** column
+- **Entra ID → Users:** filter users with licenses; sort by **Last sign-in**
+- **Microsoft Graph:** query users with `assignedLicenses` and `signInActivity`; Microsoft documents `lastSignInDateTime`, `lastNonInteractiveSignInDateTime`, and `lastSuccessfulSignInDateTime` on the `signInActivity` resource
+- Cross-check **disabled accounts:** disabled users with active licenses are reclaimable immediately
+- Export to spreadsheet: UPN, display name, licenses, created date, last sign-in, enabled/disabled
+
+## What good looks like
+
+- No enabled user holds a paid license for more than 7 days without sign-in (except documented pre-hire staging)
+- Disabled accounts have zero license assignments within 24 hours of offboarding
+- HR triggers a dated onboarding record tied to license assignment
+
+## How to reclaim licenses safely
+
+1. **Sort by SKU cost:** prioritize E5 and Business Premium because each reclaimed seat has immediate dollar impact.
+2. **Confirm ownership:** check HR or manager records before removing licenses from enabled accounts; pre-hire accounts may be intentional.
+3. **Use the admin center for small batches:** Microsoft documents unassigning licenses from **Users → Active users → Manage product licenses** or from **Billing → Licenses**.
+4. **Use Graph PowerShell for repeatable cleanup:** for larger batches, Microsoft documents `Set-MgUserLicense` with `-RemoveLicenses` for removing SKU IDs.
+5. **Check group-based licensing:** if a license is inherited from a group, remove the user from the licensing group or change the group assignment instead of editing the user directly.
+6. **Document savings:** record SKU, user, reclaimed date, and monthly savings so finance can verify the impact.
+7. **Fix the process:** tie license assignment to start date and offboarding completion so this does not recur.
+
+## Pair with inactive and disabled-user checks
+
+Never-signed-in is one slice. Also review:
+
+- Licensed users inactive 90+ days
+- Disabled users still holding seats
+- Oversized SKUs (E5 where E3 suffices)
+
+Tenant Hawk surfaces never-signed-in licensed accounts in the cost category and puts a dollar estimate on reclaimable spend. Run a free scan to get the list in minutes instead of exporting spreadsheets.

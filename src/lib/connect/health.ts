@@ -67,7 +67,7 @@ function healthFromStatus(
       return {
         status,
         label: "Demo",
-        detail: "Sample Contoso data — not connected to a live tenant.",
+        detail: "Sample Contoso data - not connected to a live tenant.",
         reconnect: false,
       };
     case "app_removed":

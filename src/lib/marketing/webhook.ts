@@ -6,7 +6,7 @@ import { connectionLabel } from "@/lib/connection/label";
  * Fires a marketing-lifecycle webhook (e.g. to n8n) when a scan completes.
  *
  * Fully gated on MARKETING_WEBHOOK_URL: a no-op unless configured. Never throws
- * and never blocks a scan — all errors are swallowed and logged. This is the
+ * and never blocks a scan - all errors are swallowed and logged. This is the
  * *marketing* layer; transactional/security emails stay in src/lib/email.
  */
 export async function fireMarketingWebhook(input: {

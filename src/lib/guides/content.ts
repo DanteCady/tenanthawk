@@ -21,7 +21,7 @@ export const GUIDES: Guide[] = [
     slug: "m365-tenant-cleanup",
     title: "How to clean up your Microsoft 365 tenant",
     description:
-      "Step-by-step M365 cleanup for admins — inactive users, unused licenses, stale groups, security drift, and tenant hygiene. Know where to start before you delete anything.",
+      "Step-by-step M365 cleanup for admins - inactive users, unused licenses, stale groups, security drift, and tenant hygiene. Know where to start before you delete anything.",
     readTime: "9 min read",
     category: "overview",
     relatedSlugs: [
@@ -34,18 +34,18 @@ export const GUIDES: Guide[] = [
         title: "Why M365 tenants need a cleanup",
         paragraphs: [
           "Every Microsoft 365 tenant accumulates clutter. People leave but accounts stay enabled. Licenses keep billing after offboarding. Project Teams sit empty for years. Conditional Access policies pile up with exceptions nobody remembers approving.",
-          "Searching for \"M365 clean up\" or \"clean Microsoft 365 tenant\" usually means you already feel the pain — rising license costs, security questionnaires you cannot answer, or a tenant handed down from a previous admin. A structured cleanup gives you an overview of what is wrong before you start deleting things.",
+          "Searching for \"M365 clean up\" or \"clean Microsoft 365 tenant\" usually means you already feel the pain - rising license costs, security questionnaires you cannot answer, or a tenant handed down from a previous admin. A structured cleanup gives you an overview of what is wrong before you start deleting things.",
         ],
       },
       {
         title: "Start with an overview, not a purge",
         paragraphs: [
           "The biggest mistake in tenant cleanup is acting before you understand scope. Block sign-in on the wrong account and you break a workflow. Remove a license from a shared mailbox and mail stops flowing.",
-          "Begin with a read-only inventory across four areas: identity and access, license spend, reliability risks, and directory hygiene. Tenant Hawk runs this overview in minutes — or you can work through the checklist below manually.",
+          "Begin with a read-only inventory across four areas: identity and access, license spend, reliability risks, and directory hygiene. Tenant Hawk runs this overview in minutes - or you can work through the checklist below manually.",
         ],
       },
       {
-        title: "Step 1 — Clean up inactive users and orphaned accounts",
+        title: "Step 1 - Clean up inactive users and orphaned accounts",
         paragraphs: [
           "Inactive users are the fastest win in any M365 cleanup. They waste licenses, inflate MFA coverage reports, and create standing access risk if credentials are compromised.",
         ],
@@ -58,20 +58,20 @@ export const GUIDES: Guide[] = [
         ],
       },
       {
-        title: "Step 2 — Reclaim unused M365 licenses",
+        title: "Step 2 - Reclaim unused M365 licenses",
         paragraphs: [
-          "License sprawl is invisible until finance asks — or until renewal season hits. Microsoft does not auto-reclaim seats when accounts are disabled.",
+          "License sprawl is invisible until finance asks - or until renewal season hits. Microsoft does not auto-reclaim seats when accounts are disabled.",
         ],
         bullets: [
           "Export assigned licenses vs. active sign-in activity",
           "Target disabled users, never-signed-in accounts, and 90-day inactive users first",
-          "Look for oversized SKUs — E5 where E3 or Business Premium would suffice",
+          "Look for oversized SKUs - E5 where E3 or Business Premium would suffice",
           "Document reclaimable monthly spend before bulk removal",
           "Tie license removal to your offboarding workflow going forward",
         ],
       },
       {
-        title: "Step 3 — Fix security drift before hygiene clutter",
+        title: "Step 3 - Fix security drift before hygiene clutter",
         paragraphs: [
           "Security gaps should rank above empty groups. Attackers exploit legacy auth and over-privileged admins long before anyone notices a stale Team.",
         ],
@@ -84,7 +84,7 @@ export const GUIDES: Guide[] = [
         ],
       },
       {
-        title: "Step 4 — Clean up groups, Teams, and devices",
+        title: "Step 4 - Clean up groups, Teams, and devices",
         paragraphs: [
           "Hygiene work reduces noise in every future admin task. Tackle it in small batches so removals are predictable and politically safe.",
         ],
@@ -97,11 +97,11 @@ export const GUIDES: Guide[] = [
         ],
       },
       {
-        title: "Step 5 — Set a cleanup cadence",
+        title: "Step 5 - Set a cleanup cadence",
         paragraphs: [
-          "M365 tenants drift toward chaos by default. One cleanup pass is not enough — schedule quarterly reviews at minimum, or monthly if you are preparing for an audit or managing rapid growth.",
-          "After major events — mergers, admin turnover, large hiring waves — run an ad-hoc cleanup within a week. Automate the overview so you catch drift before it compounds.",
-          "Tenant Hawk gives you a full M365 tenant overview read-only: one health score, prioritized fixes, and estimated dollar impact — so you know exactly where to start cleaning up.",
+          "M365 tenants drift toward chaos by default. One cleanup pass is not enough - schedule quarterly reviews at minimum, or monthly if you are preparing for an audit or managing rapid growth.",
+          "After major events - mergers, admin turnover, large hiring waves - run an ad-hoc cleanup within a week. Automate the overview so you catch drift before it compounds.",
+          "Tenant Hawk gives you a full M365 tenant overview read-only: one health score, prioritized fixes, and estimated dollar impact - so you know exactly where to start cleaning up.",
         ],
       },
     ],
@@ -110,7 +110,7 @@ export const GUIDES: Guide[] = [
     slug: "m365-tenant-health-checklist",
     title: "Microsoft 365 tenant health overview & checklist",
     description:
-      "A practical M365 health overview and checklist for admins — security, cost, reliability, and hygiene checks you should run regularly.",
+      "A practical M365 health overview and checklist for admins - security, cost, reliability, and hygiene checks you should run regularly.",
     readTime: "8 min read",
     category: "overview",
     relatedSlugs: [
@@ -124,7 +124,7 @@ export const GUIDES: Guide[] = [
         title: "Why run a tenant health check?",
         paragraphs: [
           "Microsoft 365 tenants drift. Admins leave, apps get registered, licenses pile up, and Conditional Access policies accumulate exceptions. Most teams only discover problems during an audit, after a breach, or when an integration silently breaks.",
-          "A structured health check gives you a baseline: what is misconfigured, what is wasting money, and what will break next. You do not need to review hundreds of settings manually — focus on the categories that matter most.",
+          "A structured health check gives you a baseline: what is misconfigured, what is wasting money, and what will break next. You do not need to review hundreds of settings manually - focus on the categories that matter most.",
         ],
       },
       {
@@ -135,7 +135,7 @@ export const GUIDES: Guide[] = [
         bullets: [
           "Confirm MFA is enforced for all admins and ideally all users",
           "Review Conditional Access policies for risky exclusions (legacy auth, trusted locations that are too broad)",
-          "Count Global Administrators — aim for two to four with break-glass accounts documented",
+          "Count Global Administrators - aim for two to four with break-glass accounts documented",
           "Audit app registrations with high-privilege Graph permissions",
           "Review guest accounts and external sharing defaults",
         ],
@@ -143,7 +143,7 @@ export const GUIDES: Guide[] = [
       {
         title: "Cost",
         paragraphs: [
-          "License waste is invisible until finance asks — or until you reconcile SKUs during renewal.",
+          "License waste is invisible until finance asks - or until you reconcile SKUs during renewal.",
         ],
         bullets: [
           "Find licenses assigned to disabled or never-signed-in users",
@@ -179,7 +179,7 @@ export const GUIDES: Guide[] = [
       {
         title: "How often to run this",
         paragraphs: [
-          "Run a full pass quarterly at minimum, or monthly if you are preparing for an audit or managing rapid growth. After major changes — mergers, admin turnover, large app deployments — run an ad-hoc check within a week.",
+          "Run a full pass quarterly at minimum, or monthly if you are preparing for an audit or managing rapid growth. After major changes - mergers, admin turnover, large app deployments - run an ad-hoc check within a week.",
           "Tenant Hawk automates this checklist read-only across your tenant and rolls results into one health score with prioritized fixes. A free scan takes under five minutes.",
         ],
       },
@@ -189,7 +189,7 @@ export const GUIDES: Guide[] = [
     slug: "m365-security-misconfigurations",
     title: "Common Microsoft 365 security misconfigurations",
     description:
-      "Conditional Access gaps, MFA holes, over-privileged apps, and guest access issues — what to look for and how to fix them.",
+      "Conditional Access gaps, MFA holes, over-privileged apps, and guest access issues - what to look for and how to fix them.",
     readTime: "7 min read",
     category: "security",
     relatedSlugs: [
@@ -201,7 +201,7 @@ export const GUIDES: Guide[] = [
       {
         title: "Conditional Access drift",
         paragraphs: [
-          "Conditional Access is powerful but easy to undermine. Policies get exceptions for \"just this one vendor\" or \"until the project ends\" — and those exceptions rarely get removed.",
+          "Conditional Access is powerful but easy to undermine. Policies get exceptions for \"just this one vendor\" or \"until the project ends\" - and those exceptions rarely get removed.",
           "Review every policy for users or groups excluded from MFA requirements, locations trusted without justification, and legacy authentication allowances.",
         ],
         bullets: [
@@ -262,7 +262,7 @@ export const GUIDES: Guide[] = [
       {
         title: "Fix priority",
         paragraphs: [
-          "Tackle legacy auth and MFA gaps first — they are the highest-risk, fastest-win items. Then reduce Global Admin count and review app permissions. Guest cleanup can run in parallel with hygiene work.",
+          "Tackle legacy auth and MFA gaps first - they are the highest-risk, fastest-win items. Then reduce Global Admin count and review app permissions. Guest cleanup can run in parallel with hygiene work.",
           "Tenant Hawk flags these issues automatically during a read-only scan and ranks them by severity so you know where to start.",
         ],
       },
@@ -272,7 +272,7 @@ export const GUIDES: Guide[] = [
     slug: "find-wasted-m365-licenses",
     title: "How to find wasted Microsoft 365 licenses",
     description:
-      "Identify unused seats, oversized SKUs, and duplicate assignments — and estimate how much you can reclaim each month.",
+      "Identify unused seats, oversized SKUs, and duplicate assignments - and estimate how much you can reclaim each month.",
     readTime: "6 min read",
     category: "cost",
     relatedSlugs: [
@@ -284,7 +284,7 @@ export const GUIDES: Guide[] = [
       {
         title: "Where license waste hides",
         paragraphs: [
-          "Most organizations over-provision during hiring waves or project kickoffs and under-deprovision when people leave. Microsoft 365 does not automatically reclaim licenses when accounts are disabled — and disabled accounts often keep their SKUs for months.",
+          "Most organizations over-provision during hiring waves or project kickoffs and under-deprovision when people leave. Microsoft 365 does not automatically reclaim licenses when accounts are disabled - and disabled accounts often keep their SKUs for months.",
           "Waste also comes from SKU mismatch: premium plans assigned to users who only need email and Teams, or duplicate add-ons stacked on the same account.",
         ],
       },
@@ -316,7 +316,7 @@ export const GUIDES: Guide[] = [
         title: "Estimating reclaimable spend",
         paragraphs: [
           "For each finding, multiply seats by your contracted per-seat rate. Group by SKU so finance can see monthly and annual impact. Even ten reclaimable E3 seats often covers the cost of tooling that finds them automatically.",
-          "Document who approved original assignments before bulk removal — some \"inactive\" accounts are service mailboxes or shared operational identities.",
+          "Document who approved original assignments before bulk removal - some \"inactive\" accounts are service mailboxes or shared operational identities.",
         ],
       },
       {
@@ -332,7 +332,7 @@ export const GUIDES: Guide[] = [
     slug: "m365-expiring-secrets-and-domains",
     title: "M365 expiring secrets, certificates, and domains",
     description:
-      "App registration expirations, domain renewals, and mailbox limits — the reliability checks that prevent surprise outages.",
+      "App registration expirations, domain renewals, and mailbox limits - the reliability checks that prevent surprise outages.",
     readTime: "6 min read",
     category: "reliability",
     relatedSlugs: [
@@ -351,7 +351,7 @@ export const GUIDES: Guide[] = [
       {
         title: "App registration secrets and certificates",
         paragraphs: [
-          "Every integration — SSO, automation, line-of-business apps — depends on credentials that expire.",
+          "Every integration - SSO, automation, line-of-business apps - depends on credentials that expire.",
         ],
         bullets: [
           "Client secrets expiring within 30, 60, and 90 days",
@@ -386,7 +386,7 @@ export const GUIDES: Guide[] = [
       {
         title: "Building an expiry calendar",
         paragraphs: [
-          "Export all app registrations with secret expiry dates, assign owners, and set rotation runbooks. Pair domain renewals with your IT asset register. Review quarterly even if nothing is expiring soon — ownership changes get missed.",
+          "Export all app registrations with secret expiry dates, assign owners, and set rotation runbooks. Pair domain renewals with your IT asset register. Review quarterly even if nothing is expiring soon - ownership changes get missed.",
           "Tenant Hawk tracks expiring secrets and reliability findings and can alert Pro subscribers when new risks appear.",
         ],
       },
@@ -415,7 +415,7 @@ export const GUIDES: Guide[] = [
       {
         title: "Groups and Teams",
         paragraphs: [
-          "Microsoft 365 groups multiply quickly — project teams, distribution lists, Planner boards, and SharePoint sites all leave artifacts.",
+          "Microsoft 365 groups multiply quickly - project teams, distribution lists, Planner boards, and SharePoint sites all leave artifacts.",
         ],
         bullets: [
           "Groups with zero members or only the creator",
@@ -461,7 +461,7 @@ export const GUIDES: Guide[] = [
       {
         title: "A sustainable cleanup cadence",
         paragraphs: [
-          "Run hygiene passes in small batches — one department or one group type per sprint. Archive before delete where possible, and publish simple criteria (\"no sign-in 180 days, manager approved\") so removals are predictable.",
+          "Run hygiene passes in small batches - one department or one group type per sprint. Archive before delete where possible, and publish simple criteria (\"no sign-in 180 days, manager approved\") so removals are predictable.",
           "Tenant Hawk highlights hygiene findings alongside security and cost so cleanup priorities stay visible in one dashboard.",
         ],
       },
@@ -484,7 +484,7 @@ export const GUIDES: Guide[] = [
         title: "What auditors care about in M365",
         paragraphs: [
           "Whether the audit is SOC 2, ISO 27001, cyber insurance, or a customer security questionnaire, reviewers want evidence that you control identity, data access, and change over time. Microsoft 365 is usually in scope because it holds email, files, identity, and admin actions.",
-          "They rarely care that you use Microsoft — they care that you know who has access, how it is enforced, and that you can show logs.",
+          "They rarely care that you use Microsoft - they care that you know who has access, how it is enforced, and that you can show logs.",
         ],
       },
       {
@@ -516,7 +516,7 @@ export const GUIDES: Guide[] = [
       {
         title: "Documentation to have ready",
         paragraphs: [
-          "Policies matter as much as settings. Align your written standards with what is actually configured — auditors notice gaps between policy and practice.",
+          "Policies matter as much as settings. Align your written standards with what is actually configured - auditors notice gaps between policy and practice.",
         ],
         bullets: [
           "Access control and offboarding procedures",
@@ -529,7 +529,7 @@ export const GUIDES: Guide[] = [
         title: "Pre-audit timeline",
         paragraphs: [
           "Eight weeks out: run a full tenant health scan and assign owners to critical findings. Four weeks out: close MFA and legacy auth gaps. Two weeks out: reconcile admin roster and guest list. One week out: export evidence pack and verify audit logging retention meets your framework.",
-          "Running Tenant Hawk before an audit gives you a prioritized gap list with remediation steps — so you fix the highest-risk items first instead of guessing.",
+          "Running Tenant Hawk before an audit gives you a prioritized gap list with remediation steps - so you fix the highest-risk items first instead of guessing.",
         ],
       },
     ],

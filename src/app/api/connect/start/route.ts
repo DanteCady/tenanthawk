@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   const clientId = process.env.MS_CLIENT_ID;
   const redirectUri = process.env.MS_REDIRECT_URI;
   if (!clientId || !redirectUri) {
-    // Live connect not configured — send back to onboarding to use demo.
+    // Live connect not configured - send back to onboarding to use demo.
     return NextResponse.redirect(
       new URL("/onboarding?connect=unconfigured", req.url),
     );

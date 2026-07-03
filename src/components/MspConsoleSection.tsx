@@ -6,7 +6,7 @@ const features = [
   {
     icon: LayoutDashboard,
     title: "Portfolio roll-up",
-    body: "Average health score, open high findings, and recoverable spend across every client — one glance before your standup.",
+    body: "Average health score, open high findings, and recoverable spend across every client - one glance before your standup.",
     chip: "bg-blue-50 text-blue-600",
   },
   {
@@ -18,13 +18,13 @@ const features = [
   {
     icon: KeyRound,
     title: "Branded subdomain + SSO",
-    body: "Your team signs in at acme.tenanthawk.io with your IdP — Okta, Entra, or SAML.",
+    body: "Your team signs in at acme.tenanthawk.io with your IdP - Okta, Entra, or SAML.",
     chip: "bg-violet-50 text-violet-600",
   },
   {
     icon: PieChart,
     title: "Per-client scorecards",
-    body: "Shareable scorecards with category grades and trends — built for QBRs, onboarding assessments, and exec updates.",
+    body: "Shareable scorecards with category grades and trends - built for QBRs, onboarding assessments, and exec updates.",
     chip: "bg-amber-50 text-amber-600",
   },
 ] as const;
@@ -42,9 +42,8 @@ export function MspConsoleSection() {
           </h2>
           <p className="mt-4 text-lg text-slate-300">
             Pro is for a single internal IT team. MSPs and consultants use{" "}
-            <span className="font-semibold text-white">Enterprise</span> — a dedicated
-            multi-tenant console with up to {ENTERPRISE_CLIENT_CAP_DEFAULT} clients on
-            Starter.
+            <span className="font-semibold text-white">Enterprise</span>, a dedicated
+            multi-tenant console with up to {ENTERPRISE_CLIENT_CAP_DEFAULT} clients on Starter.
           </p>
         </Reveal>
 

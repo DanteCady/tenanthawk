@@ -20,5 +20,5 @@ export function readStoredAppTheme(): Theme {
   }
 }
 
-/** Inline bootstrap — marketing follows OS; dashboard follows stored theme. */
+/** Inline bootstrap - marketing follows OS; dashboard follows stored theme. */
 export const THEME_BOOTSTRAP_SCRIPT = `(function(){try{var p=location.pathname;var app=p.indexOf("/dashboard")===0;if(app){var t=localStorage.getItem("tenant-hawk-theme");if(t==="light"||t==="dark"||t==="hawk"){document.documentElement.setAttribute("data-theme",t);return;}}var dark=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.setAttribute("data-theme",dark?"dark":"light");}catch(e){}})();`;

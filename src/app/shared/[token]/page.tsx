@@ -13,7 +13,7 @@ import { getFindingStatuses, isFindingHidden } from "@/lib/findings/status";
 import { findingStatusKey } from "@/lib/findings/key";
 
 export const metadata: Metadata = {
-  title: "Tenant Health Report — Tenant Hawk",
+  title: "Tenant Health Report - Tenant Hawk",
   robots: { index: false, follow: false },
 };
 

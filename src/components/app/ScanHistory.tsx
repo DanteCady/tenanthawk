@@ -35,7 +35,7 @@ export function ScanHistory({
                 {i === 0 ? "Latest" : timeAgo(s.started_at)}
               </p>
               <p className="text-xs text-slate-500">
-                Score {s.score ?? "—"}
+                Score {s.score ?? "-"}
               </p>
             </div>
             {s.score != null && <GradeBadge letter={grade(s.score)} size="sm" />}

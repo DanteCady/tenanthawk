@@ -22,7 +22,7 @@ export function formatFindingImpact(input: {
   if (impact?.usd != null) return `$${impact.usd.toLocaleString()}/mo`;
   if (impact?.count != null && impact.count > 1) return `${impact.count} items`;
   if (input.entityRef) return formatLicenseEntityRef(input.entityRef);
-  return "—";
+  return "-";
 }
 
 export function formatExportImpact(f: {
@@ -35,7 +35,7 @@ export function formatExportImpact(f: {
     return f.impactCount === 1 ? "1 item" : `${f.impactCount} items`;
   }
   if (f.entityRef) return formatLicenseEntityRef(f.entityRef);
-  return "—";
+  return "-";
 }
 
 export function formatAffectedItems(entities?: string[], total?: number | null): string {

@@ -22,7 +22,7 @@ export default async function ClientScorecardPage() {
     return (
       <EnterpriseConsoleUpsell
         title="Client scorecards"
-        description="Shareable per-client scorecards with top findings and grades are included on Enterprise — not on Pro."
+        description="Shareable per-client scorecards with top findings and grades are included on Enterprise - not on Pro."
       />
     );
   }
@@ -105,7 +105,7 @@ export default async function ClientScorecardPage() {
           </Link>
         </div>
         {topFindings.length === 0 ? (
-          <p className="mt-4 text-sm text-slate-600">No open findings — great posture.</p>
+          <p className="mt-4 text-sm text-slate-600">No open findings - great posture.</p>
         ) : (
           <ul className="mt-4 divide-y divide-slate-100">
             {topFindings.map((f) => (

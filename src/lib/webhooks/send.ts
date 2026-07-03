@@ -175,7 +175,7 @@ export async function sendTestWebhook(
   return sendWebhook({
     url,
     platform: p,
-    title: "Tenant Hawk — test alert",
+    title: "Tenant Hawk - test alert",
     text: [
       `Your ${platformName} webhook is connected.`,
       "You'll receive tenant health alerts here using the same rules as email.",

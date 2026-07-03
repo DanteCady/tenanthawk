@@ -239,7 +239,7 @@ export function WhyTenantHawk() {
                       Solo &amp; small IT teams
                     </p>
                     <p className="mt-1 text-sm text-slate-600">
-                      20–500 users who inherited a messy tenant and need a starting
+                      20 to 500 users who inherited a messy tenant and need a starting
                       point, not another enterprise suite.
                     </p>
                   </li>
@@ -247,7 +247,7 @@ export function WhyTenantHawk() {
                     <p className="font-semibold text-slate-900">MSPs &amp; consultants</p>
                     <p className="mt-1 text-sm text-slate-600">
                       Portfolio roll-ups, client scorecards, and per-tenant switching
-                      on Enterprise — Pro stays for a single internal tenant.
+                      on Enterprise - Pro stays for a single internal tenant.
                     </p>
                   </li>
                   <li>

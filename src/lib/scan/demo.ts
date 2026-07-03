@@ -60,7 +60,7 @@ export function getDemoFindings(): FindingDraft[] {
       severity: "medium",
       title: "23 never-signed-in licensed accounts",
       description:
-        "23 licensed users have never signed in — likely provisioned and forgotten.",
+        "23 licensed users have never signed in - likely provisioned and forgotten.",
       impact: { usd: 540, count: 23 },
       remediation: "Reclaim licenses from accounts with no sign-in activity.",
     },
@@ -101,7 +101,7 @@ export function getDemoFindings(): FindingDraft[] {
       severity: "medium",
       title: "7 accounts with Global Administrator",
       description:
-        "7 users hold the Global Administrator role — more than the recommended 2–4 break-glass + named admins.",
+        "7 users hold the Global Administrator role - more than the recommended 2–4 break-glass + named admins.",
       impact: { count: 7 },
       remediation:
         "Reduce standing Global Admins and use PIM for just-in-time elevation.",

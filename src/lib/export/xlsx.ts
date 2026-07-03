@@ -83,7 +83,7 @@ function addOverviewSheet(
 
   sheet.mergeCells("A1:F1");
   const title = sheet.getCell("A1");
-  title.value = "Tenant Hawk — Tenant Health Report";
+  title.value = "Tenant Hawk - Tenant Health Report";
   title.fill = {
     type: "pattern",
     pattern: "solid",
@@ -123,9 +123,9 @@ function addOverviewSheet(
   styleSectionTitle(sheet.getCell(`A${r}`), "Health summary");
   r += 1;
 
-  const overallGrade = meta.score != null ? grade(meta.score) : "—";
+  const overallGrade = meta.score != null ? grade(meta.score) : "-";
   const healthRows: Array<[string, string | number]> = [
-    ["Overall health score", meta.score ?? "—"],
+    ["Overall health score", meta.score ?? "-"],
     ["Overall grade", overallGrade],
     ["Open findings", summary.total],
     ["High severity findings", summary.high],
@@ -251,7 +251,7 @@ function addCategorySheet(
 
   sheet.mergeCells("A1:G1");
   const title = sheet.getCell("A1");
-  title.value = `${meta.label} — detailed findings`;
+  title.value = `${meta.label} - detailed findings`;
   title.fill = {
     type: "pattern",
     pattern: "solid",

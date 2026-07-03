@@ -151,7 +151,7 @@ export function LicensePricingForm({
                       setSkuValues((prev) => ({ ...prev, [code]: e.target.value }));
                       setSaved(false);
                     }}
-                    placeholder={list != null ? String(list) : "—"}
+                    placeholder={list != null ? String(list) : "-"}
                     aria-label={`${label} monthly rate`}
                     className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-7 pr-10 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />

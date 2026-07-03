@@ -34,7 +34,7 @@ const LIVE_STEPS = [
   {
     icon: LogIn,
     title: "Sign in as a Global Administrator",
-    body: "Use your work account — the person who can approve org-wide access.",
+    body: "Use your work account - the person who can approve org-wide access.",
   },
   {
     icon: CheckCircle2,
@@ -182,8 +182,8 @@ function ConnectOptions({
           <p className="font-semibold text-slate-900">Run a demo scan</p>
           <p className="text-sm text-slate-600">
             {liveConfigured
-              ? "Preview sample findings first — no Microsoft sign-in required."
-              : "Explore the full product with realistic sample findings — no Microsoft sign-in required."}
+              ? "Preview sample findings first - no Microsoft sign-in required."
+              : "Explore the full product with realistic sample findings - no Microsoft sign-in required."}
           </p>
         </div>
         <ArrowRight className="h-5 w-5 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5" />
@@ -269,7 +269,7 @@ export function ConnectStep({
               {addClientMode
                 ? "Connect another Microsoft 365 tenant to your portfolio. Each client stays scoped separately."
                 : liveConfigured
-                  ? "Sign in with Microsoft to grant read-only access — your health score in about a minute."
+                  ? "Sign in with Microsoft to grant read-only access - your health score in about a minute."
                   : "Try a demo scan now, or connect your real tenant once Microsoft sign-in is enabled."}
             </p>
           </motion.div>

@@ -132,7 +132,7 @@ export const unusedLicenses: Check = {
           usd > 0
             ? `~$${formatUsdInTitle(usd)}/mo in unused ${info.label} seats`
             : `${unused} unused ${info.label} seat${unused === 1 ? "" : "s"}`,
-        description: `${enabled} ${info.label} seats are prepaid but only ${consumed} are assigned — ${unused} appear unused.${info.hint ? ` ${info.hint}` : ""}${savingsLine} (SKU: ${info.code})`,
+        description: `${enabled} ${info.label} seats are prepaid but only ${consumed} are assigned - ${unused} appear unused.${info.hint ? ` ${info.hint}` : ""}${savingsLine} (SKU: ${info.code})`,
         remediation:
           "Review license assignments in M365 Admin → Users → Active users, or reduce prepaid seats in Billing.",
         entityRef: code,
@@ -167,7 +167,7 @@ export const licenseExpiry: Check = {
         checkId: licenseExpiry.id,
         severity: status === "Suspended" ? "high" : "medium",
         title: `${info.label} is ${status.toLowerCase()}`,
-        description: `${info.label} reports capability status "${status}" — renewal or billing action may be required.${info.hint ? ` ${info.hint}` : ""} (SKU: ${info.code})`,
+        description: `${info.label} reports capability status "${status}" - renewal or billing action may be required.${info.hint ? ` ${info.hint}` : ""} (SKU: ${info.code})`,
         remediation:
           "Review subscription status in M365 Admin → Billing → Your products, or Microsoft 365 admin center → Billing.",
         entityRef: code,

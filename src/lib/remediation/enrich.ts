@@ -87,7 +87,7 @@ Return JSON: { "steps": string[], "linkTitles": string[] }
 - Baseline fix: ${input.templateRemediation}
 
 Allowed Microsoft documentation titles:
-${docList || "- (none — return empty linkTitles)"}`,
+${docList || "- (none - return empty linkTitles)"}`,
         },
       ],
     });

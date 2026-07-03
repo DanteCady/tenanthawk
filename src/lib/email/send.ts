@@ -49,7 +49,7 @@ export async function sendEmail(opts: {
   const transport = getTransporter();
 
   if (!transport) {
-    console.log("[email] (SMTP not configured — logging only)");
+    console.log("[email] (SMTP not configured - logging only)");
     console.log(`  From: ${FROM}`);
     console.log(`  To: ${opts.to}`);
     console.log(`  Subject: ${opts.subject}`);

@@ -53,7 +53,7 @@ export async function createEnterpriseOrganization(
   return { org: null, error: "Could not create workspace. Try a different slug." };
 }
 
-/** Returns the user's org if it exists — does not auto-create. */
+/** Returns the user's org if it exists - does not auto-create. */
 export async function getEnterpriseOrganizationForUser(
   userId: string,
 ): Promise<EnterpriseOrgRow | null> {

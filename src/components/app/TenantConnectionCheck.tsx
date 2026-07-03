@@ -27,7 +27,7 @@ export function TenantConnectionCheck({
         if (next.status === "connected") {
           toast.success("Connection looks good.");
         } else if (next.status === "demo") {
-          toast.info("Demo tenant — no live connection check needed.");
+          toast.info("Demo tenant - no live connection check needed.");
         } else {
           toast.error("Connection issue detected. See details below.");
         }

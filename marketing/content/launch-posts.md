@@ -1,19 +1,19 @@
-# Launch Posts — Reddit & LinkedIn
+# Launch Posts - Reddit & LinkedIn
 
 Ready to post. Each is written for the specific community's norms. **Read the
 subreddit sidebar/rules before posting** and only post where you're allowed to
-share a tool (most allow it if you participate genuinely). Space them out — one
+share a tool (most allow it if you participate genuinely). Space them out - one
 community per day, don't blast.
 
 Tone rules: be a person, not a brand. Lead with the problem and the free value.
-The link is incidental. Reply to every comment for the first 48h — engagement is
+The link is incidental. Reply to every comment for the first 48h - engagement is
 what the algorithm and the mods reward.
 
 ---
 
-## r/msp — primary, highest value
+## r/msp - primary, highest value
 
-**Title:** I built a free read-only M365 tenant scanner that scores client tenants and finds wasted licenses — looking for brutal feedback
+**Title:** I built a free read-only M365 tenant scanner that scores client tenants and finds wasted licenses - looking for brutal feedback
 
 **Body:**
 
@@ -25,7 +25,7 @@ report-only, legacy auth still on, 23 licensed accounts that have never signed
 in.
 
 So I built **Tenant Hawk**. You connect a tenant **read-only** (admin consent,
-no agents, we store only the tenant ID — tokens are minted on demand, nothing
+no agents, we store only the tenant ID - tokens are minted on demand, nothing
 persisted), it scans, and you get one health score plus a prioritized fix list
 across security, identity, cost, reliability, SharePoint and Intune. It puts an
 actual dollar figure on unused/never-signed-in licenses, which has been the
@@ -35,21 +35,21 @@ It's free to scan and see your score. There's a paid tier to unlock the full
 remediation report, and an MSP volume tier with a multi-tenant console + roll-ups
 (that's the part I'd most love MSP feedback on).
 
-Not trying to spam — genuinely want feedback from people who manage tenants for
+Not trying to spam - genuinely want feedback from people who manage tenants for
 a living. What checks would make this a no-brainer for your QBRs? What would stop
 you from connecting it?
 
 Link in comments to respect the rules.
 
-*(First comment:)* Here's the tool — run a scan on a tenant and tell me what's
-missing: https://tenanthawk.io — founding users can lock 25% off for life with
+*(First comment:)* Here's the tool - run a scan on a tenant and tell me what's
+missing: https://tenanthawk.io - founding users can lock 25% off for life with
 `EARLYBIRD26`, but the scan + score is free regardless.
 
 ---
 
-## r/sysadmin — in-house admins
+## r/sysadmin - in-house admins
 
-**Title:** Made a free tool that gives your M365 tenant a health score (read-only) — found $1,800/mo in unused licenses on the first tenant I tested
+**Title:** Made a free tool that gives your M365 tenant a health score (read-only) - found $1,800/mo in unused licenses on the first tenant I tested
 
 **Body:**
 
@@ -58,7 +58,7 @@ spread across Entra, the admin center, SharePoint and Intune, and no single
 place that tells you "here's what's actually wrong and what to fix first."
 
 I built **Tenant Hawk** to be that place. Connect read-only (admin consent, no
-agents, no credentials stored — only the tenant ID is kept), and you get:
+agents, no credentials stored - only the tenant ID is kept), and you get:
 
 - One health score + category grades (security, identity, cost, reliability)
 - A prioritized fix list with step-by-step remediation
@@ -73,9 +73,9 @@ this stuff. Link in the comments.
 
 ---
 
-## r/Office365 — admins, more functional framing
+## r/Office365 - admins, more functional framing
 
-**Title:** Free read-only health check for your M365 tenant — secrets about to expire, unused licenses, sharing risks, all in one score
+**Title:** Free read-only health check for your M365 tenant - secrets about to expire, unused licenses, sharing risks, all in one score
 
 **Body:**
 
@@ -91,11 +91,11 @@ Access gaps.
 You get one health score and a prioritized list of what to fix first. No agents,
 no creds stored (only the tenant ID), free to scan.
 
-Curious what the most useful check would be for you — link in comments.
+Curious what the most useful check would be for you - link in comments.
 
 ---
 
-## r/Intune — narrower wedge, device angle
+## r/Intune - narrower wedge, device angle
 
 **Title:** Free tenant health scan now flags stale + non-compliant Intune devices alongside your M365/Entra risks
 
@@ -104,15 +104,15 @@ Curious what the most useful check would be for you — link in comments.
 Built a read-only M365 tenant scanner (Tenant Hawk) and just want to share the
 Intune-relevant part: alongside identity/CA/licensing checks, it flags
 **non-compliant** and **stale** managed devices so they show up in the same
-prioritized fix list as everything else — instead of being a separate tab you
+prioritized fix list as everything else - instead of being a separate tab you
 forget to check.
 
-Connects read-only, free to scan, no agents. Link in comments — would love to
+Connects read-only, free to scan, no agents. Link in comments - would love to
 hear what device-side checks you'd want next.
 
 ---
 
-## LinkedIn — founder launch post
+## LinkedIn - founder launch post
 
 I kept seeing the same thing in every Microsoft 365 tenant I touched:
 
@@ -122,7 +122,7 @@ I kept seeing the same thing in every Microsoft 365 tenant I touched:
 → Legacy auth quietly still allowed
 → SharePoint sharing wide open to anonymous links
 
-None of it is exotic. It's just *invisible* — scattered across Entra, the admin
+None of it is exotic. It's just *invisible* - scattered across Entra, the admin
 center, SharePoint and Intune, with no single place that says "here's what's
 wrong and what to fix first."
 
@@ -137,7 +137,7 @@ tool tends to pay for itself before you've fixed anything else.
 
 It's free to run a scan and see your score → https://tenanthawk.io
 
-If you manage M365 — in-house or as an MSP — I'd genuinely love your feedback on
+If you manage M365 - in-house or as an MSP - I'd genuinely love your feedback on
 what to check next. Comment "scan" and I'll send you the link directly.
 
 Founding users can lock 25% off for life with EARLYBIRD26.
@@ -148,7 +148,7 @@ Founding users can lock 25% off for life with EARLYBIRD26.
 
 ## Indie / builder communities (optional, secondary)
 
-For r/SideProject, Indie Hackers, Hacker News "Show", etc. — frame as a build
+For r/SideProject, Indie Hackers, Hacker News "Show", etc. - frame as a build
 story, not a sales pitch:
 
 **Title (Show HN style):** Show: Tenant Hawk – read-only health score for your Microsoft 365 tenant

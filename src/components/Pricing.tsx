@@ -90,7 +90,7 @@ export function Pricing() {
         </Reveal>
 
         <Reveal className="mx-auto mt-10 max-w-3xl">
-          <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-b from-amber-50 to-white px-6 py-6 text-center shadow-sm sm:px-8">
+          <div className="light-surface rounded-2xl border border-amber-200/80 bg-gradient-to-b from-amber-50 to-white px-6 py-6 text-center shadow-sm sm:px-8">
             <p className="text-balance text-lg font-semibold leading-snug text-slate-900 sm:text-xl">
               If Tenant Hawk helps you recover one unused E5 license, it has already started
               paying for itself.

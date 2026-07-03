@@ -1,9 +1,9 @@
-# Social Content Engine — Setup
+# Social Content Engine - Setup
 
 **Outbound** flow that drips your content calendar to social on a schedule via a
 third-party scheduler (Buffer/Publer/etc.). Built live in n8n via the MCP.
 
-- **Workflow ID:** `XHAKJ5FzyXOXX0AC` — http://localhost:5678/workflow/XHAKJ5FzyXOXX0AC
+- **Workflow ID:** `XHAKJ5FzyXOXX0AC` - http://localhost:5678/workflow/XHAKJ5FzyXOXX0AC
 - **Calendar table:** `Content Calendar` (data table id `1BhmdfRQftmaUxQe`)
 
 ## How it flows
@@ -25,10 +25,10 @@ Columns: `post_body`, `post_type`, `channel`, `status`, `scheduled_for`,
 `posted_at`, `notes`. **Already seeded with 8 posts** from your LinkedIn bank,
 all as `status = draft`.
 
-- **`draft`** — ignored by the engine. Your staging area.
-- **`approved`** — eligible to post. Flip a row to `approved` when you're happy
+- **`draft`** - ignored by the engine. Your staging area.
+- **`approved`** - eligible to post. Flip a row to `approved` when you're happy
   with it; the engine will pick the oldest `scheduled_for` first.
-- **`posted`** — done (set automatically, with `posted_at`).
+- **`posted`** - done (set automatically, with `posted_at`).
 
 `scheduled_for` is used only for ordering (oldest first). To control which goes
 out next, set its date earlier.
@@ -52,13 +52,13 @@ out next, set its date earlier.
 
 ## Important: channels & guardrails
 
-- **Reddit stays manual.** Do not wire Reddit auto-posting — it will get you
+- **Reddit stays manual.** Do not wire Reddit auto-posting - it will get you
   banned, and r/msp is your best MSP channel. Post there by hand using
   `../content/launch-posts.md`.
 - **LinkedIn** auto-posting via a scheduler works for a Company Page; personal
   profile posting through APIs is restricted, which is exactly why we route
   through a scheduler instead of the LinkedIn API directly.
-- **Always reply to comments** within the first hour — automation handles the
+- **Always reply to comments** within the first hour - automation handles the
   post, not the engagement. The engagement is what actually drives reach.
 
 ## Next enhancements

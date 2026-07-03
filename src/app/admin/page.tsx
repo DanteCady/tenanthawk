@@ -57,7 +57,7 @@ export default async function PlatformAdminPage() {
           Platform console
         </h1>
         <p className="mt-1 text-sm text-[var(--th-text-muted)]">
-          Tenant Hawk operator tools — users, plans, and impersonation.
+          Tenant Hawk operator tools - users, plans, and impersonation.
         </p>
       </div>
 

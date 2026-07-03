@@ -17,13 +17,13 @@ export const THEME_META: Record<
   },
   dark: {
     label: "Dark",
-    description: "Neutral dark gray — clean and easy on the eyes.",
+    description: "Neutral dark gray - clean and easy on the eyes.",
     swatch: "#09090b",
     accent: "#3b82f6",
   },
   hawk: {
     label: "Tenant Hawk",
-    description: "Brand theme — deep slate with hawk amber glow.",
+    description: "Brand theme - deep slate with hawk amber glow.",
     swatch: "#0b1120",
     accent: "#f59e0b",
   },

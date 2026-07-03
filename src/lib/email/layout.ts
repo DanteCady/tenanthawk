@@ -17,7 +17,7 @@ const APP_URL = (() => {
     process.env.EMAIL_APP_URL ??
     process.env.NEXT_PUBLIC_APP_URL ??
     "https://tenanthawk.io";
-  // localhost links trigger M365 phishing filters — use production URL in email bodies
+  // localhost links trigger M365 phishing filters - use production URL in email bodies
   if (/localhost|127\.0\.0\.1/.test(configured)) {
     return process.env.EMAIL_APP_URL ?? "https://tenanthawk.io";
   }

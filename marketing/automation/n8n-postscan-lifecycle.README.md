@@ -1,4 +1,4 @@
-# Post-Scan Lifecycle — Setup
+# Post-Scan Lifecycle - Setup
 
 This wires Tenant Hawk → n8n so every completed scan kicks off the right email
 sequence (admin Sequence A, MSP Sequence B), skipping anyone who's already paid.
@@ -28,7 +28,7 @@ The workflow is live in n8n (built via the n8n MCP, not imported):
 - **URL:** http://localhost:5678/workflow/HMWPVqlwGXUmqFaE
 - **Webhook path:** `tenanthawk-scan-completed`
 
-`n8n-postscan-lifecycle.json` is kept as a portable backup/reference only — the
+`n8n-postscan-lifecycle.json` is kept as a portable backup/reference only - the
 source of truth is now the workflow in n8n. Edit there, or ask Claude to update
 it via the MCP.
 
@@ -37,7 +37,7 @@ it via the MCP.
 1. **Create the SMTP credential.** In n8n: *Credentials → New → SMTP*. Name it
    exactly **"Tenant Hawk Marketing SMTP"** (use a `marketing.` subdomain /
    separate stream from the app's `alerts@` sender to protect deliverability).
-   The 8 email nodes already reference this credential by name — open one and
+   The 8 email nodes already reference this credential by name - open one and
    confirm it's attached (the MCP created it as a placeholder).
    - Update `fromEmail` on the nodes if you don't use `hello@tenanthawk.io`.
 2. **Set the shared secret.** Open the **Verify secret** node and replace
@@ -62,7 +62,7 @@ it via the MCP.
 ## Test it
 
 - Run a scan in the app (a demo scan works). The webhook fires on completion.
-- In n8n, check the workflow **Executions** — you should see one run, the secret
+- In n8n, check the workflow **Executions** - you should see one run, the secret
   verified, and A1 (or B1) sent.
 - To test without real email, temporarily point the SMTP node at a catch-all
   inbox (e.g. mailtrap) or read the console (the app logs `[marketing-webhook]`
@@ -73,12 +73,12 @@ it via the MCP.
 - **No mid-sequence "stop on upgrade."** v1 gates on plan *at scan time*. If a
   user upgrades mid-sequence they may still get a later email. To fix: add an
   HTTP Request node before each send that checks current plan via a small
-  app endpoint, and route paid users to the "Skip" branch. Low priority — the
+  app endpoint, and route paid users to the "Skip" branch. Low priority - the
   sequence is short and converters usually disengage.
 - **No cross-scan dedupe.** If a free user scans repeatedly, each completed scan
   starts a fresh sequence. Options: only fire on first scan (filter `source` /
   add a "first scan" flag app-side), or dedupe in n8n by email + a 14-day window
   (e.g. a Postgres/Redis/Data-store check at the top of the flow).
 - **Sequence C (dormant) and behavioral one-offs** from
-  `../lifecycle/post-scan-emails.md` are separate workflows — build them next per
+  `../lifecycle/post-scan-emails.md` are separate workflows - build them next per
   `n8n-playbook.md` (Workflow 1 covers A & B; C is a daily Cron + DB query).

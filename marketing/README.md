@@ -1,4 +1,4 @@
-# Tenant Hawk — Go-To-Market Kit
+# Tenant Hawk - Go-To-Market Kit
 
 The hawk-eye view of your Microsoft 365 & Azure tenant. This folder is the
 operating system for getting customers. Everything here is ready to use, edit,
@@ -21,8 +21,8 @@ fork our effort.
 
 | Segment | Why they buy | Where they are | Economics |
 |---|---|---|---|
-| **MSPs / IT consultants** *(revenue-weighted)* | One console to prove value to clients, find unused licenses to bill back, catch risk before clients do | r/msp, MSPGeek Slack, LinkedIn, MSP newsletters/Discords | Many tenants × volume pricing — the real money. One win = dozens of seats + a case study |
-| **In-house M365 admins** | "Where do I even start?" — one score + prioritized fixes; quantified license waste to justify budget | r/sysadmin, r/Office365, r/Intune, r/entra, LinkedIn | $49/mo/tenant. Large population, self-serve |
+| **MSPs / IT consultants** *(revenue-weighted)* | One console to prove value to clients, find unused licenses to bill back, catch risk before clients do | r/msp, MSPGeek Slack, LinkedIn, MSP newsletters/Discords | Many tenants × volume pricing - the real money. One win = dozens of seats + a case study |
+| **In-house M365 admins** | "Where do I even start?" - one score + prioritized fixes; quantified license waste to justify budget | r/sysadmin, r/Office365, r/Intune, r/entra, LinkedIn | $49/mo/tenant. Large population, self-serve |
 | **vCISO / IT consultants (solo)** | Fast tenant audit deliverable for clients | LinkedIn, r/msp, r/cybersecurity | Pro or low-volume MSP |
 
 ## 3. Messaging pillars (use these everywhere)
@@ -35,7 +35,7 @@ fork our effort.
 3. **Read-only, no agents, no creds stored.** Removes the #1 objection. We
    store only the tenant ID; tokens are minted on demand.
 4. **Time-bombs you forget about.** Expiring app secrets, SSO signing certs,
-   domains — the stuff that takes prod down at 2am.
+   domains - the stuff that takes prod down at 2am.
 5. **Founding pricing.** `EARLYBIRD26` = 25% off, locked for life. Real
    scarcity, real urgency, ethical.
 
@@ -62,26 +62,26 @@ Community/SEO/Outreach  →  Free scan  →  Score + paywalled report  →  Pro 
 
 ## 5. First 30 days (founder-led, automation-assisted)
 
-**Week 1 — Turn on the engine.**
-- Publish the launch posts (`content/launch-posts.md`) — start with r/msp and
+**Week 1 - Turn on the engine.**
+- Publish the launch posts (`content/launch-posts.md`) - start with r/msp and
   LinkedIn. Space them out; one community per day.
 - Stand up the post-scan email sequence in n8n (`lifecycle/post-scan-emails.md`).
 - Build the MSP target list (`outreach/msp-outreach-kit.md` → sourcing section).
 
-**Week 2 — Outreach + content cadence.**
+**Week 2 - Outreach + content cadence.**
 - Begin MSP outreach (20–30 personalized touches; quality over volume).
 - Ship 2 SEO guides from `seo/guide-briefs.md` (highest-intent first).
 - Start the LinkedIn 3x/week cadence (`content/linkedin-series.md`).
 
-**Week 3 — Double down on what moved scans.**
+**Week 3 - Double down on what moved scans.**
 - Review the weekly metric. Whichever channel drove the most scans, do more.
 - First MSP demo calls → ask every one for a quote/case study.
 - Publish 2 more guides.
 
-**Week 4 — Systematize.**
+**Week 4 - Systematize.**
 - Wire the n8n automations end to end (`automation/n8n-playbook.md`).
 - Aggregate scan data into a **"State of M365 Hygiene" benchmark stat**
-  (e.g. "median tenant wastes $X/mo on unused licenses") — this becomes
+  (e.g. "median tenant wastes $X/mo on unused licenses") - this becomes
   evergreen PR/content fuel and a recurring LinkedIn hook.
 
 ## 6. Folder map
@@ -102,4 +102,4 @@ Community/SEO/Outreach  →  Free scan  →  Score + paywalled report  →  Pro 
 - **Never fake numbers.** Only cite detections the scanner actually produces.
 - **Respect each subreddit's self-promo rules** (most allow "I built a free
   tool" if you're a participant, not a drive-by). Read the sidebar first.
-- **Read-only / privacy is the lead, every time** — it's what unblocks the click.
+- **Read-only / privacy is the lead, every time** - it's what unblocks the click.

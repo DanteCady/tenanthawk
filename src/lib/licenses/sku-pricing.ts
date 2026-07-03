@@ -16,7 +16,7 @@ export function licensePricingNote(
 }
 
 /**
- * Microsoft list prices — USD per user / month (annual commitment).
+ * Microsoft list prices - USD per user / month (annual commitment).
  * Sources: Microsoft price list / NCE tiers (2025–2026). Rounded for display.
  */
 const SKU_MONTHLY_USD: Record<string, number> = {

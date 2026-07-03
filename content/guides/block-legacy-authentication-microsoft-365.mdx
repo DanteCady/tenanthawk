@@ -1,0 +1,75 @@
+---
+title: "How to block legacy authentication in Microsoft 365"
+description: "Block legacy auth in Entra ID without breaking mail flow. Find what's still using SMTP/IMAP, enable security defaults or Conditional Access, and verify before you enforce."
+slug: block-legacy-authentication-microsoft-365
+type: guide
+category: identity
+checkIds: ["security.legacy-auth"]
+relatedSlugs:
+  - m365-security-misconfigurations
+  - m365-tenant-health-checklist
+  - prepare-for-m365-audit
+readTime: "7 min read"
+publishedAt: "2026-07-03"
+updatedAt: "2026-07-03"
+quickAnswer: "Legacy authentication bypasses modern MFA and Conditional Access. Block it tenant-wide with a Conditional Access policy (or security defaults on smaller tenants), after reviewing sign-in logs for active SMTP, IMAP, POP, and older Office clients still using basic auth."
+targetKeyword: "block legacy authentication M365"
+sources:
+  - title: "Block legacy authentication with Conditional Access"
+    url: "https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-block-legacy-authentication"
+    publisher: "Microsoft Learn"
+  - title: "Microsoft-managed Conditional Access policies for enhanced security"
+    url: "https://learn.microsoft.com/en-us/entra/identity/conditional-access/managed-policies"
+    publisher: "Microsoft Learn"
+faq:
+  - q: "What is legacy authentication in Microsoft 365?"
+    a: "Legacy auth protocols include SMTP, IMAP, POP, and older Office clients that send username and password on every request instead of modern OAuth. They bypass MFA and Conditional Access enforcement."
+  - q: "Will blocking legacy auth break my printers or scanners?"
+    a: "Some scan-to-email devices use SMTP AUTH. Inventory sign-in logs first, migrate devices to OAuth or relay through a connector, then block. Never flip the switch blind."
+  - q: "How do I check if legacy auth is still allowed?"
+    a: "Review Entra sign-in logs filtered by client app and authentication protocol. Tenant Hawk flags tenants where legacy authentication is still permitted and surfaces it in your security score."
+  - q: "Should I use security defaults or Conditional Access?"
+    a: "Security defaults work for smaller tenants without complex CA. Larger orgs should use a CA policy targeting all users and all cloud apps with legacy authentication client types set to block."
+  - q: "How long does it take to block legacy auth safely?"
+    a: "Plan one to two weeks: one week to inventory and notify app owners, one day to pilot the policy on a test group, then enforce tenant-wide."
+  - q: "Does blocking legacy auth help with cyber insurance?"
+    a: "Yes. Insurers and auditors routinely ask whether legacy protocols are disabled. It is one of the fastest high-impact controls you can prove."
+---
+
+## Why legacy auth is still a problem
+
+Attackers love legacy authentication because it sidesteps the controls you thought you had. MFA registration looks great on a dashboard until SMTP AUTH still works with a stolen password.
+
+Microsoft has been deprecating basic auth for years, yet many tenants still allow it for one old integration nobody wants to touch.
+
+## How to find what's still using legacy auth
+
+- Open **Entra ID → Sign-in logs** and filter by **Client app** and **Authentication protocol**
+- Look for **Authenticated SMTP**, **IMAP4**, **POP3**, **Other clients**, and **Exchange ActiveSync** from non-mobile clients
+- Export 30 days of sign-ins and group by application. The top offenders are usually scan-to-email, legacy LOB apps, and old PowerShell scripts
+- Check **Conditional Access → Policies** for anything still in report-only that was meant to block legacy clients
+
+## What good looks like
+
+- No successful sign-ins using legacy protocols in production workloads
+- A Conditional Access policy blocking legacy authentication for all users (with documented exceptions)
+- Scan-to-email and LOB apps migrated to OAuth, relay, or a supported connector
+- Break-glass accounts excluded via policy scoping, not by leaving legacy auth on for everyone
+
+## Step-by-step: block legacy auth safely
+
+1. **Create the policy:** In the Microsoft Entra admin center, browse to **Entra ID → Conditional Access → Policies** and create a new policy.
+2. **Include users:** Under **Users or workload identities**, include **All users**. Exclude emergency access accounts so a policy mistake does not lock out the tenant.
+3. **Target legacy clients:** Under **Conditions → Client apps**, set **Configure** to **Yes**, then select **Exchange ActiveSync clients** and **Other clients**.
+4. **Block access:** Under **Access controls → Grant**, select **Block access**.
+5. **Start in report-only:** Microsoft recommends enabling the policy in **Report-only** first so you can review impact before enforcement.
+6. **Migrate dependencies:** Fix or replace scan-to-email, IMAP/POP, SMTP AUTH, old Office clients, or scripts that still depend on legacy protocols.
+7. **Enforce and verify:** Move the policy to **On**, then re-check sign-in logs after 7 days for any successful legacy protocol activity.
+
+## Common mistakes
+
+- Blocking legacy auth before inventorying scan-to-email devices (mail stops silently)
+- Relying on MFA registration stats while legacy SMTP still works
+- Leaving report-only CA policies in place for months without switching to **On**
+
+Tenant Hawk checks whether legacy authentication is still permitted in your tenant and includes it in your security score. Run a free read-only scan to see where you stand before you enforce.

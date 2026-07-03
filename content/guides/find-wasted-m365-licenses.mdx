@@ -1,0 +1,58 @@
+---
+title: "How to find wasted Microsoft 365 licenses"
+description: "Identify unused seats, oversized SKUs, and duplicate assignments. Estimate how much you can reclaim each month."
+slug: "find-wasted-m365-licenses"
+type: guide
+category: cost
+checkIds: ["cost.unused-licenses","cost.disabled-user-licenses","hygiene.inactive-users"]
+relatedSlugs: ["m365-tenant-health-checklist","m365-tenant-hygiene","prepare-for-m365-audit"]
+readTime: "6 min read"
+publishedAt: "2026-03-01"
+updatedAt: "2026-07-03"
+quickAnswer: "Identify unused seats, oversized SKUs, and duplicate assignments. Estimate how much you can reclaim each month."
+targetKeyword: "How to find wasted Microsoft 365 licenses"
+faq:
+  - q: "How long does how to find wasted microsoft 365 licenses take?"
+    a: "Most admins can work through the core steps in one to two sessions. Tenant Hawk automates the inventory in under five minutes with a read-only scan."
+  - q: "Do I need Global Administrator to run these checks?"
+    a: "Many checks require Global Administrator or Security Administrator in Entra ID. Tenant Hawk uses read-only admin consent so you can assess the tenant without making changes."
+  - q: "How often should I repeat this review?"
+    a: "Run a full pass quarterly at minimum, or monthly before audits and renewal season. After major org changes, run an ad-hoc review within a week."
+---
+
+## Where license waste hides
+
+Most organizations over-provision during hiring waves or project kickoffs and under-deprovision when people leave. Microsoft 365 does not automatically reclaim licenses when accounts are disabled, and disabled accounts often keep their SKUs for months.
+
+Waste also comes from SKU mismatch: premium plans assigned to users who only need email and Teams, or duplicate add-ons stacked on the same account.
+
+## Disabled and inactive users
+
+Start with accounts that should not consume a paid seat.
+
+- Disabled users with active license assignments
+- Enabled users who have never signed in but hold paid SKUs
+- Accounts inactive 90+ days that still carry E3, E5, or Business Premium
+- Shared mailboxes incorrectly assigned full user licenses
+
+## Oversized and duplicate SKUs
+
+Compare assigned capabilities to actual usage. An E5 license includes advanced security and analytics many roles never touch.
+
+- E5 assigned to users without Defender, Purview, or Power BI need
+- Both Business Premium and an standalone Exchange plan on one user
+- Trial or add-on licenses that auto-converted to paid without review
+- Departmental bundles where a lower tier would cover daily workflows
+
+## Estimating reclaimable spend
+
+For each finding, multiply seats by your contracted per-seat rate. Group by SKU so finance can see monthly and annual impact. Even ten reclaimable E3 seats often covers the cost of tooling that finds them automatically.
+
+Document who approved original assignments before bulk removal. Some "inactive" accounts are service mailboxes or shared operational identities.
+
+## Ongoing cost hygiene
+
+Assign license reviews to offboarding workflows: disable account, remove licenses, then delete after retention. Run a monthly reclaim report and tie it to your procurement calendar so renewals reflect actual need.
+
+Tenant Hawk surfaces unused and misassigned licenses with estimated dollar impact during each scan.
+

@@ -1,11 +1,11 @@
 import catalog from "./sku-catalog.json";
 
-/** Prepaid balances / credits — not per-user seat licenses. Skip "unused seat" findings. */
+/** Prepaid balances / credits - not per-user seat licenses. Skip "unused seat" findings. */
 const CREDIT_POOL_SKUS = new Set([
   "MCOPSTNC", // Communications Credits (Teams calling / conferencing balance)
 ]);
 
-/** Free or viral SKUs — huge prepaid counts, not actionable waste. */
+/** Free or viral SKUs - huge prepaid counts, not actionable waste. */
 const NOISE_UNUSED_SKUS = new Set([
   "FLOW_FREE",
   "CCIBOTS_PRIVPREV_VIRAL",
@@ -22,7 +22,7 @@ export interface LicenseSkuInfo {
   code: string;
   /** Short explainer when the name alone isn't enough */
   hint?: string;
-  /** Prepaid credit pool — don't treat unused prepaid seats as reclaimable licenses */
+  /** Prepaid credit pool - don't treat unused prepaid seats as reclaimable licenses */
   isCreditPool: boolean;
 }
 
@@ -53,7 +53,7 @@ export function resolveLicenseSku(skuPartNumber: string): LicenseSkuInfo {
   let hint: string | undefined = SKU_HINTS[code];
   if (isCreditPool) {
     hint =
-      "Prepaid balance for Teams phone and audio conferencing — not a per-user seat license.";
+      "Prepaid balance for Teams phone and audio conferencing - not a per-user seat license.";
   } else if (!hint && !SKU_NAMES[code] && !SKU_DISPLAY_OVERRIDES[code]) {
     hint = `Microsoft internal SKU code: ${code}`;
   }

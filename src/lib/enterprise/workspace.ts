@@ -85,7 +85,7 @@ export async function getOwnedEnterpriseOrganization(
   return rows[0] ?? null;
 }
 
-/** User id that owns scan data — org owner when user is invited staff. */
+/** User id that owns scan data - org owner when user is invited staff. */
 export async function resolveWorkspaceDataUserId(userId: string): Promise<string> {
   const memberships = await getUserMemberships(userId);
   const nonOwner = memberships.find((m) => m.role !== "owner");

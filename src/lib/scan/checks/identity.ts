@@ -123,7 +123,7 @@ export const disabledOutsideGroup: Check = {
           category: "hygiene",
           checkId: disabledOutsideGroup.id,
           severity: "low",
-          title: `${disabledUsers.length} disabled account${disabledUsers.length === 1 ? "" : "s"} — no Disabled group found`,
+          title: `${disabledUsers.length} disabled account${disabledUsers.length === 1 ? "" : "s"} - no Disabled group found`,
           description:
             `${disabledUsers.length} accounts are disabled but this tenant has no group whose name matches Disabled/Offboard/Terminated. Consider a standard Disabled Users group for lifecycle management.`,
           impact: { count: disabledUsers.length },

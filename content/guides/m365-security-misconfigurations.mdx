@@ -1,0 +1,75 @@
+---
+title: "Common Microsoft 365 security misconfigurations"
+description: "Conditional Access gaps, MFA holes, over-privileged apps, and guest access issues: what to look for and how to fix them."
+slug: "m365-security-misconfigurations"
+type: guide
+category: security
+checkIds: ["security.conditional-access","security.legacy-auth","security.admin-roles","security.mfa-registration"]
+relatedSlugs: ["m365-tenant-health-checklist","prepare-for-m365-audit","m365-tenant-hygiene"]
+readTime: "7 min read"
+publishedAt: "2026-03-01"
+updatedAt: "2026-07-03"
+quickAnswer: "Conditional Access gaps, MFA holes, over-privileged apps, and guest access issues: what to look for and how to fix them."
+targetKeyword: "Common Microsoft 365 security misconfigurations"
+faq:
+  - q: "How long does common microsoft 365 security misconfigurations take?"
+    a: "Most admins can work through the core steps in one to two sessions. Tenant Hawk automates the inventory in under five minutes with a read-only scan."
+  - q: "Do I need Global Administrator to run these checks?"
+    a: "Many checks require Global Administrator or Security Administrator in Entra ID. Tenant Hawk uses read-only admin consent so you can assess the tenant without making changes."
+  - q: "How often should I repeat this review?"
+    a: "Run a full pass quarterly at minimum, or monthly before audits and renewal season. After major org changes, run an ad-hoc review within a week."
+---
+
+## Conditional Access drift
+
+Conditional Access is powerful but easy to undermine. Policies get exceptions for "just this one vendor" or "until the project ends", and those exceptions rarely get removed.
+
+Review every policy for users or groups excluded from MFA requirements, locations trusted without justification, and legacy authentication allowances.
+
+- Policies that exclude entire departments from MFA
+- Named locations that cover whole countries or public IP ranges
+- Legacy auth protocols still allowed for any user population
+- Policies in report-only mode that were never switched to enforce
+
+## MFA and legacy authentication
+
+Password-only sign-in remains one of the most common root causes of tenant compromise. Even with Security Defaults or CA policies, gaps appear when legacy protocols bypass modern auth.
+
+- Users or admins without registered MFA methods
+- SMTP, IMAP, POP, or other legacy protocols still enabled tenant-wide
+- Service accounts using password auth instead of certificates
+- Break-glass accounts without documented, tested access procedures
+
+## Privileged roles and admin sprawl
+
+Global Administrator should be rare. Standing privileged access increases blast radius when any one account is phished.
+
+- More than four to five Global Administrators without a documented reason
+- Guest users holding any admin role
+- Permanent Privileged Identity Management assignments instead of time-bound activation
+- Unused admin accounts that remain enabled after role changes
+
+## Over-permissioned applications
+
+Third-party and internal app registrations often request broad Graph permissions at install time and are never reviewed again.
+
+- Apps with Directory.ReadWrite.All, Mail.ReadWrite, or similar high-impact scopes
+- Client secrets with no owner or rotation schedule
+- Unused enterprise applications still granted consent
+- Multi-tenant apps from vendors no longer under contract
+
+## Guest access and external collaboration
+
+B2B collaboration is essential for business but defaults that are too open create data exposure.
+
+- Guest users inactive for 90+ days still enabled
+- Anyone links or anonymous sharing enabled where not required
+- Guests invited to security-sensitive groups or teams
+- External access settings that differ from your documented policy
+
+## Fix priority
+
+Tackle legacy auth and MFA gaps first. They are the highest-risk, fastest-win items. Then reduce Global Admin count and review app permissions. Guest cleanup can run in parallel with hygiene work.
+
+Tenant Hawk flags these issues automatically during a read-only scan and ranks them by severity so you know where to start.
+

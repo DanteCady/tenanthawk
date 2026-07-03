@@ -1,4 +1,4 @@
-/** Per-check remediation metadata (static — maintained alongside scan checks). */
+/** Per-check remediation metadata (static - maintained alongside scan checks). */
 
 export type RemediationEffort = "quick" | "moderate" | "project";
 

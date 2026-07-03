@@ -1,7 +1,7 @@
 import type { SVGProps } from "react";
 
 /**
- * Tenant Hawk mark — a geometric hawk head in profile with a fierce brow,
+ * Tenant Hawk mark - a geometric hawk head in profile with a fierce brow,
  * hooked beak, and a sharp eye. Reads at any size, transparent by default.
  */
 export function HawkMark({ className, ...props }: SVGProps<SVGSVGElement>) {
@@ -53,7 +53,7 @@ export function Logo({
 }: {
   className?: string;
   showWordmark?: boolean;
-  /** "auto" follows html[data-theme] via CSS — safe for SSR. */
+  /** "auto" follows html[data-theme] via CSS - safe for SSR. */
   tone?: "auto" | "dark" | "light";
 }) {
   const wordmarkClass =

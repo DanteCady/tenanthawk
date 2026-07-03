@@ -3,7 +3,7 @@ import { LegalContact, LegalSection, LegalShell } from "@/components/legal/Legal
 import { COMPANY_LEGAL_NAME } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Tenant Hawk",
+  title: "Privacy Policy - Tenant Hawk",
   description: "How Tenant Hawk collects, uses, and protects your data.",
 };
 

@@ -1,0 +1,82 @@
+---
+title: "How to clean up your Microsoft 365 tenant"
+description: "Step-by-step M365 cleanup for admins: inactive users, unused licenses, stale groups, security drift, and tenant hygiene. Know where to start before you delete anything."
+slug: "m365-tenant-cleanup"
+type: guide
+category: overview
+checkIds: ["hygiene.inactive-users","cost.unused-licenses","security.legacy-auth","hygiene.empty-groups"]
+relatedSlugs: ["m365-tenant-health-checklist","find-wasted-m365-licenses","m365-tenant-hygiene"]
+readTime: "9 min read"
+publishedAt: "2026-03-01"
+updatedAt: "2026-07-03"
+quickAnswer: "Step-by-step M365 cleanup for admins: inactive users, unused licenses, stale groups, security drift, and tenant hygiene. Know where to start before you delete anything."
+targetKeyword: "How to clean up your Microsoft 365 tenant"
+faq:
+  - q: "How long does how to clean up your microsoft 365 tenant take?"
+    a: "Most admins can work through the core steps in one to two sessions. Tenant Hawk automates the inventory in under five minutes with a read-only scan."
+  - q: "Do I need Global Administrator to run these checks?"
+    a: "Many checks require Global Administrator or Security Administrator in Entra ID. Tenant Hawk uses read-only admin consent so you can assess the tenant without making changes."
+  - q: "How often should I repeat this review?"
+    a: "Run a full pass quarterly at minimum, or monthly before audits and renewal season. After major org changes, run an ad-hoc review within a week."
+---
+
+## Why M365 tenants need a cleanup
+
+Every Microsoft 365 tenant accumulates clutter. People leave but accounts stay enabled. Licenses keep billing after offboarding. Project Teams sit empty for years. Conditional Access policies pile up with exceptions nobody remembers approving.
+
+Searching for "M365 clean up" or "clean Microsoft 365 tenant" usually means you already feel the pain: rising license costs, security questionnaires you cannot answer, or a tenant handed down from a previous admin. A structured cleanup gives you an overview of what is wrong before you start deleting things.
+
+## Start with an overview, not a purge
+
+The biggest mistake in tenant cleanup is acting before you understand scope. Block sign-in on the wrong account and you break a workflow. Remove a license from a shared mailbox and mail stops flowing.
+
+Begin with a read-only inventory across four areas: identity and access, license spend, reliability risks, and directory hygiene. Tenant Hawk runs this overview in minutes, or you can work through the checklist below manually.
+
+## Step 1: Clean up inactive users and orphaned accounts
+
+Inactive users are the fastest win in any M365 cleanup. They waste licenses, inflate MFA coverage reports, and create standing access risk if credentials are compromised.
+
+- Find enabled accounts with no sign-in in 90+ days (adjust to your policy)
+- Identify disabled accounts that still hold paid license assignments
+- Flag never-signed-in users with E3, E5, or Business Premium SKUs
+- Review guest accounts inactive beyond your collaboration retention window
+- Block sign-in immediately on confirmed leavers; remove licenses before deletion
+
+## Step 2: Reclaim unused M365 licenses
+
+License sprawl is invisible until finance asks, or until renewal season hits. Microsoft does not auto-reclaim seats when accounts are disabled.
+
+- Export assigned licenses vs. active sign-in activity
+- Target disabled users, never-signed-in accounts, and 90-day inactive users first
+- Look for oversized SKUs, such as E5 where E3 or Business Premium would suffice
+- Document reclaimable monthly spend before bulk removal
+- Tie license removal to your offboarding workflow going forward
+
+## Step 3: Fix security drift before hygiene clutter
+
+Security gaps should rank above empty groups. Attackers exploit legacy auth and over-privileged admins long before anyone notices a stale Team.
+
+- Block legacy authentication tenant-wide if not already enforced
+- Confirm MFA is required for all admins and ideally all users
+- Reduce Global Administrators to two to four with documented break-glass
+- Audit Conditional Access policies in report-only mode that never switched to enforce
+- Review app registrations with expiring secrets and high-privilege Graph permissions
+
+## Step 4: Clean up groups, Teams, and devices
+
+Hygiene work reduces noise in every future admin task. Tackle it in small batches so removals are predictable and politically safe.
+
+- Archive or delete M365 groups with no members or no activity in 12+ months
+- Review SharePoint sites with anonymous or anyone-link sharing enabled
+- Remove duplicate or stale Intune device records
+- Tighten org-wide external sharing defaults if they drifted during onboarding
+- Publish simple cleanup criteria (e.g. "no sign-in 180 days, manager approved") before bulk actions
+
+## Step 5: Set a cleanup cadence
+
+M365 tenants drift toward chaos by default. One cleanup pass is not enough. Schedule quarterly reviews at minimum, or monthly if you are preparing for an audit or managing rapid growth.
+
+After major events like mergers, admin turnover, or large hiring waves, run an ad-hoc cleanup within a week. Automate the overview so you catch drift before it compounds.
+
+Tenant Hawk gives you a full M365 tenant overview read-only: one health score, prioritized fixes, and estimated dollar impact. You know exactly where to start cleaning up.
+

@@ -43,7 +43,7 @@ export default async function Home() {
           softwareApplicationSchema(),
         ]}
       />
-      <div className="min-h-screen">
+      <div className="marketing-page marketing-landing min-h-screen">
         <Navbar />
         <main className="flex-1">
           <Hero dashboardPreview={<HeroDashboardPreview />} />

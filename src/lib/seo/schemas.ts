@@ -46,11 +46,11 @@ export function softwareApplicationSchema() {
         "@type": "Offer",
         price: "49",
         priceCurrency: "USD",
-        description: "Pro — daily scans, drift alerts, compliance mapping, and exports",
+        description: "Pro - daily scans, drift alerts, compliance mapping, and exports",
       },
     ],
     featureList: [
-      "M365 tenant cleanup overview — inactive users, licenses, and hygiene in one scan",
+      "M365 tenant cleanup overview - inactive users, licenses, and hygiene in one scan",
       "Read-only Microsoft 365 and Entra ID tenant scan",
       "Unified health score across security, cost, reliability, and hygiene",
       "License waste detection with estimated recoverable spend",
@@ -82,10 +82,14 @@ export function articleSchema({
   title,
   description,
   path,
+  publishedAt,
+  updatedAt,
 }: {
   title: string;
   description: string;
   path: string;
+  publishedAt?: string;
+  updatedAt?: string;
 }) {
   const url = `${getSiteUrl()}${path}`;
   return {
@@ -93,6 +97,8 @@ export function articleSchema({
     "@type": "Article",
     headline: title,
     description,
+    datePublished: publishedAt,
+    dateModified: updatedAt ?? publishedAt,
     author: { "@type": "Organization", name: SITE_NAME },
     publisher: {
       "@type": "Organization",
@@ -101,5 +107,20 @@ export function articleSchema({
     },
     mainEntityOfPage: url,
     url,
+  };
+}
+
+export function breadcrumbListSchema(
+  items: { name: string; path: string }[],
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: `${getSiteUrl()}${item.path}`,
+    })),
   };
 }

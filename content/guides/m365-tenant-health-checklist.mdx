@@ -1,0 +1,71 @@
+---
+title: "Microsoft 365 tenant health overview & checklist"
+description: "A practical M365 health overview and checklist for admins: security, cost, reliability, and hygiene checks you should run regularly."
+slug: "m365-tenant-health-checklist"
+type: guide
+category: governance
+checkIds: ["security.conditional-access","security.mfa-registration","cost.disabled-user-licenses","reliability.expiring-secrets"]
+relatedSlugs: ["m365-tenant-cleanup","m365-security-misconfigurations","find-wasted-m365-licenses","prepare-for-m365-audit"]
+readTime: "8 min read"
+publishedAt: "2026-03-01"
+updatedAt: "2026-07-03"
+quickAnswer: "A practical M365 health overview and checklist for admins: security, cost, reliability, and hygiene checks you should run regularly."
+targetKeyword: "Microsoft 365 tenant health overview & checklist"
+faq:
+  - q: "How long does microsoft 365 tenant health overview & checklist take?"
+    a: "Most admins can work through the core steps in one to two sessions. Tenant Hawk automates the inventory in under five minutes with a read-only scan."
+  - q: "Do I need Global Administrator to run these checks?"
+    a: "Many checks require Global Administrator or Security Administrator in Entra ID. Tenant Hawk uses read-only admin consent so you can assess the tenant without making changes."
+  - q: "How often should I repeat this review?"
+    a: "Run a full pass quarterly at minimum, or monthly before audits and renewal season. After major org changes, run an ad-hoc review within a week."
+---
+
+## Why run a tenant health check?
+
+Microsoft 365 tenants drift. Admins leave, apps get registered, licenses pile up, and Conditional Access policies accumulate exceptions. Most teams only discover problems during an audit, after a breach, or when an integration silently breaks.
+
+A structured health check gives you a baseline: what is misconfigured, what is wasting money, and what will break next. You do not need to review hundreds of settings manually. Focus on the categories that matter most.
+
+## Security
+
+Identity is the front door. These checks catch the gaps auditors and attackers look for first.
+
+- Confirm MFA is enforced for all admins and ideally all users
+- Review Conditional Access policies for risky exclusions (legacy auth, trusted locations that are too broad)
+- Count Global Administrators; aim for two to four with break-glass accounts documented
+- Audit app registrations with high-privilege Graph permissions
+- Review guest accounts and external sharing defaults
+
+## Cost
+
+License waste is invisible until finance asks, or until you reconcile SKUs during renewal.
+
+- Find licenses assigned to disabled or never-signed-in users
+- Identify oversized SKUs (E5 where E3 or Business Premium would suffice)
+- Look for duplicate license assignments on the same user
+- Quantify monthly reclaimable spend and assign owners to act
+
+## Reliability
+
+These items fail quietly until something stops working on a Friday afternoon.
+
+- Inventory app registration secrets and certificates with expiry dates
+- Check custom domain and DNS health before renewal windows
+- Monitor mailboxes approaching storage limits
+- Note integrations that depend on expiring credentials
+
+## Hygiene
+
+Clutter makes every future change harder. Cleaning up early keeps the directory manageable.
+
+- Remove or archive empty groups and orphaned Teams
+- Disable or remove long-inactive enabled accounts
+- Review unmanaged or duplicate Intune-enrolled devices
+- Tighten SharePoint and OneDrive sharing defaults if they have drifted
+
+## How often to run this
+
+Run a full pass quarterly at minimum, or monthly if you are preparing for an audit or managing rapid growth. After major changes like mergers, admin turnover, or large app deployments, run an ad-hoc check within a week.
+
+Tenant Hawk automates this checklist read-only across your tenant and rolls results into one health score with prioritized fixes. A free scan takes under five minutes.
+

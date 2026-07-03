@@ -11,7 +11,7 @@ export default function OpenGraphImage() {
     (
       <OgBrandLayout
         title="M365 tenant cleanup tool & health overview"
-        subtitle="Find inactive users, unused licenses, security gaps, and hygiene drift — one read-only scan, one health score."
+        subtitle="Find inactive users, unused licenses, security gaps, and hygiene drift - one read-only scan, one health score."
       />
     ),
     { ...size },

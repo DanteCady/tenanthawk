@@ -27,7 +27,7 @@ export default async function CompliancePage() {
           </div>
           <p className="mt-4 font-semibold text-slate-900">Compliance mapping is a Pro feature</p>
           <p className="mt-2 max-w-sm text-sm text-slate-600">
-            See which open findings map to CIS Controls and NIST SP 800-53 — with every
+            See which open findings map to CIS Controls and NIST SP 800-53 - with every
             affected finding listed per control.
           </p>
           <div className="mt-6 w-full max-w-sm">

@@ -4,7 +4,7 @@ export const E5_LICENSE_MONTHLY_USD_LIST = 57;
 /** Display pricing for Pro (must match Stripe Price amounts). */
 export const PRO_MONTHLY_USD = 49;
 
-/** Billed yearly — 2 months free vs paying monthly ($49 × 12 = $588). */
+/** Billed yearly - 2 months free vs paying monthly ($49 × 12 = $588). */
 export const PRO_ANNUAL_USD = 490;
 
 export const PRO_ANNUAL_MONTHLY_EQUIV = Math.round((PRO_ANNUAL_USD / 12) * 100) / 100;
@@ -15,10 +15,10 @@ export const PRO_ANNUAL_SAVINGS_PERCENT = Math.round(
   (PRO_ANNUAL_SAVINGS_USD / (PRO_MONTHLY_USD * 12)) * 100,
 );
 
-/** Enterprise Starter — flat platform fee (must match Stripe Price amounts). */
+/** Enterprise Starter - flat platform fee (must match Stripe Price amounts). */
 export const ENTERPRISE_MONTHLY_USD = 299;
 
-/** Billed yearly — 2 months free vs paying monthly ($299 × 12 = $3588). */
+/** Billed yearly - 2 months free vs paying monthly ($299 × 12 = $3588). */
 export const ENTERPRISE_ANNUAL_USD = 2990;
 
 export const ENTERPRISE_ANNUAL_MONTHLY_EQUIV =

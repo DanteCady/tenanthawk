@@ -71,7 +71,7 @@ export function SsoDomainVerification({
     if (result.error) {
       setError(
         result.error.message ??
-          "DNS record not found yet. Propagation can take a few minutes — try again shortly.",
+          "DNS record not found yet. Propagation can take a few minutes - try again shortly.",
       );
       return;
     }
@@ -157,7 +157,7 @@ export function SsoDomainVerification({
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Value</p>
                 <p className="mt-1 break-all font-mono text-xs text-slate-900 sm:text-sm">
-                  {txtValue || "—"}
+                  {txtValue || "-"}
                 </p>
               </div>
               {txtValue && (

@@ -186,7 +186,7 @@ export function CheckEmailPanel({
         )}
 
         {resent && (
-          <p className="text-center text-sm text-green-700">New code sent — check your inbox.</p>
+          <p className="text-center text-sm text-green-700">New code sent - check your inbox.</p>
         )}
 
         <button

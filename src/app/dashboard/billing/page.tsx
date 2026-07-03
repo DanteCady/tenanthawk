@@ -27,10 +27,10 @@ import { formatUsd } from "@/lib/format";
 
 function billingSubtitle(plan: Plan) {
   if (isEnterprisePlan(plan)) {
-    return "Enterprise Starter — flat monthly platform fee for MSPs and consultants.";
+    return "Enterprise Starter - flat monthly platform fee for MSPs and consultants.";
   }
   if (isProPlan(plan)) {
-    return "Pro is for internal IT teams — billed per connected tenant.";
+    return "Pro is for internal IT teams - billed per connected tenant.";
   }
   return "Pro is for internal IT teams. MSPs and consultants use Enterprise.";
 }
@@ -72,7 +72,7 @@ export default async function BillingPage({
         {isEnterprisePlan(plan) ? (
           <div className="mt-6 space-y-4">
             <p className="text-slate-700">
-              You&apos;re on <span className="font-semibold text-violet-700">Enterprise</span> —
+              You&apos;re on <span className="font-semibold text-violet-700">Enterprise</span> -
               the MSP and consultant plan with multi-tenant console, portfolio roll-ups, and
               client scorecards.
             </p>
@@ -117,12 +117,12 @@ export default async function BillingPage({
         ) : isProPlan(plan) ? (
           <div className="mt-6">
             <p className="text-slate-700">
-              You&apos;re on <span className="font-semibold text-blue-700">Pro</span> —
+              You&apos;re on <span className="font-semibold text-blue-700">Pro</span> -
               full findings, remediation, and daily monitoring for your organization.
             </p>
             <p className="mt-2 text-sm text-slate-500">
               Managing multiple <strong>client</strong> tenants as an MSP? Pro is not the right
-              plan — see Enterprise below.
+              plan - see Enterprise below.
             </p>
             <p className="mt-2 text-sm text-slate-500">
               Switch between monthly and annual, update payment method, or cancel in the portal.
@@ -146,7 +146,7 @@ export default async function BillingPage({
               <p className="text-xs text-slate-500">
                 Annual billing (${formatUsd(PRO_ANNUAL_USD)}/yr) appears once{" "}
                 <code className="rounded bg-slate-100 px-1">STRIPE_PRICE_PRO_ANNUAL</code>{" "}
-                is configured — see SETUP.md.
+                is configured - see SETUP.md.
               </p>
             )}
           </div>
@@ -170,7 +170,7 @@ export default async function BillingPage({
             <span className="badge-enterprise">MSPs &amp; consultants</span>
           </div>
           <p className="text-sm text-slate-600">
-            Enterprise is a separate plan for MSPs and consultants — not Pro. Includes up to{" "}
+            Enterprise is a separate plan for MSPs and consultants - not Pro. Includes up to{" "}
             {clientCap} client tenants, portfolio roll-ups, and scorecards.
           </p>
           <ul className="space-y-2">

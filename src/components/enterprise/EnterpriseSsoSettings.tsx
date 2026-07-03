@@ -286,7 +286,7 @@ export function EnterpriseSsoSettings({
           initialToken={pendingToken}
           onVerified={() => {
             setSavedProvider({ ...activeProvider, domainVerified: true });
-            setMessage("Domain verified — SSO sign-in is now enabled.");
+            setMessage("Domain verified - SSO sign-in is now enabled.");
             setPendingToken(null);
           }}
         />

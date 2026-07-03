@@ -1,11 +1,11 @@
-# SEO Guide Briefs — Mapped to Real Findings
+# SEO Guide Briefs - Mapped to Real Findings
 
 You already have 6 guides:
 `m365-tenant-health-checklist`, `m365-security-misconfigurations`,
 `find-wasted-m365-licenses`, `m365-expiring-secrets-and-domains`,
 `m365-tenant-hygiene`, `prepare-for-m365-audit`.
 
-These briefs **fill the gaps** — each targets a high-intent "how do I check/fix
+These briefs **fill the gaps** - each targets a high-intent "how do I check/fix
 X" query that maps 1:1 onto a check the scanner actually runs. That alignment is
 the whole strategy: someone searches the problem → reads the fix → the free scan
 finds it for them in one click.
@@ -13,7 +13,7 @@ finds it for them in one click.
 **Format for every guide** (matches your existing `GuideShell` pattern):
 - Title = the search query, near-verbatim
 - Intro: the problem + why it bites (2–3 short paras)
-- "How to check it manually" (steps, screenshots/portal paths) — earns trust
+- "How to check it manually" (steps, screenshots/portal paths) - earns trust
 - "What good looks like" (the target state)
 - "How to fix it" (steps)
 - Soft CTA: "Or let Tenant Hawk find this (and everything like it) in 2 minutes"
@@ -24,12 +24,12 @@ finds it for them in one click.
 
 ---
 
-## Tier 1 — highest intent, ship first
+## Tier 1 - highest intent, ship first
 
 ### 1. `how-to-find-inactive-conditional-access-policies`
 - **Query target:** "conditional access report only mode", "conditional access not working / not enforcing"
 - **Maps to check:** *All Conditional Access policies are report-only* / *No CA policies found*
-- **Angle:** The silent killer — policies that look like protection but only log.
+- **Angle:** The silent killer - policies that look like protection but only log.
   How to audit CA policy state, why report-only persists, how to safely flip to On.
 
 ### 2. `block-legacy-authentication-microsoft-365`
@@ -48,12 +48,12 @@ finds it for them in one click.
 - **Query target:** "unused M365 licenses report", "find users never signed in"
 - **Maps to check:** *N never-signed-in licensed accounts* (cost)
 - **Angle:** The fastest money in M365. Reconcile assigned licenses vs sign-in
-  activity; the exact dollar math. (Complements `find-wasted-m365-licenses` —
+  activity; the exact dollar math. (Complements `find-wasted-m365-licenses` -
   this is the narrower, higher-intent "never signed in" cut.)
 
 ---
 
-## Tier 2 — strong intent
+## Tier 2 - strong intent
 
 ### 5. `check-mfa-coverage-microsoft-365`
 - **Query target:** "users without MFA report M365", "MFA registration report Entra"
@@ -82,7 +82,7 @@ finds it for them in one click.
 
 ---
 
-## Tier 3 — round out coverage
+## Tier 3 - round out coverage
 
 ### 9. `find-non-compliant-intune-devices`
 - **Maps to check:** *N non-compliant / stale Intune devices*
@@ -94,7 +94,7 @@ finds it for them in one click.
   and negotiate from actual usage data.
 
 ### 11. `microsoft-365-security-checklist-for-msps`
-- **MSP-targeted** version of the health checklist — explicitly for people
+- **MSP-targeted** version of the health checklist - explicitly for people
   managing many tenants. Feeds the MSP funnel. Strong internal-link hub.
 
 ---
@@ -105,4 +105,4 @@ finds it for them in one click.
 - Repurpose each guide into 1 LinkedIn educational post + 1 "finding of the week".
 - Answer the matching question on Reddit/Spiceworks with a genuine answer, then
   "I wrote this up in more detail here" (only where allowed).
-- Cross-link guides to each other and to `/signup` — build the internal mesh.
+- Cross-link guides to each other and to `/signup` - build the internal mesh.

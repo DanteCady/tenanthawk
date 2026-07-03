@@ -1,4 +1,4 @@
-/** Founding promo — Stripe Promotion Code `EARLYBIRD26`. */
+/** Founding promo - Stripe Promotion Code `EARLYBIRD26`. */
 export const FOUNDING_PROMO_CODE = "EARLYBIRD26";
 
 /** Must match `max_redemptions` on the Stripe promotion code. */
@@ -20,5 +20,5 @@ export function foundingPromoAnnualUsd(listPrice = 490): number {
 export function foundingPromoSummary(): string {
   const monthly = foundingPromoMonthlyUsd();
   const annual = foundingPromoAnnualUsd();
-  return `${FOUNDING_PROMO_PERCENT_OFF}% off Pro for life (~$${monthly}/mo or $${annual}/yr) — first ${FOUNDING_PROMO_MAX_CUSTOMERS} customers only.`;
+  return `${FOUNDING_PROMO_PERCENT_OFF}% off Pro for life (~$${monthly}/mo or $${annual}/yr) - first ${FOUNDING_PROMO_MAX_CUSTOMERS} customers only.`;
 }

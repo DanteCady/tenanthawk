@@ -44,7 +44,7 @@ const GRADE_TEXT: Record<string, string> = {
 };
 
 function ReportScoreCircle({ score }: { score: number | null }) {
-  const letter = score != null ? grade(score) : "—";
+  const letter = score != null ? grade(score) : "-";
   const ring = GRADE_RING[letter] ?? GRADE_RING.F;
   const text = GRADE_TEXT[letter] ?? GRADE_TEXT.F;
 
@@ -53,7 +53,7 @@ function ReportScoreCircle({ score }: { score: number | null }) {
       className={`flex h-[72px] w-[72px] shrink-0 flex-col items-center justify-center rounded-full border-2 bg-white ${ring}`}
     >
       <span className="text-2xl font-bold leading-none text-slate-900">
-        {score ?? "—"}
+        {score ?? "-"}
       </span>
       <span className={`mt-0.5 text-[10px] font-bold leading-none ${text}`}>
         {letter}
@@ -87,7 +87,7 @@ export function PrintableReport({
 
   return (
     <article className="light-surface overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm print:rounded-none print:border-0 print:shadow-none">
-      {/* Branded header — div, not header, so dashboard print CSS does not hide it */}
+      {/* Branded header - div, not header, so dashboard print CSS does not hide it */}
       <div className="relative bg-slate-900 text-white print:break-inside-avoid">
         <div className="absolute inset-x-0 bottom-0 h-1 bg-blue-600" />
         <div className="flex items-center gap-3 px-6 py-5 sm:px-8">

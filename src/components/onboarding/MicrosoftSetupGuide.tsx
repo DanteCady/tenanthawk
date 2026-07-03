@@ -44,7 +44,7 @@ export function MicrosoftSetupGuide() {
             Developer setup: enable live Microsoft connect
           </span>
           <span className="mt-0.5 block text-xs text-amber-800/90">
-            One-time App Registration for Tenant Hawk — not per customer. See{" "}
+            One-time App Registration for Tenant Hawk - not per customer. See{" "}
             <code className="rounded bg-amber-100/80 px-1">SETUP.md</code>.
           </span>
         </span>

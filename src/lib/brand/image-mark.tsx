@@ -1,4 +1,4 @@
-/** Hawk mark + app tile for ImageResponse (next/og) — no DOM-only APIs. */
+/** Hawk mark + app tile for ImageResponse (next/og) - no DOM-only APIs. */
 
 const HAWK_HEAD =
   "M 15 24 C 16 16 26 12 36 16 C 41 18 44 20 46 23 C 50 24 54 27 56 33 L 57 39 L 49 36 C 52 33 49 32 45 32 L 41 33 C 38 40 32 45 26 44 C 22 43 18 40 17 35 C 14 33 13 30 15 24 Z";
