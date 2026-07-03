@@ -1,4 +1,12 @@
-import { ArrowRight, Building2, KeyRound, LayoutDashboard, PieChart } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Building2,
+  KeyRound,
+  LayoutDashboard,
+  PieChart,
+  ShieldCheck,
+} from "lucide-react";
 import { Reveal } from "./Reveal";
 import { ENTERPRISE_CLIENT_CAP_DEFAULT } from "@/lib/billing/pricing";
 
@@ -6,13 +14,13 @@ const features = [
   {
     icon: LayoutDashboard,
     title: "Portfolio roll-up",
-    body: "Average health score, open high findings, and recoverable spend across every client - one glance before your standup.",
+    body: "Average health score, open high findings, and recoverable spend across every client. One glance before your next client check-in.",
     chip: "bg-blue-50 text-blue-600",
   },
   {
     icon: Building2,
     title: "Client list & switching",
-    body: "Connect each tenant read-only, jump between clients in one click, and rescan any portfolio tenant from the console.",
+    body: "Connect each tenant read only, jump between clients in one click, and rescan any portfolio tenant from the console.",
     chip: "bg-green-50 text-green-600",
   },
   {
@@ -24,8 +32,20 @@ const features = [
   {
     icon: PieChart,
     title: "Per-client scorecards",
-    body: "Shareable scorecards with category grades and trends - built for QBRs, onboarding assessments, and exec updates.",
+    body: "Shareable scorecards with category grades and trends. Built for client updates, onboarding reviews, and exec summaries.",
     chip: "bg-amber-50 text-amber-600",
+  },
+  {
+    icon: AlertTriangle,
+    title: "Needs attention queue",
+    body: "See which clients have stale scans, open high findings, or connection issues before your next check in. The portfolio surfaces who needs work first.",
+    chip: "bg-red-50 text-red-400",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Full platform on every client",
+    body: "Every client tenant gets the full Pro scan: findings with dollar impact, remediation steps, daily scans, exports, and alerts. Same depth on client ten as client one.",
+    chip: "bg-teal-50 text-teal-400",
   },
 ] as const;
 
@@ -35,15 +55,15 @@ export function MspConsoleSection() {
       <div className="mx-auto max-w-6xl px-6">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-widest text-blue-300">
-            Enterprise console
+            For consultants &amp; MSPs
           </p>
           <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
-            Every client tenant. One hawk&apos;s-eye view.
+            Every client tenant. One clear view.
           </h2>
           <p className="mt-4 text-lg text-slate-300">
-            Pro is for a single internal IT team. MSPs and consultants use{" "}
-            <span className="font-semibold text-white">Enterprise</span>, a dedicated
-            multi-tenant console with up to {ENTERPRISE_CLIENT_CAP_DEFAULT} clients on Starter.
+            Pro covers one tenant for in house teams. Consultants and MSPs use{" "}
+            <span className="font-semibold text-white">Enterprise</span> to manage
+            up to {ENTERPRISE_CLIENT_CAP_DEFAULT} client tenants from one console.
           </p>
         </Reveal>
 
@@ -51,7 +71,7 @@ export function MspConsoleSection() {
           <div className="overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-800/60 shadow-2xl ring-1 ring-white/10">
             <div className="border-b border-slate-700/80 px-5 py-3">
               <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
-                MSP overview
+                Client portfolio
               </p>
             </div>
             <div className="grid gap-px bg-slate-700/50 sm:grid-cols-4">

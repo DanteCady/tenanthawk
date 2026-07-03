@@ -1,114 +1,180 @@
 # Launch Posts - Reddit & LinkedIn
 
-Ready to post. Each is written for the specific community's norms. **Read the
-subreddit sidebar/rules before posting** and only post where you're allowed to
-share a tool (most allow it if you participate genuinely). Space them out - one
-community per day, don't blast.
+Ready to post where the rules actually allow it. **Read each subreddit's sidebar
+before you touch anything.** Most IT admin subs (r/sysadmin, r/Office365,
+r/Intune) treat a standalone "I built X" launch as advertising, same as r/msp.
 
 Tone rules: be a person, not a brand. Lead with the problem and the free value.
-The link is incidental. Reply to every comment for the first 48h - engagement is
-what the algorithm and the mods reward.
+No hyphens in Reddit copy (reads as AI). Reply to every comment for 48h where
+you do post.
+
+### Where vendor launches are allowed vs not
+
+| Subreddit | Standalone launch? | What to do instead |
+|-----------|-------------------|-------------------|
+| **r/msp** | No (Rule 3) | Weekly Promo thread comment only |
+| **r/sysadmin** | No (Rule 3) | Help in existing threads; link only if asked |
+| **r/Office365** | No (community norm) | Same as sysadmin |
+| **r/Intune** | No | Same as sysadmin |
+| **r/SaaS, r/micro_saas, r/SideProject** | Yes (that's the point) | Founder / build story posts |
+| **LinkedIn** | Yes | Founder post (already drafted below) |
+| **Hacker News** | Yes (Show HN) | Build story, not sales pitch |
 
 ---
 
-## r/msp - primary, highest value
+## r/msp - Weekly Promo thread (Rule 3 compliant)
 
-**Title:** I built a free read-only M365 tenant scanner that scores client tenants and finds wasted licenses - looking for brutal feedback
+**Do not** use `/r/msp/submit` for a product launch. Standalone "I built X" posts
+violate Rule 3 (Vendor Promotions) even with a feedback angle.
 
-**Body:**
+### Before you post
 
-I run/work in the M365 world and got tired of clicking through Entra, the M365
-admin center, SharePoint settings and Intune every time I onboarded a tenant or
-did a quarterly review. The stuff that bites you is always the boring stuff:
-an app secret that quietly expired, Conditional Access policies stuck in
-report-only, legacy auth still on, 23 licensed accounts that have never signed
-in.
+1. **Rule 9:** You need **50 comment karma in r/msp** before you can create
+   top level posts. Commenting on the Weekly Promo thread may still work as a
+   reply; if Reddit blocks you, build karma first (see below).
+2. **Find the thread:** Search r/msp for `Weekly Promo` or check pinned posts.
+   Mods post a new one regularly (often weekly). Comment on the **current** thread
+   only.
+3. **Identify as vendor:** Use **Brand affiliate** tag if posting a top level
+   thread elsewhere; in the promo thread, open with "Vendor:" or "Disclosure: I
+   built this."
+4. **Set user flair** in r/msp sidebar if available (MSP, MSP US, etc.).
 
-So I built **Tenant Hawk**. You connect a tenant **read-only** (admin consent,
-no agents, we store only the tenant ID - tokens are minted on demand, nothing
-persisted), it scans, and you get one health score plus a prioritized fix list
-across security, identity, cost, reliability, SharePoint and Intune. It puts an
-actual dollar figure on unused/never-signed-in licenses, which has been the
-easiest thing to show clients.
+### Karma building (1 to 2 weeks if needed)
 
-It's free to scan and see your score. There's a paid tier to unlock the full
-remediation report, and an MSP volume tier with a multi-tenant console + roll-ups
-(that's the part I'd most love MSP feedback on).
+Comment genuinely on threads about M365 reviews, licensing waste, Conditional
+Access, onboarding tenants. No links unless someone asks. Examples:
 
-Not trying to spam - genuinely want feedback from people who manage tenants for
-a living. What checks would make this a no-brainer for your QBRs? What would stop
-you from connecting it?
+- "We still pull never signed in licensed users into a spreadsheet before every
+  client review. Stale guests and report only CA policies are the ones that bite us."
+- "Dollar figure on unused licenses is the easiest way to get client buy in for
+  cleanup. Security findings alone rarely move budget."
 
-Link in comments to respect the rules.
+### Comment for the Weekly Promo thread
 
-*(First comment:)* Here's the tool - run a scan on a tenant and tell me what's
-missing: https://tenanthawk.io - founding users can lock 25% off for life with
-`EARLYBIRD26`, but the scan + score is free regardless.
-
----
-
-## r/sysadmin - in-house admins
-
-**Title:** Made a free tool that gives your M365 tenant a health score (read-only) - found $1,800/mo in unused licenses on the first tenant I tested
-
-**Body:**
-
-Every M365 tenant is messier than you think. There are hundreds of settings
-spread across Entra, the admin center, SharePoint and Intune, and no single
-place that tells you "here's what's actually wrong and what to fix first."
-
-I built **Tenant Hawk** to be that place. Connect read-only (admin consent, no
-agents, no credentials stored - only the tenant ID is kept), and you get:
-
-- One health score + category grades (security, identity, cost, reliability)
-- A prioritized fix list with step-by-step remediation
-- A dollar figure on unused + never-signed-in licenses (great for justifying
-  cleanup to management)
-- Time-bomb alerts: app secrets, SSO signing certs and domains about to expire
-- The risky stuff: legacy auth still allowed, Conditional Access in report-only
-  or missing, anonymous SharePoint sharing, accounts with Global Admin
-
-Free to scan and see your score. Would love feedback from people who live in
-this stuff. Link in the comments.
+Paste as a **top level comment** on the current Weekly Promo megathread (link
+goes in the comment body; that is expected in promo threads):
 
 ---
 
-## r/Office365 - admins, more functional framing
+**Vendor disclosure:** I built this. Happy to answer technical questions.
 
-**Title:** Free read-only health check for your M365 tenant - secrets about to expire, unused licenses, sharing risks, all in one score
+**Tenant Hawk** (https://tenanthawk.io) is a read only M365 tenant health
+scanner. Connect with admin consent, no agents, we store only the tenant ID.
 
-**Body:**
+**Free:** Scan and health score across security, identity, cost, reliability,
+SharePoint, Intune.
 
-If you've ever wanted a single "is my tenant okay?" view instead of clicking
-through ten admin blades, I built something for that.
+**What it flags:** Expiring app secrets and SSO certs, legacy auth, Conditional
+Access gaps and report only policies, unused and never signed in licenses (with
+a dollar figure), external SharePoint sharing, stale guests, non compliant Intune
+devices.
 
-**Tenant Hawk** connects read-only and scans your tenant for the stuff that
-quietly goes wrong: app registrations with secrets about to expire, SSO signing
-certs near expiry, licenses nobody's using, accounts that have never signed in,
-external/anonymous SharePoint sharing left wide open, legacy auth, Conditional
-Access gaps.
+**Paid:** Full remediation report. MSP volume tier with multi tenant console and
+roll ups (would love feedback on this part specifically).
 
-You get one health score and a prioritized list of what to fix first. No agents,
-no creds stored (only the tenant ID), free to scan.
+**Pricing:** Scan and score are free. Founding users: `EARLYBIRD26` for 25% off
+locked for life.
 
-Curious what the most useful check would be for you - link in comments.
+Genuinely want feedback from consultants and MSPs: what checks would make this
+useful in a client health report? What would stop you from connecting a client
+tenant read only?
 
 ---
 
-## r/Intune - narrower wedge, device angle
+### r/msp launch sequence
 
-**Title:** Free tenant health scan now flags stale + non-compliant Intune devices alongside your M365/Entra risks
+| Step | Action |
+|------|--------|
+| 1 | Comment on 5 to 10 r/msp threads (no links) over a few days |
+| 2 | Find current Weekly Promo thread |
+| 3 | Paste comment above |
+| 4 | Reply to every response for 48h |
+| 5 | Post to r/SaaS or r/micro_saas (founder launch OK there) |
+| 6 | Participate in r/sysadmin / r/Office365 threads (no links unless asked) |
+
+---
+
+## r/sysadmin, r/Office365, r/Intune - participation only (no launch post)
+
+**Do not** submit a standalone "I built Tenant Hawk" post. Rule 3 on r/sysadmin
+is explicit:
+
+- Vendors may discuss their product **only in the context of an existing
+  discussion**
+- Posting your own content (including a tool you built) **is** a product
+- **Content creators should refrain from directing this community to their own
+  content**
+
+Disclosure + Brand affiliate + link in comments does **not** make a launch post
+compliant. Mods remove these routinely.
+
+### What actually works
+
+1. **Comment** on threads where you can add real operator value (unused licenses,
+   Conditional Access stuck in report only, legacy auth, expiring app secrets,
+   tenant audits, "where do I start" hygiene questions).
+2. **No link** in the comment unless someone explicitly asks for a tool or you
+   are directly answering "how do you check X?"
+3. When you do mention Tenant Hawk: one sentence disclosure, name the trade
+   offs, compare honestly to what they'd do manually or with Secure Score.
+4. **Moronic Monday / Thickheaded Thursday** are for *their* questions, not your
+   promo.
+5. Build karma for weeks before any product mention. Aim for 90/10 (help first).
+
+### Example comments (no link)
+
+On a thread about finding unused M365 licenses:
+
+> We export licensed users who never signed in plus stale guests into a sheet
+> before each client review. The dollar figure is what gets budget for cleanup.
+> Security findings alone rarely move management. Report only CA policies are the
+> other one that sits there forever.
+
+On a thread about tenant security baseline:
+
+> Secure Score is a start but it does not catch report only CA, never signed in
+> licensed users, or app secrets about to expire in one view. We still walk
+> Entra, SharePoint admin, and Intune separately for anything client facing.
+
+### If someone asks "what tool?"
+
+> Disclosure: I built Tenant Hawk for this. Read only Graph scan, free score,
+> flags the license waste and CA gaps above. https://tenanthawk.io if you want
+> to try it. Happy to compare notes on what it misses vs your process.
+
+---
+
+## r/micro_saas / r/SaaS - founder launch (standalone OK)
+
+These subs exist for builders sharing what they shipped. **r/micro_saas** is the
+better first post (more launch friendly). **r/SaaS** tightened rules in 2026:
+once per 60 days for self promo; weekly feedback thread is safest there.
+
+**Title:** Solo founder launch: M365 tenant health scanner, first test found $1,800/mo in unused licenses
 
 **Body:**
 
-Built a read-only M365 tenant scanner (Tenant Hawk) and just want to share the
-Intune-relevant part: alongside identity/CA/licensing checks, it flags
-**non-compliant** and **stale** managed devices so they show up in the same
-prioritized fix list as everything else - instead of being a separate tab you
-forget to check.
+I kept running into the same quiet problems across Microsoft 365 tenants: app
+secrets about to expire, licensed users who never signed in, Conditional Access
+stuck in report only, legacy auth still on.
 
-Connects read-only, free to scan, no agents. Link in comments - would love to
-hear what device-side checks you'd want next.
+Built **Tenant Hawk** to put it in one prioritized list with a health score.
+Connects read only via Microsoft Graph (admin consent, no agents, we store only
+the tenant ID).
+
+**Stack:** Next.js, Postgres, Graph app only permissions.
+
+**Early signal:** First real tenant flagged about $1,800/mo in unused and never
+signed in licenses before I fixed anything else.
+
+**Pricing:** Free to scan. Pro unlocks full remediation report. MSP volume tier
+for multi tenant rollups (still figuring this part out).
+
+https://tenanthawk.io
+
+Would love feedback from anyone managing M365 tenants. What check would make
+this useful in a client update? Will be in comments.
 
 ---
 

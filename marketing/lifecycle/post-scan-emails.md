@@ -77,14 +77,14 @@ like an MSP/IT firm OR self-identified MSP at signup). 3 emails over ~10 days.
 **B1 - Day 0**
 > Subject: One score across every client tenant
 >
-> Hi {{FirstName}}, you ran a scan - here's the part built for people who manage
-> *many* tenants: the MSP console rolls every client's score into one view, so
-> you can open every QBR with a number that's trending up and a license-waste
-> line you can bill against. Want me to set you up with the multi-tenant trial?
-> [Show me the MSP console]({{MSPURL}})
+> Hi {{FirstName}}, you ran a scan. Here is the part built for people who manage
+> many tenants: the console rolls every client's score into one view, so you can
+> walk into client meetings with a score that is trending up and a license waste
+> line you can bill against. Want me to set you up with the multi tenant trial?
+> [Show me the console]({{MSPURL}})
 
 **B2 - Day 4**
-> Subject: The QBR one-pager your clients will actually read
+> Subject: The client health report they will actually read
 >
 > A scored, prioritized, dollar-quantified health page per client - read-only,
 > no agents. It turns tenant hygiene into a recurring, visible deliverable (and

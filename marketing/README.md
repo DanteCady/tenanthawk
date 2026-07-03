@@ -63,8 +63,9 @@ Community/SEO/Outreach  →  Free scan  →  Score + paywalled report  →  Pro 
 ## 5. First 30 days (founder-led, automation-assisted)
 
 **Week 1 - Turn on the engine.**
-- Publish the launch posts (`content/launch-posts.md`) - start with r/msp and
-  LinkedIn. Space them out; one community per day.
+- Publish launch posts (`content/launch-posts.md`): r/msp **Weekly Promo thread**
+  only (Rule 3). r/sysadmin / r/Office365 / r/Intune are **comment only**, no
+  standalone launch. Use r/SaaS, r/micro_saas, or LinkedIn for founder posts.
 - Stand up the post-scan email sequence in n8n (`lifecycle/post-scan-emails.md`).
 - Build the MSP target list (`outreach/msp-outreach-kit.md` → sourcing section).
 
@@ -100,6 +101,8 @@ Community/SEO/Outreach  →  Free scan  →  Score + paywalled report  →  Pro 
 - **Lead with value, not links.** In communities, the free tool *is* the value;
   the link is incidental. Answer questions, share findings, be a person.
 - **Never fake numbers.** Only cite detections the scanner actually produces.
-- **Respect each subreddit's self-promo rules** (most allow "I built a free
-  tool" if you're a participant, not a drive-by). Read the sidebar first.
+- **Respect each subreddit's self-promo rules.** IT admin subs (r/sysadmin,
+  r/Office365, r/Intune) do not allow standalone vendor launches; r/msp
+  requires the Weekly Promo thread. Builder subs (r/SaaS, r/micro_saas) do.
+  Read the sidebar first.
 - **Read-only / privacy is the lead, every time** - it's what unblocks the click.

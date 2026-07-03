@@ -32,24 +32,24 @@ export function Hero({ dashboardPreview }: { dashboardPreview: React.ReactNode }
             className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm"
           >
             <ScanLine className="h-3.5 w-3.5 text-blue-500" />
-            For M365 admins, MSPs &amp; IT consultants
+            For M365 admins, IT consultants &amp; MSPs
           </motion.div>
 
           <motion.h1
             variants={item}
             className="mt-6 text-balance text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl"
           >
-            Recover wasted spend and close security gaps{" "}
-            <span className="text-gradient">in one scan</span>.
+            Catch license waste and tenant drift{" "}
+            <span className="text-gradient">before your next client conversation</span>.
           </motion.h1>
 
           <motion.p
             variants={item}
             className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-600 sm:text-xl"
           >
-            {SCAN_CHECK_COUNT} read-only checks across M365, Entra, and Intune.
-            One health score, dollar impact on every finding, and a prioritized
-            fix-it list in minutes.
+            {SCAN_CHECK_COUNT} read only checks across M365, Entra, and Intune.
+            One health score, dollar impact on license waste and security gaps,
+            and a prioritized fix list in minutes.
           </motion.p>
 
           <motion.div

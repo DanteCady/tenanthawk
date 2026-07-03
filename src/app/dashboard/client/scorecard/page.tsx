@@ -132,8 +132,8 @@ export default async function ClientScorecardPage() {
             <h2 className="text-lg font-semibold text-slate-900">Share scorecard</h2>
           </div>
           <p className="mb-4 text-sm text-slate-600">
-            Create a read-only link for QBRs and client updates. Links are scoped to this
-            client.
+            Create a read-only link for client updates and exec summaries. Links are
+            scoped to this client.
           </p>
           <ShareReportPanel />
         </section>

@@ -12,7 +12,7 @@ volume - 20–30 great touches a week beats 500 sprayed emails.
   the pain of manual tenant reviews, small enough to buy without a committee.
 - **Signals they're a fit:**
   - Microsoft Solutions Partner / CSP listings
-  - Posts about M365, security, or QBRs on LinkedIn / r/msp
+  - Posts about M365, security, or client reviews on LinkedIn / r/msp
   - Active in MSP communities (r/msp, MSPGeek, Discord servers)
   - Job posts for "M365 engineer," "security analyst," "vCISO"
 - **Trigger events (best time to reach out):** they just posted about a client
@@ -38,9 +38,9 @@ volume - 20–30 great touches a week beats 500 sprayed emails.
 - **Free multi-tenant trial:** scan up to N client tenants free so they can see
   value across their book of business.
 - **Volume pricing** on the MSP tier (multi-tenant console + roll-ups).
-- **The QBR hook:** a branded one-page health score they can put in front of
-  clients every quarter - proves ongoing value and surfaces upsells (license
-  cleanup, security remediation projects).
+- **The client report hook:** a branded one page health score they can share in
+  client updates every month or quarter. Proves ongoing value and surfaces upsells
+  (license cleanup, security remediation projects).
 - **Founding lock-in:** `EARLYBIRD26` = 25% off, locked for life.
 - **The bill-back angle:** the unused-license $ figure often funds the tool many
   times over - frame it as margin, not cost.
@@ -55,7 +55,7 @@ that's the whole game.
 >
 > Hi {{FirstName}},
 >
-> {{personalized line - e.g. "Saw your r/msp post on QBR prep" / "Noticed
+> {{personalized line - e.g. "Saw your r/msp post on client review prep" / "Noticed
 > {{Company}} focuses on M365-heavy SMBs"}}.
 >
 > Quick one: I built Tenant Hawk, a read-only scanner that gives any M365 tenant
@@ -63,8 +63,8 @@ that's the whole game.
 > and reliability - and puts a dollar figure on unused licenses. No agents,
 > nothing stored but the tenant ID.
 >
-> For MSPs there's a multi-tenant console so you can roll it across your whole
-> book and open every QBR with a score that's gone up.
+> For MSPs and consultants there is a multi tenant console so you can roll it
+> across every client and walk into meetings with a score that has gone up.
 >
 > Want me to set you up to scan a few client tenants free? No pitch - just see
 > what it surfaces.
@@ -82,8 +82,8 @@ that's the whole game.
 > Happy to run one tenant with you on a 15-min call so you can judge it on a real
 > environment. Worth a look?
 
-**Email 3 - the QBR/business case (Day 7)**
-> Subject: the QBR one-pager
+**Email 3 - the client report (Day 7)**
+> Subject: the client health report
 >
 > The reason I think this fits {{Company}}: it turns tenant hygiene into a
 > recurring, *visible* deliverable. One page per client, score trending up,
@@ -113,16 +113,16 @@ that's the whole game.
 
 **Follow-up (3 days, no reply):**
 > No worries if it's not the moment. If you ever want a fast read on a client
-> tenant before a QBR, free scan's here: https://tenanthawk.io 🦅
+> tenant before a client review, free scan is here: https://tenanthawk.io 🦅
 
 ## 6. Discovery call → close (15-min structure)
 
 1. **Their world (4 min):** How many client tenants? How do you do tenant
-   reviews / QBRs today? What's the painful part?
+   reviews and client updates today? What's the painful part?
 2. **Live scan (5 min):** Run their own or a demo tenant. Let the score + the
    license-waste number do the talking. *Silence after the number.*
-3. **The MSP fit (3 min):** Multi-tenant console, roll-ups, the QBR one-pager,
-   bill-back angle.
+3. **The fit (3 min):** Multi tenant console, roll ups, the shareable client
+   health report, bill back angle.
 4. **The ask (3 min):** "Want to roll it across your book on the founding rate?
    `EARLYBIRD26` locks 25% off for life." Set up the trial on the call.
 
@@ -131,7 +131,7 @@ that's the whole game.
 | Objection | Response |
 |---|---|
 | "Security - I'm not connecting a tool to client tenants." | Read-only, admin-consented, **no agents, we store only the tenant ID** - tokens are minted on demand, nothing persisted. You can revoke consent anytime. This is the #1 question; lead with it. |
-| "We already have [Lighthouse / native reports]." | Those are dashboards; we give a *prioritized, scored fix list* with dollar impact and remediation steps - built for a QBR conversation, not a console dive. |
+| "We already have [Lighthouse / native reports]." | Those are dashboards; we give a *prioritized, scored fix list* with dollar impact and remediation steps. Built for a client conversation, not a console dive. |
 | "Too busy to evaluate." | That's the point - it's a 2-minute read-only scan, not a deployment. I'll run the first one with you live. |
 | "Price?" | Volume pricing per tenant; the unused-license figure usually covers it several times over. Founding lock is 25% off for life. |
 

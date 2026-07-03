@@ -21,9 +21,9 @@ import {
 } from "@/lib/seo/schemas";
 
 export const metadata = buildPageMetadata({
-  title: "M365 tenant cleanup tool & health overview",
+  title: "M365 tenant health score & license waste scanner",
   description:
-    "Clean up Microsoft 365 in minutes — find inactive users, unused licenses, security misconfigurations, and expiring secrets. One read-only scan, one health score, and a prioritized fix list for admins and MSPs.",
+    "Catch license waste and tenant drift before your next client conversation. One read only scan, one health score, dollar impact on every finding, and a prioritized fix list for admins, consultants, and MSPs.",
   path: "/",
   keywords: HOMEPAGE_KEYWORDS,
 });

@@ -48,6 +48,7 @@ const CHECK_IDS_BY_SLUG = {
     "security.admin-roles",
     "cost.disabled-user-licenses",
   ],
+  "how-to-find-inactive-conditional-access-policies": ["security.conditional-access"],
 };
 
 const CATEGORY_BY_SLUG = {

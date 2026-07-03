@@ -8,6 +8,7 @@ import { SeverityBadge } from "./SeverityBadge";
 import { CategoryIconChip } from "./CategoryIconChip";
 import { ProUpgradeOptions } from "./UpgradeButton";
 import { FindingActions } from "./FindingActions";
+import { FindingGuideLink } from "./FindingGuideLink";
 import { RemediationPanel } from "./RemediationPanel";
 import { isExpiryCheckId } from "@/lib/scan/expiry";
 import { formatUsd } from "@/lib/format";
@@ -199,6 +200,7 @@ export function FindingsTable({
               {isOpen && (
                 <div className="finding-row-detail space-y-3 px-5 pb-5 pt-1">
                   <p className="text-sm text-slate-600">{f.description}</p>
+                  <FindingGuideLink checkId={f.checkId} />
                   {f.impact?.entities && f.impact.entities.length > 0 ? (
                     <div className="text-xs text-slate-500">
                       <p className="mb-1 font-medium text-slate-600">

@@ -15,7 +15,7 @@ export const ENTERPRISE_PLAN_FEATURES = [
   "Full platform on every client tenant",
   "Multi-tenant portfolio roll-up dashboard",
   "Clients console - switch, rescan, and open any tenant",
-  "Per-client scorecards for QBRs and client updates",
+  "Per-client scorecards for client updates and exec summaries",
   "Up to 10 client tenants on Starter (volume tiers available)",
   "Priority support",
 ] as const;
@@ -23,6 +23,6 @@ export const ENTERPRISE_PLAN_FEATURES = [
 export const ENTERPRISE_CONSOLE_FEATURES = [
   "Multi-tenant portfolio roll-up",
   "Clients list with switch & rescan",
-  "Per-client scorecards for QBRs",
+  "Shareable per-client scorecards",
   "Volume pricing for MSPs & consultants",
 ] as const;

@@ -1,0 +1,82 @@
+---
+title: "How to find inactive and report-only Conditional Access policies"
+description: "Audit Conditional Access policies stuck in report-only mode or never enforced. Find policies that log but do not block, and safely move validated rules to On."
+slug: how-to-find-inactive-conditional-access-policies
+type: guide
+category: identity
+checkIds: ["security.conditional-access"]
+relatedSlugs:
+  - block-legacy-authentication-microsoft-365
+  - m365-security-misconfigurations
+  - m365-tenant-health-checklist
+readTime: "7 min read"
+publishedAt: "2026-07-03"
+updatedAt: "2026-07-03"
+quickAnswer: "Report-only Conditional Access policies appear in your tenant but do not enforce access. Open Entra ID → Conditional Access → Policies, filter by state, and look for enabledForReportingButNotEnforced. If every policy is report-only, you have zero enforced protection until you move validated policies to On."
+targetKeyword: "conditional access report only mode"
+sources:
+  - title: "What is report-only mode?"
+    url: "https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-conditional-access-report-only"
+    publisher: "Microsoft Learn"
+  - title: "Conditional Access policy state"
+    url: "https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-conditional-access-policies"
+    publisher: "Microsoft Learn"
+  - title: "Plan a Conditional Access deployment"
+    url: "https://learn.microsoft.com/en-us/entra/identity/conditional-access/plan-conditional-access"
+    publisher: "Microsoft Learn"
+faq:
+  - q: "What is report-only mode in Conditional Access?"
+    a: "Report-only means Entra evaluates the policy and logs what would have happened, but does not block or grant access based on the policy. It is useful for testing, but policies left in report-only for months provide no real protection."
+  - q: "How do I know if my CA policies are enforcing?"
+    a: "In the Entra admin center, open Conditional Access → Policies. The State column shows On (enforcing), Report-only, or Off. If every policy is Report-only, nothing is actually blocking risky sign-ins."
+  - q: "Is it safe to switch a report-only policy to On?"
+    a: "Yes, after you review sign-in logs during the report-only period and confirm no unexpected blocks. Start with low-risk policies like MFA for admins, then broader user policies once impact is understood."
+  - q: "What if my tenant has no Conditional Access policies at all?"
+    a: "That is a high severity gap. Start with baseline policies: require MFA for all admins, block legacy authentication, and require MFA for all users. Use report-only for one week if you need to validate impact first."
+  - q: "How often should I audit Conditional Access policy state?"
+    a: "Review policy state monthly and after any major project or vendor onboarding. Report-only policies have a habit of staying in limbo after pilots never finish."
+  - q: "Can Tenant Hawk detect report-only Conditional Access?"
+    a: "Yes. The security scan flags tenants where CA policies exist but none are enforced, and includes Conditional Access posture in your health score."
+---
+
+## Why report-only policies are a silent risk
+
+Conditional Access is the front door to your tenant. When every policy sits in report-only, sign-in logs look busy but nothing actually stops a password spray or stolen session.
+
+Teams often enable report-only during a pilot and never flip to On. Auditors see "we have CA policies" on paper. Attackers see the same gap you would if the policies did not exist.
+
+## How to find report-only and inactive policies
+
+- Open **Microsoft Entra admin center → Protection → Conditional Access → Policies**
+- Review the **State** column for each policy:
+  - **On** = enforcing
+  - **Report-only** = logs only, no enforcement
+  - **Off** = disabled
+- Export or screenshot the list for your change record
+- Open **Sign-in logs** and filter by **Conditional Access** to see which report-only policies would have blocked access
+- Check for policies named after completed projects ("Temp vendor access Q3") still in report-only or Off
+
+## What good looks like
+
+- At least one baseline policy **On** and enforcing (MFA for admins, block legacy auth, or require compliant device)
+- Report-only used only during active pilots with a documented end date
+- No tenant-wide gap where **all** policies are report-only or Off
+- Sign-in log review completed before any report-only policy moves to **On**
+
+## Step-by-step: move validated policies from report-only to On
+
+1. **Inventory policy state:** List every CA policy with its current state, target users, and cloud apps.
+2. **Review report-only impact:** In Sign-in logs, filter the last 14 to 30 days for entries where report-only policies would have blocked or challenged sign-ins.
+3. **Fix exclusions first:** Resolve any legitimate access needs (service accounts, break-glass, legacy apps) before enforcement, not after.
+4. **Enable one policy at a time:** Start with admin MFA or block legacy auth. Set state to **On** for a single validated policy.
+5. **Monitor for 48 hours:** Watch sign-in failures and helpdesk tickets. Roll back to report-only only if you hit unexpected blocks.
+6. **Close out pilots:** For each remaining report-only policy, either move to **On**, disable it, or document why it stays in report-only with an owner and review date.
+
+## Common mistakes
+
+- Leaving every CA policy in report-only after a "successful" pilot
+- Enforcing a broad "All users, All cloud apps" policy before testing on a pilot group
+- Creating duplicate policies (one report-only, one On) and forgetting which is active
+- Assuming Microsoft Secure Score or MFA registration stats mean CA is enforcing
+
+Tenant Hawk checks whether your tenant has enforced Conditional Access policies or only report-only rules, and surfaces it in your security score. Run a free read-only scan to see your CA posture before you flip the switch.

@@ -119,13 +119,13 @@ Comment "scan" or DM me and I'll send the link. 🦅
 
 ---
 
-**C2 - for MSPs specifically**
-MSPs: imagine opening every client QBR with a one-page tenant health score that
-*went up* since last quarter - and a line item showing the licenses you helped
-them stop paying for.
+**C2 - for consultants & MSPs**
+Consultants and MSPs: walk into every client meeting with a one page tenant
+health score that went up since last time, and a line item showing the licenses
+you helped them stop paying for.
 
-That's the multi-tenant console in Tenant Hawk. Read-only, volume pricing.
-If you run client M365 tenants, DM me - I'll get you set up to scan a few.
+That is the multi tenant console in Tenant Hawk. Read only, volume pricing.
+If you manage client M365 tenants, DM me. I will get you set up to scan a few.
 
 ---
 

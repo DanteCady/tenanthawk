@@ -53,8 +53,8 @@
             {
               "id": "free",
               "leftValue": "={{ $json.body.plan }}",
-              "rightValue": "pro",
-              "operator": { "type": "string", "operation": "notEquals" }
+              "rightValue": "free",
+              "operator": { "type": "string", "operation": "equals" }
             }
           ],
           "combinator": "and"
@@ -221,7 +221,7 @@
         "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
         "subject": "One score across every client tenant",
         "emailFormat": "text",
-        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nYou ran a scan - here's the part built for people who manage many tenants: the MSP console rolls every client's score into one view, so you can open every QBR with a number that's trending up and a license-waste line you can bill against.\n\nWant me to set you up with the multi-tenant trial? Just reply.\n\nhttps://tenanthawk.io\n\n- Tenant Hawk",
+        "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nYou ran a scan. Here is the part built for people who manage many tenants: the console rolls every client's score into one view, so you can walk into client meetings with a score that is trending up and a license waste line you can bill against.\n\nWant me to set you up with the multi tenant trial? Just reply.\n\nhttps://tenanthawk.io\n\n- Tenant Hawk",
         "options": {}
       },
       "id": "send-b1",
@@ -244,13 +244,13 @@
       "parameters": {
         "fromEmail": "Tenant Hawk <hello@tenanthawk.io>",
         "toEmail": "={{ $('Webhook').item.json.body.user.email }}",
-        "subject": "The QBR one-pager your clients will actually read",
+        "subject": "The client health report they will actually read",
         "emailFormat": "text",
         "text": "=Hi {{ ($('Webhook').item.json.body.user.name || '').split(' ')[0] || 'there' }},\n\nA scored, prioritized, dollar-quantified health page per client - read-only, no agents. It turns tenant hygiene into a recurring, visible deliverable (and a natural upsell into remediation projects).\n\nReply and I'll walk you through it on one of your real client tenants.\n\n- Tenant Hawk",
         "options": {}
       },
       "id": "send-b2",
-      "name": "B2 - QBR one-pager",
+      "name": "B2 - Client health report",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [660, 440],
@@ -311,8 +311,8 @@
     "A4 - Prioritized list": { "main": [[{ "node": "Wait 7 days", "type": "main", "index": 0 }]] },
     "Wait 7 days": { "main": [[{ "node": "A5 - Founding deadline", "type": "main", "index": 0 }]] },
     "B1 - MSP console": { "main": [[{ "node": "Wait 4 days (MSP)", "type": "main", "index": 0 }]] },
-    "Wait 4 days (MSP)": { "main": [[{ "node": "B2 - QBR one-pager", "type": "main", "index": 0 }]] },
-    "B2 - QBR one-pager": { "main": [[{ "node": "Wait 6 days (MSP)", "type": "main", "index": 0 }]] },
+    "Wait 4 days (MSP)": { "main": [[{ "node": "B2 - Client health report", "type": "main", "index": 0 }]] },
+    "B2 - Client health report": { "main": [[{ "node": "Wait 6 days (MSP)", "type": "main", "index": 0 }]] },
     "Wait 6 days (MSP)": { "main": [[{ "node": "B3 - Founding MSP rate", "type": "main", "index": 0 }]] }
   },
   "settings": { "executionOrder": "v1" },

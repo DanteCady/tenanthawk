@@ -30,8 +30,8 @@ the shape - delete it once you get the idea.
 
 **To start a real lead, each row needs:**
 - `email` - the contact's address
-- `personalization` - a specific first line (e.g. "Saw your r/msp post on QBR
-  prep"). **Required** - the engine skips any row with this blank, on purpose.
+- `personalization` - a specific first line (e.g. "Saw your r/msp post on client
+  review prep"). **Required** - the engine skips any row with this blank, on purpose.
   This gate is what keeps it personal, not spam.
 - `status` = `active`
 - `step` = `0`

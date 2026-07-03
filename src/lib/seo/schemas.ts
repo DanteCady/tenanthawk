@@ -50,18 +50,19 @@ export function softwareApplicationSchema() {
       },
     ],
     featureList: [
-      "M365 tenant cleanup overview - inactive users, licenses, and hygiene in one scan",
-      "Read-only Microsoft 365 and Entra ID tenant scan",
+      "License waste and tenant drift surfaced in one read only scan",
       "Unified health score across security, cost, reliability, and hygiene",
-      "License waste detection with estimated recoverable spend",
-      "Inactive and orphaned account detection",
+      "Dollar impact on license waste and security gaps",
+      "Inactive users, unused licenses, and never signed in accounts",
+      "Conditional Access, legacy auth, and MFA gap detection",
       "Expiring secrets, certificates, and domain monitoring",
       "Prioritized remediation roadmap with Microsoft doc links",
       "CIS and NIST compliance mapping (Pro)",
     ],
     audience: {
       "@type": "Audience",
-      audienceType: "Microsoft 365 administrators, MSPs, and IT security leaders",
+      audienceType:
+        "Microsoft 365 administrators, IT consultants, MSPs, and IT security leaders",
     },
   };
 }

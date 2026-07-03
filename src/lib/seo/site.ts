@@ -5,13 +5,13 @@ import { COMPANY_LEGAL_NAME, SUPPORT_EMAIL } from "@/lib/brand";
 export const SITE_NAME = "Tenant Hawk";
 
 export const DEFAULT_TITLE =
-  "Tenant Hawk | M365 tenant cleanup tool & health overview";
+  "Tenant Hawk | M365 tenant health score & license waste scanner";
 
 export const DEFAULT_DESCRIPTION =
-  "Clean up your Microsoft 365 tenant with one read-only scan. Tenant Hawk finds inactive users, unused licenses, security gaps, expiring secrets, and hygiene drift - then gives you one health score and a prioritized fix list for M365 admins, MSPs, and IT leaders.";
+  "Catch license waste and tenant drift before your next client conversation. One read only scan, one health score, dollar impact on every finding, and a prioritized fix list for admins, consultants, and MSPs.";
 
 export const OG_IMAGE_ALT =
-  "Tenant Hawk - M365 tenant cleanup tool and health overview for admins and MSPs";
+  "Tenant Hawk - M365 tenant health score and license waste scanner for admins and MSPs";
 
 export const OG_IMAGE = {
   url: "/opengraph-image",
