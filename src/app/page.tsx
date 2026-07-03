@@ -23,7 +23,7 @@ import {
 export const metadata = buildPageMetadata({
   title: "M365 tenant health score & license waste scanner",
   description:
-    "Catch license waste and tenant drift before your next client conversation. One read only scan, one health score, dollar impact on every finding, and a prioritized fix list for admins, consultants, and MSPs.",
+    "M365 tenant health, without the detective work. One read-only scan, one health score, dollar impact on every finding, and a prioritized fix list for admins, consultants, and MSPs.",
   path: "/",
   keywords: HOMEPAGE_KEYWORDS,
 });

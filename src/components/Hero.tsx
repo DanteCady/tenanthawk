@@ -2,7 +2,6 @@
 
 import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Lock, ScanLine } from "lucide-react";
-import { SCAN_CHECK_COUNT } from "@/lib/scan/catalog";
 
 const container: Variants = {
   hidden: {},
@@ -39,17 +38,18 @@ export function Hero({ dashboardPreview }: { dashboardPreview: React.ReactNode }
             variants={item}
             className="mt-6 text-balance text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl"
           >
-            Catch license waste and tenant drift{" "}
-            <span className="text-gradient">before your next client conversation</span>.
+            M365 tenant health,{" "}
+            <span className="text-gradient">without the detective work</span>.
           </motion.h1>
 
           <motion.p
             variants={item}
             className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-600 sm:text-xl"
           >
-            {SCAN_CHECK_COUNT} read only checks across M365, Entra, and Intune.
-            One health score, dollar impact on license waste and security gaps,
-            and a prioritized fix list in minutes.
+            Scan your tenant in minutes to uncover security gaps, licensing waste,
+            configuration drift, and configuration issues. Get a health score,
+            estimated savings, and prioritized fixes, all without making changes
+            to your environment.
           </motion.p>
 
           <motion.div

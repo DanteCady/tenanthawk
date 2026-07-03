@@ -8,17 +8,68 @@ Tone rules: be a person, not a brand. Lead with the problem and the free value.
 No hyphens in Reddit copy (reads as AI). Reply to every comment for 48h where
 you do post.
 
-### Where vendor launches are allowed vs not
+### Reddit target matrix (standalone vs thread only)
 
-| Subreddit | Standalone launch? | What to do instead |
-|-----------|-------------------|-------------------|
-| **r/msp** | No (Rule 3) | Weekly Promo thread comment only |
-| **r/sysadmin** | No (Rule 3) | Help in existing threads; link only if asked |
-| **r/Office365** | No (community norm) | Same as sysadmin |
-| **r/Intune** | No | Same as sysadmin |
-| **r/SaaS, r/micro_saas, r/SideProject** | Yes (that's the point) | Founder / build story posts |
-| **LinkedIn** | Yes | Founder post (already drafted below) |
-| **Hacker News** | Yes (Show HN) | Build story, not sales pitch |
+**Spacing rule:** Never post the same copy to more than one subreddit in 24 hours.
+Wait 2 to 3 days between standalone launches. Reply to every comment for 48h.
+
+#### Green: standalone posts OK (post here first)
+
+| Subreddit | ~Size | Standalone? | Account gate | ICP fit | Priority |
+|-----------|-------|-------------|--------------|---------|----------|
+| **r/micro_saas** | 50K | Yes, any day | Low | High (B2B SaaS founder story) | **1** |
+| **r/SideProject** | 260K | Yes, any day | Low | High (show live product) | **2** |
+| **r/AlphaAndBetaUsers** | 25K | Yes, feedback focus | Low | High (M365 admin beta testers) | **3** |
+| **r/RoastMyStartup** | 21K | Yes, roast format | Low | Medium (engagement + feedback) | **4** |
+| **r/IMadeThis** | 60K | Yes, show and tell | Low | Medium | **5** |
+| **r/buildinpublic** | 50K+ | Yes, journey posts | Low | Medium (metrics updates) | **6** |
+| **r/indiehackers** | 120K | Yes, use SHOW IH flair | Medium | Medium | **7** |
+| **r/EntrepreneurRideAlong** | 300K | Yes, case study format | 30d account | Medium (numbers story) | **8** |
+
+#### Yellow: promo only in designated threads (low ban risk)
+
+| Subreddit | Promo lane | When | Gate | Priority |
+|-----------|------------|------|------|----------|
+| **r/SaaS** | Share Your SaaS Saturday | Saturdays | Karma in sub; 1 promo / 60 days | **9** |
+| **r/Entrepreneur** | Share Your Business | Mondays | 10 comment karma in sub | **10** |
+| **r/startups** | Share Your Startup | Monthly sticky | 30 day account | 11 |
+| **r/smallbusiness** | Promote Your Business | Wednesdays | 100 karma, 30 days | 12 |
+| **r/msp** | Weekly Promo | Check pinned | 50 karma in sub for top level | **13** |
+| **r/netsec** | Monthly tool thread | Pinned only | Technical; security angle | 14 |
+| **r/webdev** | Showoff Saturday | Saturdays | 100 karma, 30 days | 15 |
+
+#### Red: no launch posts (comment only)
+
+| Subreddit | Why |
+|-----------|-----|
+| r/sysadmin, r/Office365, r/microsoft365, r/Intune, r/entra, r/azure | Vendor hostile; link only if asked in thread |
+| r/cybersecurity, r/AskNetsec | No promo threads; help first |
+| r/marketing, r/SEO, r/PPC | Banned outside weekly threads |
+| r/devops | Operational answers only |
+
+#### Low quality, low rules (optional)
+
+r/shamelessplug, r/promote, r/newproducts, r/shareyourstartup. Easy to post, thin audience.
+
+### 2 week posting calendar
+
+| Day | Action | Copy section below |
+|-----|--------|-------------------|
+| Thu | r/micro_saas standalone | [r/micro_saas](#r-micro_saas--standalone-launch) |
+| Sat | r/SaaS Share Your SaaS Saturday thread | [r/SaaS thread](#r-saas--share-your-saas-saturday-thread) |
+| Sun | Comment on 3 r/msp threads (no links) | [r/msp karma](#r-msp---weekly-promo-thread-rule-3-compliant) |
+| Mon | r/Entrepreneur Share Your Business thread | [r/Entrepreneur thread](#r-entrepreneur--share-your-business-monday) |
+| Wed | r/SideProject standalone | [r/SideProject](#r-sideproject--standalone-launch) |
+| Fri | r/AlphaAndBetaUsers or r/RoastMyStartup | [Feedback posts](#r-alphaandbetausers--feedback-request) |
+| Ongoing | r/msp Weekly Promo when thread is live | [r/msp promo comment](#comment-for-the-weekly-promo-thread) |
+
+### Universal posting rules
+
+- ~10% self promo across your whole Reddit account (1 promo per 9 helpful comments)
+- Personal account, disclose in post ("I built this")
+- No "DM me" or "comment for link"
+- No UTM parameters in links
+- No cross posting identical text to 3+ subs in 24h
 
 ---
 
@@ -145,7 +196,148 @@ On a thread about tenant security baseline:
 
 ---
 
-## r/micro_saas / r/SaaS - founder launch (standalone OK)
+## r/micro_saas - standalone launch
+
+**URL:** https://www.reddit.com/r/micro_saas/submit
+
+**Title:** Solo founder launch: M365 tenant health scanner, beta found ~$3k/mo license waste across 3 tenants
+
+**Body:**
+
+Disclosure: I built this.
+
+I kept hitting the same quiet problems in Microsoft 365 tenants: app secrets about to expire, licensed users who never signed in, Conditional Access stuck in report only, legacy auth still on.
+
+Built **Tenant Hawk** to put it in one prioritized list with a health score. Connects read only via Microsoft Graph (admin consent, no agents, we store only the tenant ID).
+
+**Stack:** Next.js, Postgres, Graph app only permissions.
+
+**Early signal:** 3 beta tenants, about $3k/mo in unused and never signed in licenses flagged before anything else was fixed. 45+ security group cleanups surfaced in one pass.
+
+**Pricing:** Free to scan and see your score. Pro unlocks full remediation report. MSP volume tier for multi tenant rollups (still figuring this part out).
+
+https://tenanthawk.io
+
+Would love feedback from anyone managing M365 tenants or client tenants as a consultant. What check would make this useful in a client update? Will be in comments.
+
+---
+
+## r/SideProject - standalone launch
+
+**URL:** https://www.reddit.com/r/SideProject/submit
+
+**Title:** Built a read only M365 tenant health scanner (free score + dollar impact on license waste)
+
+**Body:**
+
+Disclosure: I built this.
+
+Problem: M365 tenant issues are scattered across Entra, admin center, SharePoint, and Intune. License waste and report only Conditional Access policies hide until something breaks or a client asks.
+
+What I shipped: **Tenant Hawk** connects read only (Graph admin consent, no agents), runs 30+ checks, returns one health score and a prioritized fix list with estimated monthly waste on license findings.
+
+Live at https://tenanthawk.io (free scan, no credit card).
+
+Early beta: ~$3k/mo recoverable license waste across 3 small tenants.
+
+Stack: Next.js, Postgres, Microsoft Graph.
+
+Looking for feedback from admins and MSPs: what would you need to trust a read only scan on a client tenant?
+
+---
+
+## r/AlphaAndBetaUsers - feedback request
+
+**URL:** https://www.reddit.com/r/AlphaAndBetaUsers/submit
+
+**Title:** [Launched] Read only M365 tenant scanner. Need feedback from admins and MSPs
+
+**Body:**
+
+Disclosure: I built Tenant Hawk.
+
+**Stage:** Launched (free tier live, paid tier in beta)
+
+**Product:** Read only Microsoft 365 / Entra / Intune health scan. One score, prioritized findings, dollar impact on license waste.
+
+**What I need feedback on:**
+1. Would you connect a client tenant read only? What would stop you?
+2. Which checks matter most in a client health report?
+3. Is the MSP multi tenant console useful or overkill for solo consultants?
+
+**Try it:** https://tenanthawk.io (free scan)
+
+**Context:** Beta on 3 tenants surfaced ~$3k/mo unused licenses and dozens of hygiene issues admins did not know about.
+
+Happy to answer anything about Graph permissions or the privacy model (we store only tenant ID).
+
+---
+
+## r/RoastMyStartup - feedback request
+
+**URL:** https://www.reddit.com/r/RoastMyStartup/submit
+
+**Title:** Roast my M365 tenant health scanner (read only scan, free tier)
+
+**Body:**
+
+Disclosure: I built this. I can take honest feedback.
+
+**Tenant Hawk** is a read only scanner for Microsoft 365 tenants. Connect via admin consent, get a health score and prioritized findings (license waste with dollar figures, report only CA, legacy auth, expiring secrets, etc.).
+
+https://tenanthawk.io
+
+**Traction so far:** 3 beta tenants, ~$3k/mo in flagged license waste, mostly never signed in users and disabled accounts still licensed.
+
+**Pricing:** Free scan. $49/mo Pro. MSP volume tier TBD.
+
+Roast the positioning, pricing, or the idea of another M365 tool. What would make you actually use this vs a spreadsheet and Secure Score?
+
+---
+
+## r/SaaS - Share Your SaaS Saturday thread
+
+**Do not** standalone post more than once per 60 days. Use the weekly thread.
+
+**Find thread:** Search r/SaaS for `Share Your SaaS Saturday` or check pinned posts.
+
+**Comment:**
+
+Disclosure: I built Tenant Hawk.
+
+Read only M365 tenant health scanner. One Graph connection, one health score, prioritized fix list with dollar impact on license waste.
+
+**Free:** Scan + score. **Pro:** Full remediation report + exports.
+
+Beta: 3 tenants, ~$3k/mo unused licenses found, 45+ group hygiene issues surfaced.
+
+https://tenanthawk.io
+
+Built for M365 admins, consultants, and MSPs. Would love feedback on what checks belong in a client health report.
+
+---
+
+## r/Entrepreneur - Share Your Business Monday
+
+**Find thread:** Search r/Entrepreneur for `Share Your Business` (Monday pinned).
+
+**Gate:** Need ~10 comment karma earned in r/Entrepreneur first.
+
+**Comment:**
+
+Disclosure: I built this.
+
+**Tenant Hawk** (https://tenanthawk.io) scans Microsoft 365 tenants read only and returns one health score plus a prioritized fix list. The hook that lands with clients: real dollar figures on license waste, not just security checkmarks.
+
+**Model:** Free scan, $49/mo Pro, MSP volume pricing in beta.
+
+**Early proof:** 3 beta companies, ~$3k/mo recoverable license waste flagged, 45+ security group cleanups in one pass.
+
+Targeting IT consultants and MSPs who need a fast tenant audit before client conversations. What would you want in a 2 minute client health report?
+
+---
+
+## r/micro_saas / r/SaaS - founder launch (legacy copy)
 
 These subs exist for builders sharing what they shipped. **r/micro_saas** is the
 better first post (more launch friendly). **r/SaaS** tightened rules in 2026:
@@ -214,8 +406,9 @@ Founding users can lock 25% off for life with EARLYBIRD26.
 
 ## Indie / builder communities (optional, secondary)
 
-For r/SideProject, Indie Hackers, Hacker News "Show", etc. - frame as a build
-story, not a sales pitch:
+For r/IMadeThis, r/buildinpublic, Indie Hackers, Hacker News "Show", etc. use the
+SideProject or micro_saas copy above and adjust the title. Frame as a build story,
+not a sales pitch:
 
 **Title (Show HN style):** Show: Tenant Hawk – read-only health score for your Microsoft 365 tenant
 

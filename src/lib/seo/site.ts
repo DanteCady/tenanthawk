@@ -8,7 +8,7 @@ export const DEFAULT_TITLE =
   "Tenant Hawk | M365 tenant health score & license waste scanner";
 
 export const DEFAULT_DESCRIPTION =
-  "Catch license waste and tenant drift before your next client conversation. One read only scan, one health score, dollar impact on every finding, and a prioritized fix list for admins, consultants, and MSPs.";
+  "M365 tenant health, without the detective work. One read-only scan, one health score, dollar impact on every finding, and a prioritized fix list for admins, consultants, and MSPs.";
 
 export const OG_IMAGE_ALT =
   "Tenant Hawk - M365 tenant health score and license waste scanner for admins and MSPs";
