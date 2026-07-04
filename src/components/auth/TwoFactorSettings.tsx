@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Loader2, Shield, ShieldOff } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { authClient } from "@/lib/auth-client";
 import { authInputClass } from "@/components/auth/auth-styles";
 
@@ -108,16 +109,30 @@ export function TwoFactorSettings({ enabled }: { enabled: boolean }) {
     return (
       <div className="space-y-4">
         <p className="text-sm text-slate-600">
-          Add this account to Google Authenticator, 1Password, or Microsoft Authenticator.
+          Scan the QR code with Google Authenticator, 1Password, Microsoft Authenticator, or
+          another TOTP app.
         </p>
 
-        {secret && (
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-              Setup key
-            </p>
-            <p className="mt-1 break-all font-mono text-sm text-slate-900">{secret}</p>
+        {totpUri && (
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-200 bg-white p-5">
+            <QRCodeSVG
+              value={totpUri}
+              size={200}
+              level="M"
+              marginSize={2}
+              aria-label="Two-factor authentication QR code"
+            />
+            <p className="text-xs text-slate-500">Scan to add Tenant Hawk</p>
           </div>
+        )}
+
+        {secret && (
+          <details className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+            <summary className="cursor-pointer text-sm font-medium text-slate-700">
+              Can&apos;t scan? Enter setup key manually
+            </summary>
+            <p className="mt-3 break-all font-mono text-sm text-slate-900">{secret}</p>
+          </details>
         )}
 
         <form onSubmit={confirmEnable} className="space-y-3">
