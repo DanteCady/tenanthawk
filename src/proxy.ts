@@ -4,13 +4,14 @@ import {
   ACTIVE_CONNECTION_COOKIE,
   activeConnectionCookieOptions,
 } from "@/lib/connection/constants";
+import { appRedirectUrl } from "@/lib/platform/urls";
 
 // Optimistic cookie check for fast redirects. Real authorization is enforced
 // in server components / route handlers via requireSession().
 export function proxy(req: NextRequest) {
   const sessionCookie = getSessionCookie(req);
   if (!sessionCookie) {
-    const url = new URL("/login", req.url);
+    const url = appRedirectUrl("/login", req);
     url.searchParams.set("redirect", req.nextUrl.pathname);
     return NextResponse.redirect(url);
   }

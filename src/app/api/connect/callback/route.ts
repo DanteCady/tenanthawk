@@ -10,6 +10,7 @@ import {
   activeConnectionCookieOptions,
   ACTIVE_CONNECTION_COOKIE,
 } from "@/lib/connection/constants";
+import { appRedirectUrl } from "@/lib/platform/urls";
 
 export const runtime = "nodejs";
 
@@ -19,7 +20,7 @@ const CONNECT_RETURN_COOKIE = "th_connect_return";
 export async function GET(req: NextRequest) {
   const session = await getSession();
   if (!session) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(appRedirectUrl("/login", req));
   }
 
   const { searchParams } = new URL(req.url);
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
   const returnTo = req.cookies.get(CONNECT_RETURN_COOKIE)?.value;
 
   const fail = (reason: string) => {
-    const url = new URL("/onboarding", req.url);
+    const url = appRedirectUrl("/onboarding", req);
     if (returnTo === "clients") url.searchParams.set("mode", "add-client");
     url.searchParams.set("connect", reason);
     const res = NextResponse.redirect(url);
@@ -101,7 +102,7 @@ export async function GET(req: NextRequest) {
       ? `/dashboard/clients?connection=${conn.id}`
       : "/onboarding";
 
-  const res = NextResponse.redirect(new URL(redirectPath, req.url));
+  const res = NextResponse.redirect(appRedirectUrl(redirectPath, req));
   res.cookies.delete("th_connect_state");
   res.cookies.delete(CONNECT_RETURN_COOKIE);
   res.cookies.set(ACTIVE_CONNECTION_COOKIE, conn.id, activeConnectionCookieOptions());

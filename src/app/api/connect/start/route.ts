@@ -3,6 +3,7 @@ import { getSession } from "@/lib/session";
 import { getPlan } from "@/lib/entitlements";
 import { enforceRateLimit } from "@/lib/rate-limit-http";
 import { RATE_LIMITS } from "@/lib/rate-limit";
+import { appRedirectUrl } from "@/lib/platform/urls";
 
 export const runtime = "nodejs";
 
@@ -13,7 +14,7 @@ const CONNECT_RETURN_COOKIE = "th_connect_return";
 export async function GET(req: NextRequest) {
   const session = await getSession();
   if (!session) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(appRedirectUrl("/login", req));
   }
 
   const clientId = process.env.MS_CLIENT_ID;
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest) {
   if (!clientId || !redirectUri) {
     // Live connect not configured - send back to onboarding to use demo.
     return NextResponse.redirect(
-      new URL("/onboarding?connect=unconfigured", req.url),
+      appRedirectUrl("/onboarding?connect=unconfigured", req),
     );
   }
 
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
   );
   if (limited) {
     return NextResponse.redirect(
-      new URL("/onboarding?connect=rate_limit", req.url),
+      appRedirectUrl("/onboarding?connect=rate_limit", req),
     );
   }
 
