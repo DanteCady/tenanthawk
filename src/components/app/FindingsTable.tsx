@@ -6,7 +6,7 @@ import { ChevronDown, Lock } from "lucide-react";
 import type { Category, FindingTrackingStatus, Severity } from "@/db/types";
 import { SeverityBadge } from "./SeverityBadge";
 import { CategoryIconChip } from "./CategoryIconChip";
-import { ProUpgradeOptions } from "./UpgradeButton";
+import { OnboardingUpgradePanel } from "@/components/onboarding/OnboardingUpgradePanel";
 import { FindingActions } from "./FindingActions";
 import { FindingGuideLink } from "./FindingGuideLink";
 import { RemediationPanel } from "./RemediationPanel";
@@ -42,43 +42,104 @@ const FILTERS: Array<{ key: "all" | Severity; label: string }> = [
 
 const SEV_RANK: Record<Severity, number> = { high: 0, medium: 1, low: 2 };
 
-function LockedTable({
-  count,
+export interface FindingPreview {
+  id: string;
+  severity: Severity;
+  category: Category;
+  title: string;
+}
+
+export interface LockedFindingsPreview {
+  total: number;
+  high: number;
+  usd: number;
+  items: FindingPreview[];
+}
+
+const PREVIEW_LIMIT = 8;
+
+function LockedFindingsView({
+  preview,
   annualAvailable,
 }: {
-  count: number;
+  preview: LockedFindingsPreview;
   annualAvailable: boolean;
 }) {
+  const shown = preview.items.slice(0, PREVIEW_LIMIT);
+  const hiddenCount = Math.max(0, preview.total - shown.length);
+
   return (
-    <div className="relative overflow-hidden surface-card">
-      <div className="pointer-events-none select-none space-y-px blur-[3px]" aria-hidden>
-        {Array.from({ length: Math.min(count || 6, 7) }).map((_, i) => (
-          <div key={i} className="flex items-center gap-3 px-5 py-4">
-            <span className="h-5 w-14 rounded-full bg-slate-200" />
-            <div className="h-3 flex-1 rounded bg-slate-200" style={{ maxWidth: `${70 - i * 4}%` }} />
-            <span className="h-3 w-16 rounded bg-slate-200" />
+    <div className="space-y-5">
+      <div className="flex flex-wrap gap-2">
+        <span className="filter-chip filter-chip-active pointer-events-none">
+          All ({preview.total})
+        </span>
+        {preview.high > 0 && (
+          <span className="filter-chip pointer-events-none">
+            High ({preview.high})
+          </span>
+        )}
+      </div>
+
+      <div className="overflow-hidden surface-card">
+        <div className="divide-y divide-slate-100">
+          {shown.map((f) => (
+            <div
+              key={f.id}
+              className="flex items-center gap-3 px-5 py-4"
+              aria-hidden={false}
+            >
+              <SeverityBadge severity={f.severity} />
+              <CategoryIconChip category={f.category} size="sm" />
+              <span className="min-w-0 flex-1 truncate text-sm text-slate-900">
+                {f.title}
+              </span>
+              <Lock className="h-4 w-4 shrink-0 text-slate-300" aria-hidden />
+            </div>
+          ))}
+          {shown.length === 0 && (
+            <p className="px-5 py-8 text-center text-sm text-slate-500">
+              No findings on the latest scan.
+            </p>
+          )}
+        </div>
+
+        {hiddenCount > 0 && (
+          <div className="border-t border-slate-100 bg-slate-50/80 px-5 py-3 text-center text-sm text-slate-600">
+            + {hiddenCount} more {hiddenCount === 1 ? "finding" : "findings"} on Pro
           </div>
-        ))}
-      </div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/75 px-6 text-center backdrop-blur-[2px]">
-        <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-          <Lock className="h-5 w-5" />
+        )}
+
+        <div className="border-t border-slate-100 bg-gradient-to-br from-blue-50/40 via-white to-slate-50/50 px-5 py-4 sm:px-6">
+          <div className="flex items-start gap-3">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+              <Lock className="h-4 w-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-slate-900">
+                {preview.total} {preview.total === 1 ? "finding" : "findings"} with full
+                remediation
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                Upgrade to Pro for dollar impact, AI-guided fixes, compliance mapping,
+                shareable reports, and daily monitoring.
+                {preview.usd > 0 && (
+                  <>
+                    {" "}
+                    About{" "}
+                    <span className="font-semibold text-blue-700">
+                      ${formatUsd(preview.usd)}/mo
+                    </span>{" "}
+                    looks recoverable on this scan.
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
         </div>
-        <p className="mt-3 font-semibold text-slate-900">
-          {count} findings with full remediation
-        </p>
-        <p className="mt-1 max-w-sm text-sm text-slate-600">
-          Unlock severity, dollar impact, AI-guided fixes, compliance mapping,
-          shareable reports, plus daily monitoring and drift alerts.
-        </p>
-        <div className="mt-4 max-w-sm">
-          <ProUpgradeOptions
-            annualAvailable={annualAvailable}
-            compact
-            buttonClassName="btn-primary w-full px-5 py-2.5 text-sm shadow-none hover:shadow-md"
-          />
-        </div>
       </div>
+
+      <OnboardingUpgradePanel annualAvailable={annualAvailable} />
     </div>
   );
 }
@@ -108,11 +169,12 @@ function trackingLabel(f: FindingDTO): string | null {
 
 export function FindingsTable({
   findings,
-  lockedCount,
+  lockedPreview,
   annualAvailable = false,
 }: {
   findings?: FindingDTO[];
-  lockedCount?: number;
+  /** Free tier: summary + title previews without remediation details. */
+  lockedPreview?: LockedFindingsPreview;
   annualAvailable?: boolean;
 }) {
   const router = useRouter();
@@ -123,7 +185,12 @@ export function FindingsTable({
     Record<string, RemediationEnriched>
   >({});
 
-  if (!findings) return <LockedTable count={lockedCount ?? 0} annualAvailable={annualAvailable} />;
+  if (!findings) {
+    if (!lockedPreview) return null;
+    return (
+      <LockedFindingsView preview={lockedPreview} annualAvailable={annualAvailable} />
+    );
+  }
 
   const visible = findings.filter((f) => {
     if (showHandled) return true;
