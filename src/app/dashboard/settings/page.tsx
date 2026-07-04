@@ -26,6 +26,7 @@ import { ThemePicker } from "@/components/theme/ThemePicker";
 import { timeAgo } from "@/lib/time";
 import { LicensePricingForm } from "@/components/app/LicensePricingForm";
 import { TwoFactorSettings } from "@/components/auth/TwoFactorSettings";
+import { ChangePasswordForm } from "@/components/auth/ChangePasswordForm";
 import {
   COMMON_LICENSE_PRICING_FIELDS,
   parseLicensePricing,
@@ -262,9 +263,24 @@ export default async function SettingsPage() {
 
       <SettingsSection
         title="Security"
-        description="Protect your Tenant Hawk account with two-factor authentication."
+        description="Password and two-factor authentication for your Tenant Hawk account."
       >
-        <TwoFactorSettings enabled={twoFactorEnabled} />
+        <div className="space-y-8">
+          <div>
+            <h3 className="text-sm font-semibold text-[var(--th-text)]">Password</h3>
+            <div className="mt-3">
+              <ChangePasswordForm />
+            </div>
+          </div>
+          <div className="border-t border-[var(--th-border-subtle)] pt-8">
+            <h3 className="text-sm font-semibold text-[var(--th-text)]">
+              Two-factor authentication
+            </h3>
+            <div className="mt-3">
+              <TwoFactorSettings enabled={twoFactorEnabled} />
+            </div>
+          </div>
+        </div>
       </SettingsSection>
 
       <SettingsSection
