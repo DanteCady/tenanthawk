@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavGroup } from "./nav-config";
+import { SidebarTooltip } from "./SidebarTooltip";
 
 function isNavActive(pathname: string, href: string, exact?: boolean) {
   if (href === "/dashboard" && exact) {
@@ -43,32 +44,37 @@ export function NavLinks({
 
               return (
                 <li key={item.href}>
-                  <Link
-                    href={locked ? "/dashboard/billing" : item.href}
-                    title={collapsed ? item.label : undefined}
-                    onClick={onNavigate}
-                    className={`app-sidebar-link flex items-center gap-2.5 rounded-lg py-2 text-sm font-medium transition-colors ${
-                      collapsed ? "justify-center px-2" : "px-3"
-                    } ${
-                      active
-                        ? "nav-active"
-                        : locked
-                          ? "nav-link-muted"
-                          : "nav-link"
-                    }`}
+                  <SidebarTooltip
+                    enabled={collapsed}
+                    label={locked ? `${item.label} (Pro)` : item.label}
                   >
-                    <Icon className="h-4 w-4 shrink-0" aria-hidden />
-                    {!collapsed && (
-                      <>
-                        <span className="truncate">{item.label}</span>
-                        {locked && (
-                          <span className="badge-free ml-auto shrink-0 px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase">
-                            Pro
-                          </span>
-                        )}
-                      </>
-                    )}
-                  </Link>
+                    <Link
+                      href={locked ? "/dashboard/billing" : item.href}
+                      aria-label={collapsed ? item.label : undefined}
+                      onClick={onNavigate}
+                      className={`app-sidebar-link flex items-center gap-2.5 rounded-lg py-2 text-sm font-medium transition-colors ${
+                        collapsed ? "justify-center px-2" : "px-3"
+                      } ${
+                        active
+                          ? "nav-active"
+                          : locked
+                            ? "nav-link-muted"
+                            : "nav-link"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                      {!collapsed && (
+                        <>
+                          <span className="truncate">{item.label}</span>
+                          {locked && (
+                            <span className="badge-free ml-auto shrink-0 px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase">
+                              Pro
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </Link>
+                  </SidebarTooltip>
                 </li>
               );
             })}
