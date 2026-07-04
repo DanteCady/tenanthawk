@@ -1,6 +1,4 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, Globe, KeyRound, Users } from "lucide-react";
 import { getSession } from "@/lib/session";
 import { isEnterprisePlan, getPlan } from "@/lib/entitlements";
 import { getOwnedEnterpriseOrganization } from "@/lib/enterprise/workspace";
@@ -8,6 +6,11 @@ import { EnterpriseWorkspaceSettings } from "@/components/enterprise/EnterpriseW
 import { EnterpriseSsoSettings } from "@/components/enterprise/EnterpriseSsoSettings";
 import { EnterpriseInviteSettings } from "@/components/enterprise/EnterpriseInviteSettings";
 import { pool } from "@/db";
+import { SettingsSection } from "@/components/app/settings/SettingsSection";
+import {
+  SettingsLayout,
+  buildSettingsNavItems,
+} from "@/components/app/settings/SettingsLayout";
 
 export default async function EnterpriseSettingsPage() {
   const session = await getSession();
@@ -38,67 +41,39 @@ export default async function EnterpriseSettingsPage() {
       }
     : null;
 
+  const navItems = buildSettingsNavItems({ showEnterpriseWorkspace: true });
+
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <Link
-        href="/dashboard/settings"
-        className="inline-flex items-center gap-2 text-sm text-slate-600 transition-colors hover:text-slate-900"
+    <SettingsLayout
+      navItems={navItems}
+      title="Enterprise workspace"
+      description="Branded subdomain, SSO, and team invites for your MSP."
+    >
+      <SettingsSection
+        title="Subdomain"
+        description="Your team signs in at your branded URL."
       >
-        <ArrowLeft className="h-4 w-4" /> Back to settings
-      </Link>
+        <EnterpriseWorkspaceSettings
+          organizationId={org.id}
+          name={org.name}
+          slug={org.slug}
+        />
+      </SettingsSection>
 
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-          Enterprise workspace
-        </h1>
-        <p className="mt-1 text-sm text-slate-600">
-          Branded subdomain, SSO, and team invites for your MSP.
-        </p>
-      </div>
+      <SettingsSection
+        title="Single sign-on"
+        description="Connect Okta, Entra ID, or any SAML/OIDC identity provider."
+      >
+        <EnterpriseSsoSettings
+          organizationId={org.id}
+          organizationSlug={org.slug}
+          existingProvider={existingSso}
+        />
+      </SettingsSection>
 
-      <section className="surface-card p-6">
-        <div className="flex items-center gap-2">
-          <Globe className="h-5 w-5 text-slate-500" />
-          <h2 className="text-lg font-semibold text-slate-900">Subdomain</h2>
-        </div>
-        <p className="mt-1 text-sm text-slate-600">
-          Your team signs in at your branded URL.
-        </p>
-        <div className="mt-5">
-          <EnterpriseWorkspaceSettings
-            organizationId={org.id}
-            name={org.name}
-            slug={org.slug}
-          />
-        </div>
-      </section>
-
-      <section className="surface-card p-6">
-        <div className="flex items-center gap-2">
-          <KeyRound className="h-5 w-5 text-slate-500" />
-          <h2 className="text-lg font-semibold text-slate-900">Single sign-on</h2>
-        </div>
-        <p className="mt-1 text-sm text-slate-600">
-          Connect Okta, Entra ID, or any SAML/OIDC identity provider.
-        </p>
-        <div className="mt-5">
-          <EnterpriseSsoSettings
-            organizationId={org.id}
-            organizationSlug={org.slug}
-            existingProvider={existingSso}
-          />
-        </div>
-      </section>
-
-      <section className="surface-card p-6">
-        <div className="flex items-center gap-2">
-          <Users className="h-5 w-5 text-slate-500" />
-          <h2 className="text-lg font-semibold text-slate-900">Team invites</h2>
-        </div>
-        <div className="mt-5">
-          <EnterpriseInviteSettings organizationId={org.id} />
-        </div>
-      </section>
-    </div>
+      <SettingsSection title="Team invites" description="Invite teammates to your workspace.">
+        <EnterpriseInviteSettings organizationId={org.id} />
+      </SettingsSection>
+    </SettingsLayout>
   );
 }

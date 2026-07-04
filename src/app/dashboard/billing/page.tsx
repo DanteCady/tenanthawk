@@ -24,15 +24,38 @@ import {
   PRO_MONTHLY_USD,
 } from "@/lib/billing/pricing";
 import { formatUsd } from "@/lib/format";
+import { PageHeader } from "@/components/app/PageHeader";
 
 function billingSubtitle(plan: Plan) {
   if (isEnterprisePlan(plan)) {
-    return "Enterprise Starter - flat monthly platform fee for MSPs and consultants.";
+    return "Enterprise Starter — flat monthly platform fee for MSPs and consultants.";
   }
   if (isProPlan(plan)) {
-    return "Pro is for internal IT teams - billed per connected tenant.";
+    return "Pro is for internal IT teams — billed per connected tenant.";
   }
-  return "Pro is for internal IT teams. MSPs and consultants use Enterprise.";
+  return "Choose Pro for your organization or Enterprise for MSPs and consultants.";
+}
+
+function FeatureList({
+  features,
+  iconClassName,
+}: {
+  features: readonly string[];
+  iconClassName: string;
+}) {
+  return (
+    <ul className="space-y-2">
+      {features.map((feature) => (
+        <li
+          key={feature}
+          className="flex items-start gap-2.5 text-sm text-[var(--th-text-muted)]"
+        >
+          <Check className={`mt-0.5 h-4 w-4 shrink-0 ${iconClassName}`} />
+          {feature}
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export default async function BillingPage({
@@ -56,105 +79,138 @@ export default async function BillingPage({
   const devMode =
     process.env.NODE_ENV !== "production" && !process.env.STRIPE_SECRET_KEY;
 
-  return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Billing</h1>
-        <p className="mt-1 text-sm text-slate-600">{billingSubtitle(plan)}</p>
+  const enterpriseCard = showEnterprisePitch && !isEnterprisePlan(plan) && (
+    <div className="surface-card flex h-full flex-col space-y-4 p-6 sm:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-lg font-semibold text-[var(--th-text)]">Enterprise</h2>
+        <span className="badge-enterprise">MSPs &amp; consultants</span>
       </div>
-
-      <div className={`p-8 ${plan === "free" ? "surface-highlight" : "surface-card"}`}>
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Your plan</h2>
-          <PlanBadge plan={plan} />
+      <p className="text-sm text-[var(--th-text-muted)]">
+        Separate plan for MSPs and consultants — not Pro. Up to {clientCap} client tenants,
+        portfolio roll-ups, and scorecards.
+      </p>
+      <FeatureList features={ENTERPRISE_PLAN_FEATURES} iconClassName="text-violet-500" />
+      {enterpriseCheckoutAvailable ? (
+        <div className="mt-auto pt-2">
+          <EnterpriseUpgradeOptions
+            annualAvailable={enterpriseAnnualAvailable}
+            clientCap={clientCap}
+          />
         </div>
+      ) : (
+        <p className="text-sm text-[var(--th-text-muted)]">
+          Set{" "}
+          <code className="rounded bg-[var(--th-muted-bg)] px-1">STRIPE_PRICE_ENTERPRISE</code>{" "}
+          to enable checkout, or email{" "}
+          <a
+            href="mailto:support@tenanthawk.io?subject=Enterprise%20console"
+            className="font-medium text-violet-600 hover:text-violet-700 dark:text-violet-400"
+          >
+            support@tenanthawk.io
+          </a>
+          .
+        </p>
+      )}
+    </div>
+  );
 
-        {isEnterprisePlan(plan) ? (
-          <div className="mt-6 space-y-4">
-            <p className="text-slate-700">
-              You&apos;re on <span className="font-semibold text-violet-700">Enterprise</span> -
-              the MSP and consultant plan with multi-tenant console, portfolio roll-ups, and
-              client scorecards.
+  return (
+    <div className="space-y-6">
+      <PageHeader title="Billing" description={billingSubtitle(plan)} />
+
+      {plan === "free" ? (
+        <div
+          className={`grid gap-6 ${showEnterprisePitch ? "xl:grid-cols-2 xl:items-start" : ""}`}
+        >
+          <div className="surface-highlight flex h-full flex-col space-y-4 p-6 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-lg font-semibold text-[var(--th-text)]">Pro</h2>
+              <span className="badge-pro">For IT teams</span>
+            </div>
+            <p className="text-sm text-[var(--th-text-muted)]">
+              Full findings, remediation, and daily monitoring for a single organization.
             </p>
-            <p className="text-sm text-slate-600">
-              {clientLimit.count} of {clientCap} client tenants connected
-              {clientLimit.atCap ? " · at plan limit" : ""}.
-            </p>
-            <ul className="space-y-2">
-              {ENTERPRISE_PLAN_FEATURES.map((feature) => (
-                <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-700">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            {stripeConfigured ? (
-              <>
-                <p className="text-sm text-slate-500">
-                  Update payment method, switch billing interval, or cancel in the Stripe
-                  portal.
+            <FeatureList features={PRO_PLAN_FEATURES} iconClassName="text-green-600" />
+            <div className="mt-auto space-y-3 pt-2">
+              <ProUpgradeOptions annualAvailable={proAnnualAvailable} />
+              {!proAnnualAvailable && (
+                <p className="text-xs text-[var(--th-text-faint)]">
+                  Annual (${formatUsd(PRO_ANNUAL_USD)}/yr) when{" "}
+                  <code className="rounded bg-[var(--th-muted-bg)] px-1">
+                    STRIPE_PRICE_PRO_ANNUAL
+                  </code>{" "}
+                  is set.
                 </p>
-                <ManageBillingButton />
-              </>
-            ) : (
-              <p className="text-sm text-slate-500">
-                Contact support for billing changes in this environment.
-              </p>
-            )}
-            {clientLimit.atCap ? (
-              <p className="text-sm text-amber-800">
-                Need more than {clientCap} clients?{" "}
-                <a
-                  href="mailto:support@tenanthawk.io?subject=Enterprise%20volume%20pricing"
-                  className="font-medium text-violet-700 hover:text-violet-800"
-                >
-                  Email support
-                </a>{" "}
-                for volume pricing.
-              </p>
-            ) : null}
-          </div>
-        ) : isProPlan(plan) ? (
-          <div className="mt-6">
-            <p className="text-slate-700">
-              You&apos;re on <span className="font-semibold text-blue-700">Pro</span> -
-              full findings, remediation, and daily monitoring for your organization.
-            </p>
-            <p className="mt-2 text-sm text-slate-500">
-              Managing multiple <strong>client</strong> tenants as an MSP? Pro is not the right
-              plan - see Enterprise below.
-            </p>
-            <p className="mt-2 text-sm text-slate-500">
-              Switch between monthly and annual, update payment method, or cancel in the portal.
-            </p>
-            <div className="mt-5">
-              <ManageBillingButton />
+              )}
             </div>
           </div>
-        ) : (
-          <div className="mt-6 space-y-6">
-            <ul className="space-y-3">
-              {PRO_PLAN_FEATURES.map((f) => (
-                <li key={f} className="flex items-start gap-2.5 text-sm text-slate-700">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <ProUpgradeOptions annualAvailable={proAnnualAvailable} />
-            {!proAnnualAvailable && (
-              <p className="text-xs text-slate-500">
-                Annual billing (${formatUsd(PRO_ANNUAL_USD)}/yr) appears once{" "}
-                <code className="rounded bg-slate-100 px-1">STRIPE_PRICE_PRO_ANNUAL</code>{" "}
-                is configured - see SETUP.md.
-              </p>
-            )}
+          {enterpriseCard}
+        </div>
+      ) : (
+        <div className="surface-card space-y-4 p-6 sm:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-[var(--th-text)]">Your plan</h2>
+            <PlanBadge plan={plan} />
           </div>
-        )}
-      </div>
+
+          {isEnterprisePlan(plan) ? (
+            <>
+              <p className="text-[var(--th-text-muted)]">
+                You&apos;re on{" "}
+                <span className="font-semibold text-[var(--th-brand-text)]">Enterprise</span> —
+                multi-tenant console, portfolio roll-ups, and client scorecards.
+              </p>
+              <p className="text-sm text-[var(--th-text-muted)]">
+                {clientLimit.count} of {clientCap} client tenants connected
+                {clientLimit.atCap ? " · at plan limit" : ""}.
+              </p>
+              <FeatureList
+                features={ENTERPRISE_PLAN_FEATURES}
+                iconClassName="text-violet-500"
+              />
+              {stripeConfigured ? (
+                <>
+                  <p className="text-sm text-[var(--th-text-faint)]">
+                    Update payment method, switch billing interval, or cancel in Stripe.
+                  </p>
+                  <ManageBillingButton />
+                </>
+              ) : (
+                <p className="text-sm text-[var(--th-text-faint)]">
+                  Contact support for billing changes in this environment.
+                </p>
+              )}
+              {clientLimit.atCap ? (
+                <p className="text-sm text-amber-700 dark:text-amber-400">
+                  Need more than {clientCap} clients?{" "}
+                  <a
+                    href="mailto:support@tenanthawk.io?subject=Enterprise%20volume%20pricing"
+                    className="font-medium text-violet-600 hover:text-violet-700 dark:text-violet-400"
+                  >
+                    Email support
+                  </a>{" "}
+                  for volume pricing.
+                </p>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <p className="text-[var(--th-text-muted)]">
+                You&apos;re on{" "}
+                <span className="font-semibold text-[var(--th-brand-text)]">Pro</span> — full
+                findings, remediation, and daily monitoring.
+              </p>
+              <p className="text-sm text-[var(--th-text-faint)]">
+                Managing client tenants as an MSP? Enterprise is the right plan — see below.
+              </p>
+              <ManageBillingButton />
+            </>
+          )}
+        </div>
+      )}
 
       {plan === "free" && (
-        <p className="text-center text-xs text-slate-500">
+        <p className="text-center text-xs text-[var(--th-text-faint)]">
           Pro: ${PRO_MONTHLY_USD}/mo or ${formatUsd(PRO_ANNUAL_USD)}/yr per tenant · Enterprise
           Starter: ${ENTERPRISE_MONTHLY_USD}/mo or ${formatUsd(ENTERPRISE_ANNUAL_USD)}/yr (
           {clientCap} clients)
@@ -163,45 +219,7 @@ export default async function BillingPage({
 
       {devMode && <DevPlanToggle plan={plan} />}
 
-      {showEnterprisePitch && !isEnterprisePlan(plan) ? (
-        <div className="surface-card space-y-4 p-8">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-slate-900">Enterprise</h2>
-            <span className="badge-enterprise">MSPs &amp; consultants</span>
-          </div>
-          <p className="text-sm text-slate-600">
-            Enterprise is a separate plan for MSPs and consultants - not Pro. Includes up to{" "}
-            {clientCap} client tenants, portfolio roll-ups, and scorecards.
-          </p>
-          <ul className="space-y-2">
-            {ENTERPRISE_PLAN_FEATURES.map((feature) => (
-              <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-700">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
-                {feature}
-              </li>
-            ))}
-          </ul>
-          {enterpriseCheckoutAvailable ? (
-            <EnterpriseUpgradeOptions
-              annualAvailable={enterpriseAnnualAvailable}
-              clientCap={clientCap}
-            />
-          ) : (
-            <p className="text-sm text-slate-600">
-              Set{" "}
-              <code className="rounded bg-slate-100 px-1">STRIPE_PRICE_ENTERPRISE</code> to
-              enable self-serve checkout, or email{" "}
-              <a
-                href="mailto:support@tenanthawk.io?subject=Enterprise%20console"
-                className="font-medium text-violet-700 hover:text-violet-800"
-              >
-                support@tenanthawk.io
-              </a>{" "}
-              for access.
-            </p>
-          )}
-        </div>
-      ) : null}
+      {plan !== "free" && enterpriseCard}
     </div>
   );
 }

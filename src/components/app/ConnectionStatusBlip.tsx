@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import type { ConnectionHealth } from "@/lib/connect/health";
 import { formatCheckedAt } from "@/lib/time";
+import { Tooltip } from "@/components/ui/Tooltip";
 
 const STATUS_STYLE: Record<
   ConnectionHealth["status"],
@@ -33,6 +36,29 @@ const STATUS_STYLE: Record<
   },
 };
 
+function ConnectionTooltipContent({
+  health,
+  tenantLabel,
+}: {
+  health: ConnectionHealth;
+  tenantLabel?: string | null;
+}) {
+  return (
+    <span className="block text-left">
+      {tenantLabel ? (
+        <span className="app-tooltip-title block">{tenantLabel}</span>
+      ) : null}
+      <span className="app-tooltip-detail block">{health.label}</span>
+      {health.detail && health.detail !== health.label ? (
+        <span className="app-tooltip-detail block">{health.detail}</span>
+      ) : null}
+      <span className="app-tooltip-meta block">
+        Checked {formatCheckedAt(health.checkedAt)}
+      </span>
+    </span>
+  );
+}
+
 export function ConnectionStatusBlip({
   health,
   tenantLabel,
@@ -41,9 +67,6 @@ export function ConnectionStatusBlip({
   tenantLabel?: string | null;
 }) {
   const style = STATUS_STYLE[health.status];
-  const title = [tenantLabel, health.detail, `Checked ${formatCheckedAt(health.checkedAt)}`]
-    .filter(Boolean)
-    .join(" · ");
 
   const inner = (
     <>
@@ -54,21 +77,33 @@ export function ConnectionStatusBlip({
 
   const className = `inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${style.chip} ${style.text}`;
 
+  const tooltip = (
+    <ConnectionTooltipContent health={health} tenantLabel={tenantLabel} />
+  );
+
+  const ariaLabel = [tenantLabel, health.label, health.detail]
+    .filter(Boolean)
+    .join(" · ");
+
   if (health.reconnect) {
     return (
-      <Link
-        href="/api/connect/start"
-        className={`${className} transition-opacity hover:opacity-90`}
-        title={title}
-      >
-        {inner}
-      </Link>
+      <Tooltip content={tooltip} placement="bottom">
+        <Link
+          href="/api/connect/start"
+          className={`${className} transition-opacity hover:opacity-90`}
+          aria-label={ariaLabel}
+        >
+          {inner}
+        </Link>
+      </Tooltip>
     );
   }
 
   return (
-    <span className={className} title={title}>
-      {inner}
-    </span>
+    <Tooltip content={tooltip} placement="bottom">
+      <span className={className} aria-label={ariaLabel} tabIndex={0}>
+        {inner}
+      </span>
+    </Tooltip>
   );
 }

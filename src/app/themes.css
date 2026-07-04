@@ -285,32 +285,88 @@ html[data-theme="hawk"] {
   display: block;
 }
 
-.sidebar-tooltip {
+.app-tooltip-wrap {
+  display: inline-flex;
+}
+
+.app-tooltip {
   position: absolute;
-  left: calc(100% + 0.5rem);
-  top: 50%;
   z-index: 50;
   pointer-events: none;
-  white-space: nowrap;
   border-radius: 0.375rem;
   border: 1px solid var(--th-border);
   background-color: var(--th-surface-elevated);
-  padding: 0.25rem 0.625rem;
+  padding: 0.375rem 0.625rem;
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--th-text);
   box-shadow: 0 4px 12px rgb(0 0 0 / 0.12);
   opacity: 0;
-  transform: translateY(-50%) translateX(-4px);
   transition:
     opacity 0.15s ease,
     transform 0.15s ease;
 }
 
-.sidebar-tooltip-wrap:hover .sidebar-tooltip,
-.sidebar-tooltip-wrap:focus-within .sidebar-tooltip {
+.app-tooltip--right {
+  left: calc(100% + 0.5rem);
+  top: 50%;
+  white-space: nowrap;
+  transform: translateY(-50%) translateX(-4px);
+}
+
+.app-tooltip-wrap:hover .app-tooltip--right,
+.app-tooltip-wrap:focus-within .app-tooltip--right {
   opacity: 1;
   transform: translateY(-50%) translateX(0);
+}
+
+.app-tooltip--bottom {
+  left: 50%;
+  top: calc(100% + 0.5rem);
+  width: max-content;
+  max-width: 16rem;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.app-tooltip-wrap:hover .app-tooltip--bottom,
+.app-tooltip-wrap:focus-within .app-tooltip--bottom {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.app-tooltip-title {
+  font-weight: 600;
+  color: var(--th-text);
+}
+
+.app-tooltip-detail {
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--th-text-muted);
+}
+
+.app-tooltip-meta {
+  margin-top: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: var(--th-text-faint);
+}
+
+.settings-tab-idle {
+  margin-bottom: -1px;
+  color: var(--th-text-muted);
+  border-bottom: 2px solid transparent;
+}
+
+.settings-tab-idle:hover {
+  color: var(--th-text);
+}
+
+.settings-tab-active {
+  margin-bottom: -1px;
+  color: var(--th-brand-text);
+  border-bottom: 2px solid var(--th-brand);
 }
 
 .app-main-column {

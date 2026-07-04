@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import {
-  ArrowLeft,
   ArrowRight,
   Building2,
   CreditCard,
@@ -32,26 +31,11 @@ import {
   parseLicensePricing,
 } from "@/lib/licenses/pricing-overrides";
 import { microsoftListPriceForSku } from "@/lib/licenses/sku-pricing";
-
-function SettingsSection({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="surface-card p-6">
-      <h2 className="text-lg font-semibold text-[var(--th-text)]">{title}</h2>
-      {description && (
-        <p className="mt-1 text-sm text-[var(--th-text-muted)]">{description}</p>
-      )}
-      <div className="mt-5">{children}</div>
-    </section>
-  );
-}
+import { SettingsSection } from "@/components/app/settings/SettingsSection";
+import {
+  SettingsLayout,
+  buildSettingsNavItems,
+} from "@/components/app/settings/SettingsLayout";
 
 function DetailRow({
   icon: Icon,
@@ -81,6 +65,7 @@ export default async function SettingsPage() {
 
   const plan = await getPlan(session.user.id);
   const isPro = hasProFeatures(plan);
+  const isEnterprise = isEnterprisePlan(plan);
   const mspAccess = await getMspConsoleAccess(session.user.id, session.user.email);
   const alertPrefs = await getAlertPreferences(session.user.id);
   const connections = await getConnections(session.user.id);
@@ -108,50 +93,48 @@ export default async function SettingsPage() {
     })),
   );
 
+  const navItems = buildSettingsNavItems({
+    showEnterpriseWorkspace: isEnterprise,
+  });
+
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <Link
-        href="/dashboard"
-        className="inline-flex items-center gap-2 text-sm text-slate-600 transition-colors hover:text-slate-900"
+    <SettingsLayout
+      navItems={navItems}
+      title="Settings"
+      description="Account, connected tenants, security, and preferences."
+    >
+      <SettingsSection
+        id="appearance"
+        title="Appearance"
+        description="Choose how Tenant Hawk looks on your device."
       >
-        <ArrowLeft className="h-4 w-4" /> Back to dashboard
-      </Link>
-
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-          Settings
-        </h1>
-        <p className="mt-1 text-sm text-slate-600">
-          Account, client tenants, and billing preferences.
-        </p>
-      </div>
-
-      <SettingsSection title="Appearance" description="Choose how Tenant Hawk looks on your device.">
         <ThemePicker />
       </SettingsSection>
 
-      <SettingsSection title="Account">
+      <SettingsSection id="account" title="Account">
         <DetailRow icon={User} label="Name" value={session.user.name} />
         <DetailRow icon={Mail} label="Email" value={session.user.email} />
+        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-[var(--th-border-subtle)] pt-4">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-[var(--th-text-faint)]">
+              Current plan
+            </p>
+            <div className="mt-1">
+              <PlanBadge plan={plan} />
+            </div>
+          </div>
+          <Link
+            href="/dashboard/billing"
+            className="inline-flex items-center gap-2 rounded-lg border border-[var(--th-border)] bg-[var(--th-surface)] px-3.5 py-2 text-sm font-medium text-[var(--th-text-muted)] transition-colors hover:border-[var(--th-brand-muted-border)] hover:text-[var(--th-brand-text)]"
+          >
+            <CreditCard className="h-4 w-4" />
+            Manage billing
+          </Link>
+        </div>
       </SettingsSection>
 
-      {isEnterprisePlan(plan) && (
-        <SettingsSection
-          title="Enterprise workspace"
-          description="Branded subdomain, SSO, and team invites."
-        >
-          <Link
-            href="/dashboard/settings/enterprise"
-            className="inline-flex items-center gap-2 rounded-lg border border-[var(--th-border)] bg-[var(--th-surface)] px-4 py-2.5 text-sm font-medium text-[var(--th-text)] transition-colors hover:border-[var(--th-brand-muted-border)] hover:text-[var(--th-brand-text)]"
-          >
-            <Building2 className="h-4 w-4" />
-            Configure subdomain &amp; SSO
-            <ArrowRight className="ml-auto h-4 w-4 text-slate-400" />
-          </Link>
-        </SettingsSection>
-      )}
-
       <SettingsSection
+        id="connections"
         title={connections.length > 1 ? "Connected clients" : "Connected tenant"}
         description="Read-only Microsoft 365 / Entra access for scanning. We never store credentials."
       >
@@ -182,7 +165,9 @@ export default async function SettingsPage() {
                           {conn.mode === "live" ? "Live" : "Demo"}
                         </span>
                         {isActive ? (
-                          <span className="font-medium text-[var(--th-brand-text)]">Active client</span>
+                          <span className="font-medium text-[var(--th-brand-text)]">
+                            Active client
+                          </span>
                         ) : null}
                         · connected {timeAgo(conn.created_at)}
                       </p>
@@ -262,6 +247,7 @@ export default async function SettingsPage() {
       </SettingsSection>
 
       <SettingsSection
+        id="security"
         title="Security"
         description="Password and two-factor authentication for your Tenant Hawk account."
       >
@@ -284,6 +270,7 @@ export default async function SettingsPage() {
       </SettingsSection>
 
       <SettingsSection
+        id="alerts"
         title="Monitoring & alerts"
         description="Pro includes daily automated scans. Choose when we alert you by email or Slack, Teams, or Discord webhook."
       >
@@ -297,6 +284,7 @@ export default async function SettingsPage() {
       </SettingsSection>
 
       <SettingsSection
+        id="pricing"
         title="License pricing"
         description="Contracted per-seat rates for the active client (Pro)."
       >
@@ -307,30 +295,13 @@ export default async function SettingsPage() {
         />
       </SettingsSection>
 
-      <SettingsSection title="Plan & billing">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-sm text-slate-600">Current plan</p>
-            <div className="mt-1">
-              <PlanBadge plan={plan} />
-            </div>
-          </div>
-          <Link
-            href="/dashboard/billing"
-            className="inline-flex items-center gap-2 rounded-lg border border-[var(--th-border)] bg-[var(--th-surface)] px-3.5 py-2 text-sm font-medium text-[var(--th-text-muted)] transition-colors hover:border-[var(--th-brand-muted-border)] hover:text-[var(--th-brand-text)]"
-          >
-            <CreditCard className="h-4 w-4" />
-            Manage billing
-          </Link>
-        </div>
-      </SettingsSection>
-
       <SettingsSection
+        id="danger"
         title="Danger zone"
         description="Permanently delete your account and all associated data."
       >
         <DeleteAccountButton isPro={isPro} />
       </SettingsSection>
-    </div>
+    </SettingsLayout>
   );
 }

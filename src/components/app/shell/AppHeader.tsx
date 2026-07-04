@@ -9,6 +9,7 @@ import { ThemeLogo } from "@/components/theme/ThemeLogo";
 import { PlanBadge } from "@/components/app/PlanBadge";
 import { ConnectionStatusBlip } from "@/components/app/ConnectionStatusBlip";
 import { SignOutButton } from "@/components/app/SignOutButton";
+import { getDashboardPageTitle } from "@/components/app/shell/page-titles";
 
 export function AppHeader({
   plan,
@@ -80,8 +81,8 @@ export function AppHeader({
               </Link>
             </nav>
           ) : (
-            <span className="hidden text-sm font-medium text-[var(--th-text-muted)] lg:inline">
-              Dashboard
+            <span className="hidden truncate text-sm font-medium text-[var(--th-text)] lg:inline">
+              {getDashboardPageTitle(pathname)}
             </span>
           )}
         </div>

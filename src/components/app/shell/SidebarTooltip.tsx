@@ -1,5 +1,8 @@
 "use client";
 
+import { Tooltip } from "@/components/ui/Tooltip";
+
+/** Sidebar icon tooltip — shorthand for right-placed label tooltips. */
 export function SidebarTooltip({
   label,
   enabled,
@@ -9,14 +12,9 @@ export function SidebarTooltip({
   enabled: boolean;
   children: React.ReactNode;
 }) {
-  if (!enabled) return <>{children}</>;
-
   return (
-    <div className="sidebar-tooltip-wrap group/tooltip relative">
+    <Tooltip label={label} enabled={enabled} placement="right" wrapClassName="block w-full">
       {children}
-      <span className="sidebar-tooltip" role="tooltip">
-        {label}
-      </span>
-    </div>
+    </Tooltip>
   );
 }
