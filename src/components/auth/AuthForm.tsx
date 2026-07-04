@@ -7,9 +7,9 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { signIn, signUp, signOut, VERIFY_CALLBACK } from "@/lib/auth-client";
 import type { AccountType } from "@/lib/onboarding/account-type";
 import { persistAccountIntent } from "@/lib/onboarding/account-type";
+import { authInputClass } from "@/components/auth/auth-styles";
 
-const inputClass =
-  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/25";
+const inputClass = authInputClass;
 
 export function AuthForm({
   mode,
@@ -70,6 +70,17 @@ export function AuthForm({
       return;
     }
 
+    if (
+      !isSignup &&
+      result.data &&
+      "twoFactorRedirect" in result.data &&
+      result.data.twoFactorRedirect
+    ) {
+      const next = redirect ? `?redirect=${encodeURIComponent(redirect)}` : "";
+      router.push(`/two-factor${next}`);
+      return;
+    }
+
     if (isSignup) {
       persistAccountIntent(accountType);
       const intent = encodeURIComponent(accountType);
@@ -109,7 +120,17 @@ export function AuthForm({
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm text-slate-600">Password</label>
+        <div className="mb-1.5 flex items-center justify-between">
+          <label className="block text-sm text-slate-600">Password</label>
+          {!isSignup && (
+            <Link
+              href="/forgot-password"
+              className="text-xs font-medium text-blue-600 hover:text-blue-700"
+            >
+              Forgot password?
+            </Link>
+          )}
+        </div>
         <input
           type="password"
           required

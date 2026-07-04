@@ -170,6 +170,39 @@ export function verificationOtpEmail(opts: { otp: string }): EmailTemplate {
   return { subject, html, text };
 }
 
+export function passwordResetOtpEmail(opts: { otp: string }): EmailTemplate {
+  const subject = `${opts.otp} is your Tenant Hawk password reset code`;
+  const bodyHtml = `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#475569;">
+    Enter this code on the password reset screen to choose a new password:
+  </p>
+  <p style="margin:0 0 16px;font-size:32px;font-weight:700;letter-spacing:0.25em;color:#0F172A;text-align:center;">
+    ${escapeHtml(opts.otp)}
+  </p>
+  <p style="margin:0;font-size:14px;line-height:1.6;color:#94A3B8;text-align:center;">
+    This code expires in 10 minutes.
+  </p>`;
+
+  const html = renderEmailLayout({
+    preheader: `Your password reset code is ${opts.otp}`,
+    title: "Reset your password",
+    bodyHtml,
+    minimalFooter: true,
+  });
+
+  const text = [
+    "Tenant Hawk - reset your password",
+    "",
+    `Your reset code: ${opts.otp}`,
+    "",
+    "Enter this code on the password reset screen to choose a new password.",
+    "This code expires in 10 minutes.",
+    "",
+    "If you didn't request a reset, you can ignore this message.",
+  ].join("\n");
+
+  return { subject, html, text };
+}
+
 export function verificationEmail(opts: {
   name: string;
   url: string;

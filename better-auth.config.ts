@@ -4,7 +4,9 @@
  */
 import { betterAuth } from "better-auth";
 import { admin } from "better-auth/plugins/admin";
+import { emailOTP } from "better-auth/plugins/email-otp";
 import { organization } from "better-auth/plugins/organization";
+import { twoFactor } from "better-auth/plugins/two-factor";
 import { stripe } from "@better-auth/stripe";
 import { sso } from "@better-auth/sso";
 import Stripe from "stripe";
@@ -39,6 +41,11 @@ export const auth = betterAuth({
   plugins: [
     admin(),
     organization(),
+    emailOTP({
+      otpLength: 6,
+      async sendVerificationOTP() {},
+    }),
+    twoFactor({ issuer: "Tenant Hawk" }),
     sso({
       domainVerification: getSsoDomainVerificationOptions(),
     }),

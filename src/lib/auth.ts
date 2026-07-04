@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { emailOTP } from "better-auth/plugins/email-otp";
+import { twoFactor } from "better-auth/plugins/two-factor";
 import { admin } from "better-auth/plugins/admin";
 import { organization } from "better-auth/plugins/organization";
 import { stripe } from "@better-auth/stripe";
@@ -11,7 +12,7 @@ import {
   deleteUserData,
 } from "./account/deleteUserData";
 import { sendEmail } from "./email/send";
-import { verificationOtpEmail } from "./email/templates";
+import { passwordResetOtpEmail, verificationOtpEmail } from "./email/templates";
 import {
   promotionCodeFromUpgradeMetadata,
   resolveCheckoutDiscountParams,
@@ -38,6 +39,7 @@ const authFallbackUrl =
 const cookieDomain = getEnterpriseCookieDomain();
 
 export const auth = betterAuth({
+  appName: "Tenant Hawk",
   baseURL: {
     allowedHosts: getAuthAllowedHosts(),
     fallback: authFallbackUrl,
@@ -118,13 +120,21 @@ export const auth = betterAuth({
       resendStrategy: "reuse",
       rateLimit: { window: 60, max: 5 },
       async sendVerificationOTP({ email, otp, type }) {
-        if (type !== "email-verification") return;
-        const mail = verificationOtpEmail({ otp });
+        const mail =
+          type === "forget-password"
+            ? passwordResetOtpEmail({ otp })
+            : type === "email-verification"
+              ? verificationOtpEmail({ otp })
+              : null;
+        if (!mail) return;
         const ok = await sendEmail({ to: email, ...mail });
         if (!ok) {
-          console.error("[auth] Failed to send verification OTP to", email);
+          console.error(`[auth] Failed to send ${type} OTP to`, email);
         }
       },
+    }),
+    twoFactor({
+      issuer: "Tenant Hawk",
     }),
     stripe({
       stripeClient,

@@ -1,9 +1,12 @@
 "use client";
 
 import { createAuthClient } from "better-auth/react";
-import { emailOTPClient } from "better-auth/client/plugins";
-import { adminClient } from "better-auth/client/plugins";
-import { organizationClient } from "better-auth/client/plugins";
+import {
+  adminClient,
+  emailOTPClient,
+  organizationClient,
+  twoFactorClient,
+} from "better-auth/client/plugins";
 import { ssoClient } from "@better-auth/sso/client";
 import { stripeClient } from "@better-auth/stripe/client";
 
@@ -18,6 +21,9 @@ export const authClient = createAuthClient({
   baseURL: resolveClientBaseUrl(),
   plugins: [
     emailOTPClient(),
+    twoFactorClient({
+      twoFactorPage: "/two-factor",
+    }),
     adminClient(),
     organizationClient(),
     ssoClient(),

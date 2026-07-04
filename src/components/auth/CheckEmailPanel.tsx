@@ -11,13 +11,10 @@ import {
   readAccountIntent,
 } from "@/lib/onboarding/account-type";
 
-const inputClass =
-  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/25";
+import { authInputClass, authOtpClass, RESEND_COOLDOWN_SEC } from "@/components/auth/auth-styles";
 
-const otpClass =
-  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-center text-2xl font-semibold tracking-[0.35em] text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/25";
-
-const RESEND_COOLDOWN_SEC = 60;
+const inputClass = authInputClass;
+const otpClass = authOtpClass;
 
 export function CheckEmailPanel({
   email: initialEmail,

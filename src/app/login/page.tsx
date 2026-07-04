@@ -8,11 +8,11 @@ import { parseHostContext } from "@/lib/platform/admin";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; redirect?: string }>;
+  searchParams: Promise<{ error?: string; redirect?: string; reset?: string }>;
 }) {
   const host = (await headers()).get("host");
   const ctx = parseHostContext(host);
-  const { error, redirect } = await searchParams;
+  const { error, redirect, reset } = await searchParams;
 
   if (ctx.kind === "platform-admin") {
     return (
@@ -65,6 +65,11 @@ export default async function LoginPage({
       title="Welcome back"
       subtitle="Sign in to your Tenant Hawk dashboard."
     >
+      {reset === "1" && (
+        <p className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-center text-sm text-green-800">
+          Password updated. Sign in with your new password.
+        </p>
+      )}
       <AuthForm mode="login" redirectTo={redirect} defaultRedirect="/dashboard" />
     </AuthShell>
   );

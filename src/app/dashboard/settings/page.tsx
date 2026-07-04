@@ -25,6 +25,7 @@ import { isLiveConfigured } from "@/lib/scan/graph";
 import { ThemePicker } from "@/components/theme/ThemePicker";
 import { timeAgo } from "@/lib/time";
 import { LicensePricingForm } from "@/components/app/LicensePricingForm";
+import { TwoFactorSettings } from "@/components/auth/TwoFactorSettings";
 import {
   COMMON_LICENSE_PRICING_FIELDS,
   parseLicensePricing,
@@ -93,6 +94,9 @@ export default async function SettingsPage() {
       code,
       microsoftListPriceForSku(code),
     ]),
+  );
+  const twoFactorEnabled = Boolean(
+    (session.user as { twoFactorEnabled?: boolean }).twoFactorEnabled,
   );
 
   const connectionRows = await Promise.all(
@@ -254,6 +258,13 @@ export default async function SettingsPage() {
             </Link>
           </div>
         )}
+      </SettingsSection>
+
+      <SettingsSection
+        title="Security"
+        description="Protect your Tenant Hawk account with two-factor authentication."
+      >
+        <TwoFactorSettings enabled={twoFactorEnabled} />
       </SettingsSection>
 
       <SettingsSection
