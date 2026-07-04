@@ -243,6 +243,74 @@ html[data-theme="hawk"] .light-grid {
   color: var(--th-text);
 }
 
+html[data-theme="light"],
+html:not([data-theme]),
+html[data-theme="dark"],
+html[data-theme="hawk"] {
+  --th-sidebar-width: 15rem;
+  --th-sidebar-collapsed-width: 4rem;
+  --th-sidebar-bg: var(--th-surface);
+  --th-sidebar-border: var(--th-border);
+}
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--th-bg-muted);
+  color: var(--th-text);
+}
+
+.app-sidebar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  flex-shrink: 0;
+  width: var(--th-sidebar-width);
+  height: 100vh;
+  border-right: 1px solid var(--th-sidebar-border);
+  background-color: var(--th-sidebar-bg);
+  transition: width 0.2s ease;
+}
+
+.app-sidebar[data-collapsed="true"] {
+  width: var(--th-sidebar-collapsed-width);
+}
+
+.app-sidebar-group-label {
+  color: var(--th-text-faint);
+}
+
+.app-main-column {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.app-main {
+  min-width: 0;
+  flex: 1;
+  overflow-x: hidden;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .app-main {
+    padding: 1.75rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-main {
+    padding: 2rem;
+  }
+}
+
+.app-mobile-drawer {
+  background-color: var(--th-sidebar-bg);
+  color: var(--th-text);
+}
+
 .app-header {
   border-bottom: 1px solid var(--th-border);
   background-color: var(--th-header-bg);
