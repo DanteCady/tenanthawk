@@ -55,13 +55,13 @@ r/shamelessplug, r/promote, r/newproducts, r/shareyourstartup. Easy to post, thi
 
 | Day | Action | Copy section below |
 |-----|--------|-------------------|
-| Thu | r/micro_saas standalone | [r/micro_saas](#r-micro_saas--standalone-launch) |
+| ~~Thu~~ **DONE** | r/micro_saas standalone | [Live post](https://www.reddit.com/r/micro_saas/comments/1umiq7t/solo_founder_launch_m365_tenant_health_scanner/) — do not repost |
+| **NEXT** | r/SideProject standalone | [Copy](#r-sideproject---standalone-launch) → paste body at https://www.reddit.com/r/SideProject/submit |
 | Sat | r/SaaS Share Your SaaS Saturday thread | [r/SaaS thread](#r-saas--share-your-saas-saturday-thread) |
 | Sun | Comment on 3 r/msp threads (no links) | [r/msp karma](#r-msp---weekly-promo-thread-rule-3-compliant) |
 | Mon | r/Entrepreneur Share Your Business thread | [r/Entrepreneur thread](#r-entrepreneur--share-your-business-monday) |
-| Wed | r/SideProject standalone | [r/SideProject](#r-sideproject--standalone-launch) |
+| **NEXT (ICP)** | r/msp Weekly Promo comment | https://www.reddit.com/r/msp/comments/1uihsl0/weekly_promo_and_webinar_thread/ |
 | Fri | r/AlphaAndBetaUsers or r/RoastMyStartup | [Feedback posts](#r-alphaandbetausers--feedback-request) |
-| Ongoing | r/msp Weekly Promo when thread is live | [r/msp promo comment](#comment-for-the-weekly-promo-thread) |
 
 ### Universal posting rules
 
@@ -198,7 +198,15 @@ On a thread about tenant security baseline:
 
 ## r/micro_saas - standalone launch
 
-**URL:** https://www.reddit.com/r/micro_saas/submit
+**Status: POSTED** (2026-07-03). Do not submit again.
+
+**Live URL:** https://www.reddit.com/r/micro_saas/comments/1umiq7t/solo_founder_launch_m365_tenant_health_scanner/
+
+**Author:** u/BugHorror2077 · **Title:** Solo founder launch: M365 tenant health scanner, first test found $1,800/mo in unused licenses
+
+Optional: edit post body to add updated beta stats ($3k/mo, 3 tenants) instead of creating a second post.
+
+**URL (new posts):** https://www.reddit.com/r/micro_saas/submit
 
 **Title:** Solo founder launch: M365 tenant health scanner, beta found ~$3k/mo license waste across 3 tenants
 
