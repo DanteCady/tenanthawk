@@ -29,3 +29,27 @@ export async function getFindingForUser(findingId: string, userId: string) {
 
   return finding;
 }
+
+/** Finding plus owning connection (for preview / plan build). */
+export async function getFindingWithConnection(findingId: string, userId: string) {
+  const finding = await getFindingForUser(findingId, userId);
+  if (!finding) return null;
+
+  const scan = await db
+    .selectFrom("scan")
+    .select(["connection_id"])
+    .where("id", "=", finding.scan_id)
+    .executeTakeFirst();
+
+  if (!scan) return null;
+
+  const connection = await db
+    .selectFrom("connection")
+    .selectAll()
+    .where("id", "=", scan.connection_id)
+    .executeTakeFirst();
+
+  if (!connection || connection.user_id !== userId) return null;
+
+  return { finding, connection };
+}

@@ -6,7 +6,7 @@ import { timeAgo } from "@/lib/time";
 const SEV_RANK = { high: 0, medium: 1, low: 2 } as const;
 
 export default async function FindingsPage() {
-  const { scan, summary, isPro, dtos, tenantLabel } = await getDashboardSnapshot();
+  const { scan, summary, isPro, dtos, tenantLabel, conn } = await getDashboardSnapshot();
   const annualAvailable = isAnnualBillingConfigured();
 
   const lockedPreview = {
@@ -28,7 +28,11 @@ export default async function FindingsPage() {
       </div>
 
       {isPro ? (
-        <FindingsTable findings={dtos} />
+        <FindingsTable
+          findings={dtos}
+          isPro={isPro}
+          connectionMode={conn.mode === "demo" ? "demo" : "live"}
+        />
       ) : (
         <FindingsTable lockedPreview={lockedPreview} annualAvailable={annualAvailable} />
       )}

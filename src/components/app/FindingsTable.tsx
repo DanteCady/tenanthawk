@@ -10,6 +10,7 @@ import { OnboardingUpgradePanel } from "@/components/onboarding/OnboardingUpgrad
 import { FindingActions } from "./FindingActions";
 import { FindingGuideLink } from "./FindingGuideLink";
 import { RemediationPanel } from "./RemediationPanel";
+import { FindingScriptIndicator } from "./FindingScriptIndicator";
 import { isExpiryCheckId } from "@/lib/scan/expiry";
 import { formatUsd } from "@/lib/format";
 import {
@@ -171,11 +172,15 @@ export function FindingsTable({
   findings,
   lockedPreview,
   annualAvailable = false,
+  isPro = true,
+  connectionMode = "live",
 }: {
   findings?: FindingDTO[];
   /** Free tier: summary + title previews without remediation details. */
   lockedPreview?: LockedFindingsPreview;
   annualAvailable?: boolean;
+  isPro?: boolean;
+  connectionMode?: "live" | "demo";
 }) {
   const router = useRouter();
   const [filter, setFilter] = useState<"all" | Severity>("all");
@@ -244,6 +249,7 @@ export function FindingsTable({
                 <CategoryIconChip category={f.category} size="sm" />
                 <span className="flex min-w-0 flex-1 items-center gap-2">
                   <span className="truncate text-sm text-slate-900">{f.title}</span>
+                  <FindingScriptIndicator checkId={f.checkId} isPro={isPro} />
                   {isExpiryCheckId(f.checkId) && f.impact?.daysUntil != null && (
                     <span className="shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-[0.65rem] font-medium text-amber-800">
                       {f.impact.daysUntil <= 0 ? "Expired" : `${f.impact.daysUntil}d`}
@@ -294,6 +300,8 @@ export function FindingsTable({
                     onEnriched={(data) =>
                       setEnrichedCache((prev) => ({ ...prev, [f.id]: data }))
                     }
+                    isPro={isPro}
+                    connectionMode={connectionMode}
                   />
                   <FindingActions
                     checkId={f.checkId}

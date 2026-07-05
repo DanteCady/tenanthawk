@@ -3,6 +3,7 @@
 export const PRO_PLAN_FEATURES = [
   "Full findings with severity & dollar impact",
   "AI-guided remediation with Microsoft doc links",
+  "Remediation preview + script export (PS 7, PS 5.1, Azure Runbook)",
   "Category score trends & compliance mapping (CIS / NIST)",
   "Shareable read-only report links for leadership",
   "Daily scans + drift & expiry alerts",

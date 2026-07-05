@@ -5,6 +5,7 @@ import { ExternalLink, Loader2, Sparkles, Wrench } from "lucide-react";
 import type { RemediationEnriched } from "@/lib/remediation/types";
 import { isAiRemediation } from "@/lib/remediation/display";
 import { RemediationQuickActions } from "./RemediationQuickActions";
+import { RemediationPlanPanel } from "./RemediationPlanPanel";
 
 function TemplateRemediation({ text, error }: { text: string; error?: string | null }) {
   return (
@@ -24,12 +25,16 @@ export function RemediationPanel({
   templateRemediation,
   initialEnriched,
   onEnriched,
+  isPro = true,
+  connectionMode = "live",
 }: {
   findingId: string;
   checkId?: string;
   templateRemediation: string;
   initialEnriched?: RemediationEnriched | null;
   onEnriched?: (enriched: RemediationEnriched) => void;
+  isPro?: boolean;
+  connectionMode?: "live" | "demo";
 }) {
   const [mounted, setMounted] = useState(false);
   const [enriched, setEnriched] = useState<RemediationEnriched | null>(
@@ -86,10 +91,21 @@ export function RemediationPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fetch once per finding when no cache
   }, [findingId, initialEnriched, mounted]);
 
+  const planSection =
+    checkId != null ? (
+      <RemediationPlanPanel
+        findingId={findingId}
+        checkId={checkId}
+        isPro={isPro}
+        connectionMode={connectionMode}
+      />
+    ) : null;
+
   if (!mounted) {
     return (
       <div className="space-y-3">
         {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+        {planSection}
         <TemplateRemediation text={templateRemediation} />
       </div>
     );
@@ -99,6 +115,7 @@ export function RemediationPanel({
     return (
       <div className="space-y-3">
         {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+        {planSection}
         <div className="remediation-loading">
           <Loader2 className="h-4 w-4 animate-spin text-[var(--th-brand-text)]" />
           Generating AI-guided fix steps…
@@ -111,6 +128,7 @@ export function RemediationPanel({
     return (
       <div className="space-y-3">
         {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+        {planSection}
         <TemplateRemediation text={templateRemediation} error={error} />
       </div>
     );
@@ -120,6 +138,7 @@ export function RemediationPanel({
     return (
       <div className="space-y-3">
         {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+        {planSection}
         <TemplateRemediation text={enriched.steps[0] ?? templateRemediation} />
       </div>
     );
@@ -128,6 +147,7 @@ export function RemediationPanel({
   return (
     <div className="space-y-3">
       {checkId ? <RemediationQuickActions checkId={checkId} /> : null}
+      {planSection}
       <div className="remediation-ai space-y-3">
       <div className="remediation-ai-label flex items-center gap-2">
         <Sparkles className="h-3.5 w-3.5" />
