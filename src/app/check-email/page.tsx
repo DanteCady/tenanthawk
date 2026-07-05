@@ -4,6 +4,14 @@ import { CheckEmailPanel } from "@/components/auth/CheckEmailPanel";
 import { getSession } from "@/lib/session";
 import { getUserAccountType } from "@/lib/onboarding/user-account";
 import { isAccountType } from "@/lib/onboarding/account-type";
+import { buildPageMetadata } from "@/lib/seo/site";
+
+export const metadata = buildPageMetadata({
+  title: "Check your email",
+  description: "Verify your Tenant Hawk account email to continue.",
+  path: "/check-email",
+  noIndex: true,
+});
 
 export default async function CheckEmailPage({
   searchParams,

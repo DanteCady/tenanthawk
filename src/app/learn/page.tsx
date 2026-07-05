@@ -11,10 +11,28 @@ import {
 } from "@/lib/content/categories";
 import { getAllGuides } from "@/lib/content/loader";
 
+const RESOURCE_HUB = [
+  {
+    href: "/glossary",
+    title: "Glossary",
+    description: "M365 and Entra ID terms with short, plain-language definitions.",
+  },
+  {
+    href: "/compare",
+    title: "Compare",
+    description: "Tenant Hawk vs Secure Score, Admin Center, and self-hosted options.",
+  },
+  {
+    href: "/tools/license-savings-calculator",
+    title: "License calculator",
+    description: "Estimate recoverable Microsoft 365 spend, then scan for real numbers.",
+  },
+] as const;
+
 export const metadata = buildPageMetadata({
-  title: "M365 cleanup & tenant health guides for admins",
+  title: "M365 Admin Guides — Security, Licensing & Tenant Hygiene",
   description:
-    "Free guides for Microsoft 365 cleanup: inactive users, unused licenses, tenant hygiene, security misconfigurations, expiring secrets, and audit prep. Then automate the checks with a free Tenant Hawk scan.",
+    "Free Microsoft 365 guides for IT admins and MSPs: inactive users, unused licenses, Conditional Access, legacy auth, tenant hygiene, and audit prep. Then run the same checks with a free Tenant Hawk scan.",
   path: "/learn",
 });
 
@@ -42,6 +60,19 @@ export default function LearnIndexPage() {
               </Link>
               .
             </p>
+          </div>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-3">
+            {RESOURCE_HUB.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-2xl border border-blue-100 bg-blue-50/50 px-5 py-4 transition-colors hover:border-blue-200 hover:bg-blue-50"
+              >
+                <h2 className="font-semibold text-slate-900">{item.title}</h2>
+                <p className="mt-1 text-sm text-slate-600">{item.description}</p>
+              </Link>
+            ))}
           </div>
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

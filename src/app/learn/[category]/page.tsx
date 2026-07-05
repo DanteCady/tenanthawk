@@ -8,6 +8,7 @@ import {
   CONTENT_CATEGORIES,
   CONTENT_CATEGORY_DESCRIPTION,
   CONTENT_CATEGORY_LABEL,
+  CONTENT_CATEGORY_SEO,
 } from "@/lib/content/categories";
 import type { ContentCategory } from "@/lib/content/types";
 import { getGuidesByCategory } from "@/lib/content/loader";
@@ -25,10 +26,11 @@ export async function generateMetadata({ params }: Props) {
   const { category } = await params;
   if (!CONTENT_CATEGORIES.includes(category as ContentCategory)) return {};
 
-  const label = CONTENT_CATEGORY_LABEL[category as ContentCategory];
+  const cat = category as Exclude<ContentCategory, "overview">;
+  const seo = CONTENT_CATEGORY_SEO[cat];
   return buildPageMetadata({
-    title: `${label} guides for Microsoft 365 tenants`,
-    description: CONTENT_CATEGORY_DESCRIPTION[category as ContentCategory],
+    title: seo.title,
+    description: seo.description,
     path: `/learn/${category}`,
   });
 }

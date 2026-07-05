@@ -7,9 +7,9 @@ import { buildPageMetadata } from "@/lib/seo/site";
 import { WHY_FAQ } from "@/lib/seo/why-faq";
 
 export const metadata = buildPageMetadata({
-  title: "Why Tenant Hawk vs Secure Score, Admin Center & Defender",
+  title: "Why Tenant Hawk — Read-Only M365 Health Scans for IT Teams & MSPs",
   description:
-    "Compare Tenant Hawk to Microsoft Secure Score, M365 Admin Center, and Defender. One tenant health score, license waste ranked by dollars, expiring secrets, and read-only scans in minutes.",
+    "Compare Tenant Hawk to Microsoft Secure Score, M365 Admin Center, and Defender. One tenant health score, license waste ranked by dollars, expiring secrets, and read-only scans in minutes — no agents required.",
   path: "/why",
 });
 

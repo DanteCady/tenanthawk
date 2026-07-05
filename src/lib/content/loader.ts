@@ -90,6 +90,13 @@ export function getGuidesByCategory(category: ContentCategory): LoadedContent[] 
   return getAllGuides().filter((g) => g.meta.category === category);
 }
 
+/** Parse frontmatter ISO dates for sitemaps; falls back to now when missing/invalid. */
+export function parseContentDate(iso: string | undefined): Date {
+  if (!iso?.trim()) return new Date();
+  const parsed = new Date(iso);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+}
+
 export const GUIDE_BY_SLUG: Record<string, LoadedContent> = Object.fromEntries(
   getAllGuideSlugs()
     .map((slug) => {

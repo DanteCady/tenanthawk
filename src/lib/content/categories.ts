@@ -49,3 +49,40 @@ export const CONTENT_CATEGORIES: ContentCategory[] = [
   "governance",
   "hygiene",
 ];
+
+/** Search-optimized titles and descriptions for category hub pages. */
+export const CONTENT_CATEGORY_SEO: Record<
+  Exclude<ContentCategory, "overview">,
+  { title: string; description: string }
+> = {
+  security: {
+    title: "M365 Security Guides — Conditional Access, MFA & Legacy Auth",
+    description:
+      "Fix Conditional Access gaps, MFA holes, legacy authentication, and guest access issues in Microsoft 365. Step-by-step guides for IT admins, then automate checks with a free Tenant Hawk scan.",
+  },
+  identity: {
+    title: "Entra ID & M365 Identity Guides for IT Admins",
+    description:
+      "Audit admin roles, MFA registration, inactive users, and guest access across Microsoft 365 and Entra ID. Practical guides with manual steps and automated scan options.",
+  },
+  cost: {
+    title: "M365 License Waste & Cost Recovery Guides",
+    description:
+      "Find unused licenses, disabled users still licensed, and never-signed-in accounts in Microsoft 365. Reclaim spend with step-by-step admin guides and dollar-ranked scan results.",
+  },
+  reliability: {
+    title: "M365 Reliability Guides — Expiring Secrets, Certs & Intune Drift",
+    description:
+      "Catch expiring app secrets, SSO certificates, and Intune sync issues before they cause outages. Reliability checklists for Microsoft 365 admins and MSPs.",
+  },
+  governance: {
+    title: "M365 Audit Prep & Tenant Governance Guides",
+    description:
+      "Prepare your Microsoft 365 tenant for audits: security evidence, licensing controls, access reviews, and health checklists IT teams use before SOC 2 and customer reviews.",
+  },
+  hygiene: {
+    title: "M365 Tenant Hygiene Guides — Cleanup & Sharing Controls",
+    description:
+      "Clean up inactive users, empty groups, SharePoint external sharing, and Intune non-compliance in Microsoft 365. Hygiene guides for admins who need a tighter tenant.",
+  },
+};

@@ -1,36 +1,76 @@
 import type { MetadataRoute } from "next";
 import { CONTENT_CATEGORIES } from "@/lib/content/categories";
-import { getAllGuideSlugs } from "@/lib/content/loader";
+import { COMPARISON_PAGES } from "@/lib/content/comparisons/data";
+import { getAllGlossarySlugs } from "@/lib/content/glossary/loader";
+import { getAllGuides, getGuidesByCategory, parseContentDate } from "@/lib/content/loader";
 import { getSiteUrl } from "@/lib/guides/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = getSiteUrl();
-  const now = new Date();
+  const guides = getAllGuides();
+  const siteUpdated = guides.reduce(
+    (latest, g) => {
+      const d = parseContentDate(g.meta.updatedAt || g.meta.publishedAt);
+      return d > latest ? d : latest;
+    },
+    parseContentDate(undefined),
+  );
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${base}/learn`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/why`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${base}/signup`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${base}/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: base, lastModified: siteUpdated, changeFrequency: "weekly", priority: 1 },
+    { url: `${base}/learn`, lastModified: siteUpdated, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/glossary`, lastModified: siteUpdated, changeFrequency: "weekly", priority: 0.88 },
+    { url: `${base}/compare`, lastModified: siteUpdated, changeFrequency: "monthly", priority: 0.85 },
+    {
+      url: `${base}/tools/license-savings-calculator`,
+      lastModified: siteUpdated,
+      changeFrequency: "monthly",
+      priority: 0.82,
+    },
+    { url: `${base}/why`, lastModified: siteUpdated, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${base}/privacy`, lastModified: siteUpdated, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/terms`, lastModified: siteUpdated, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const categoryRoutes: MetadataRoute.Sitemap = CONTENT_CATEGORIES.filter(
     (c) => c !== "overview",
-  ).map((category) => ({
-    url: `${base}/learn/${category}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.75,
-  }));
+  ).map((category) => {
+    const inCategory = getGuidesByCategory(category);
+    const lastModified = inCategory.reduce(
+      (latest, g) => {
+        const d = parseContentDate(g.meta.updatedAt || g.meta.publishedAt);
+        return d > latest ? d : latest;
+      },
+      siteUpdated,
+    );
+    return {
+      url: `${base}/learn/${category}`,
+      lastModified,
+      changeFrequency: "weekly" as const,
+      priority: 0.75,
+    };
+  });
 
-  const guideRoutes: MetadataRoute.Sitemap = getAllGuideSlugs().map((slug) => ({
-    url: `${base}/learn/guides/${slug}`,
-    lastModified: now,
+  const guideRoutes: MetadataRoute.Sitemap = guides.map((guide) => ({
+    url: `${base}/learn/guides/${guide.meta.slug}`,
+    lastModified: parseContentDate(guide.meta.updatedAt || guide.meta.publishedAt),
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...categoryRoutes, ...guideRoutes];
+  const glossaryRoutes: MetadataRoute.Sitemap = getAllGlossarySlugs().map((slug) => ({
+    url: `${base}/glossary/${slug}`,
+    lastModified: siteUpdated,
+    changeFrequency: "monthly" as const,
+    priority: 0.65,
+  }));
+
+  const compareRoutes: MetadataRoute.Sitemap = COMPARISON_PAGES.map((page) => ({
+    url: `${base}/compare/${page.slug}`,
+    lastModified: siteUpdated,
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }));
+
+  return [...staticRoutes, ...categoryRoutes, ...guideRoutes, ...glossaryRoutes, ...compareRoutes];
 }

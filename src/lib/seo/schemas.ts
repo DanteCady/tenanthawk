@@ -125,3 +125,27 @@ export function breadcrumbListSchema(
     })),
   };
 }
+
+export function definedTermSchema({
+  term,
+  definition,
+  slug,
+}: {
+  term: string;
+  definition: string;
+  slug: string;
+}) {
+  const base = getSiteUrl();
+  return {
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    name: term,
+    description: definition,
+    url: `${base}/glossary/${slug}`,
+    inDefinedTermSet: {
+      "@type": "DefinedTermSet",
+      name: `${SITE_NAME} M365 Glossary`,
+      url: `${base}/glossary`,
+    },
+  };
+}

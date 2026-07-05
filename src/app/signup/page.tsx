@@ -7,6 +7,7 @@ export const metadata = buildPageMetadata({
   description:
     "Create a free Tenant Hawk account and run a read-only Microsoft 365 cleanup scan. See inactive users, unused licenses, security gaps, and hygiene issues in minutes.",
   path: "/signup",
+  noIndex: true,
 });
 
 export default async function SignupPage({
