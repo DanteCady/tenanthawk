@@ -67,13 +67,13 @@ export default async function ReportsPage() {
 
       <ShareReportPanel />
 
-      <div className="surface-card p-5">
+      <div className="surface-card p-5 sm:p-6">
         <h2 className="text-sm font-semibold text-slate-900">Category score trends</h2>
         <p className="mt-0.5 text-xs text-slate-500">
-          Security, cost, reliability, and hygiene over your last scans.
+          Scores and changes across your recent scans.
         </p>
-        <div className="mt-4">
-          <CategoryTrendChart points={categoryTrend} height={220} />
+        <div className="mt-5">
+          <CategoryTrendChart points={categoryTrend} />
         </div>
       </div>
 
