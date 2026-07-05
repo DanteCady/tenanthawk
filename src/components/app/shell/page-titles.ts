@@ -3,6 +3,7 @@ const PAGE_TITLES: Array<{ prefix: string; title: string; exact?: boolean }> = [
   { prefix: "/dashboard/settings", title: "Settings", exact: true },
   { prefix: "/dashboard/billing", title: "Billing", exact: true },
   { prefix: "/dashboard/findings", title: "Findings", exact: true },
+  { prefix: "/dashboard/journal", title: "Journal", exact: true },
   { prefix: "/dashboard/roadmap", title: "Roadmap", exact: true },
   { prefix: "/dashboard/compliance", title: "Compliance", exact: true },
   { prefix: "/dashboard/reports", title: "Reports", exact: true },

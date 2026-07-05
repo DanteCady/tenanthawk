@@ -108,3 +108,40 @@ CREATE INDEX IF NOT EXISTS report_share_user_id_idx ON report_share (user_id);
 
 -- Pro: per-tenant contracted license rates for recoverable spend estimates.
 ALTER TABLE connection ADD COLUMN IF NOT EXISTS license_pricing jsonb;
+
+-- Journal (Flight Recorder): current config state per tracked object.
+-- One row per (connection, object_type, object_id); payload is the latest raw Graph object.
+CREATE TABLE IF NOT EXISTS config_snapshot (
+  id            text PRIMARY KEY,
+  connection_id text NOT NULL REFERENCES connection(id) ON DELETE CASCADE,
+  object_type   text NOT NULL,
+  object_id     text NOT NULL,
+  display_name  text,
+  payload       jsonb NOT NULL,
+  content_hash  text NOT NULL,
+  captured_at   timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (connection_id, object_type, object_id)
+);
+
+CREATE INDEX IF NOT EXISTS config_snapshot_connection_idx
+  ON config_snapshot (connection_id, object_type);
+
+-- Journal: immutable change entries (the timeline). Full before/after payloads
+-- are kept so a future "restore" can rebuild any prior state.
+CREATE TABLE IF NOT EXISTS config_change (
+  id             text PRIMARY KEY,
+  connection_id  text NOT NULL REFERENCES connection(id) ON DELETE CASCADE,
+  object_type    text NOT NULL,
+  object_id      text NOT NULL,
+  display_name   text,
+  change_type    text NOT NULL, -- created | modified | deleted
+  diff           jsonb,         -- [{ path, before, after }] for modified
+  before_payload jsonb,
+  after_payload  jsonb,
+  actor          text,          -- UPN/app from Entra audit log when resolvable
+  actor_source   text,          -- 'audit_log' | 'demo'
+  detected_at    timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS config_change_connection_idx
+  ON config_change (connection_id, detected_at DESC);

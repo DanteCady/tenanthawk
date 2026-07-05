@@ -4,6 +4,7 @@ import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
 import { invalidateConnectionHealth } from "@/lib/connect/health";
 import { fireMarketingWebhook } from "@/lib/marketing/webhook";
 import { parseLicensePricing } from "@/lib/licenses/pricing-overrides";
+import { captureJournal } from "@/lib/journal/capture";
 import { checks } from "./checks";
 import { getDemoFindings } from "./demo";
 import { getAppToken, isLiveConfigured } from "./graph";
@@ -47,11 +48,13 @@ export async function runScan(
 
   try {
     let drafts: FindingDraft[];
+    let graphToken: string | null = null;
 
     if (conn.mode === "demo" || !isLiveConfigured() || !conn.tenant_id) {
       drafts = getDemoFindings();
     } else {
       const token = await getAppToken(conn.tenant_id);
+      graphToken = token;
       const licensePricing = parseLicensePricing(conn.license_pricing);
       const ctx = { tenantId: conn.tenant_id, token, licensePricing };
       drafts = [];
@@ -96,6 +99,19 @@ export async function runScan(
       })
       .where("id", "=", scanId)
       .execute();
+
+    // Journal capture rides along with every scan. It must never fail the
+    // scan itself, and it runs on all plans - history can't be backfilled,
+    // so a user who upgrades later still has their timeline.
+    try {
+      await captureJournal({
+        connectionId,
+        mode: graphToken ? "live" : "demo",
+        token: graphToken ?? undefined,
+      });
+    } catch (err) {
+      console.error("[scan] journal capture failed", err);
+    }
 
     await fireMarketingWebhook({
       scanId,

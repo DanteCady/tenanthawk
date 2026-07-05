@@ -4,6 +4,7 @@ import {
   ClipboardList,
   CreditCard,
   FileOutput,
+  History,
   LayoutDashboard,
   Route,
   Settings,
@@ -36,6 +37,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Security",
     items: [
       { href: "/dashboard/findings", label: "Findings", icon: ClipboardList },
+      { href: "/dashboard/journal", label: "Journal", icon: History, pro: true },
       { href: "/dashboard/roadmap", label: "Roadmap", icon: Route, pro: true },
       { href: "/dashboard/compliance", label: "Compliance", icon: Shield, pro: true },
       { href: "/dashboard/reports", label: "Reports", icon: FileOutput, pro: true },

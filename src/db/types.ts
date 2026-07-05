@@ -134,6 +134,42 @@ export interface ReportShareTable {
   created_at: CreatedAt;
 }
 
+// Journal (Flight Recorder): latest config state per tracked object.
+export type ConfigChangeType = "created" | "modified" | "deleted";
+
+export type ConfigFieldDiff = {
+  path: string;
+  before: unknown;
+  after: unknown;
+};
+
+export interface ConfigSnapshotTable {
+  id: string;
+  connection_id: string;
+  object_type: string;
+  object_id: string;
+  display_name: Nullable<string>;
+  payload: Json<unknown>;
+  content_hash: string;
+  captured_at: ColumnType<Date, string | undefined, string>;
+}
+
+// Journal: immutable change entries (the timeline).
+export interface ConfigChangeTable {
+  id: string;
+  connection_id: string;
+  object_type: string;
+  object_id: string;
+  display_name: Nullable<string>;
+  change_type: ConfigChangeType;
+  diff: Json<ConfigFieldDiff[] | null>;
+  before_payload: Json<unknown>;
+  after_payload: Json<unknown>;
+  actor: Nullable<string>;
+  actor_source: Nullable<string>;
+  detected_at: CreatedAt;
+}
+
 // Read-only view of Better Auth's `user` table.
 export interface UserTable {
   id: string;
@@ -150,5 +186,7 @@ export interface Database {
   alert_preferences: AlertPreferencesTable;
   alert_webhook: AlertWebhookTable;
   report_share: ReportShareTable;
+  config_snapshot: ConfigSnapshotTable;
+  config_change: ConfigChangeTable;
   user: UserTable;
 }
