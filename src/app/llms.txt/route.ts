@@ -23,6 +23,32 @@ export function GET() {
     mdLink("Homepage", base, "Marketing site and product overview"),
     mdLink("Start free scan", `${base}/signup`, "Connect a tenant with read only admin consent"),
     mdLink("Why Tenant Hawk", `${base}/why`, "Problem framing and differentiation"),
+    mdLink("Features overview", `${base}/features`, "Every Tenant Hawk feature in one place"),
+    mdLink(
+      "The Journal",
+      `${base}/features/journal`,
+      "M365 config change tracking with before/after diffs and actor attribution",
+    ),
+    mdLink(
+      "Expiry monitoring",
+      `${base}/features/expiry-monitoring`,
+      "Free app secret, certificate, and domain expiry alerts for M365",
+    ),
+    mdLink(
+      "License waste recovery",
+      `${base}/features/license-waste`,
+      "Find unused and oversized Microsoft 365 licenses with dollar impact",
+    ),
+    mdLink(
+      "Security assessment",
+      `${base}/features/security-assessment`,
+      "Read-only M365 security assessment - MFA gaps, Conditional Access, legacy auth",
+    ),
+    mdLink(
+      "For MSPs",
+      `${base}/msp`,
+      "Multi-tenant portfolio console, QBR scorecards, flat-rate pricing",
+    ),
     "",
     "## Learn",
     "",

@@ -8,6 +8,9 @@ const footerLinkClass =
   "text-[var(--th-text-faint)] hover:text-[var(--th-text-muted)]";
 
 const RESOURCE_LINKS = [
+  { href: "/features", label: "Features" },
+  { href: "/features/journal", label: "The Journal" },
+  { href: "/msp", label: "For MSPs" },
   { href: "/learn", label: "Guides" },
   { href: "/glossary", label: "Glossary" },
   { href: "/compare", label: "Compare" },

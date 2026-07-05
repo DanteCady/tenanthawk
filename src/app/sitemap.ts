@@ -28,6 +28,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.82,
     },
     { url: `${base}/why`, lastModified: siteUpdated, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${base}/features`, lastModified: siteUpdated, changeFrequency: "monthly", priority: 0.88 },
+    {
+      url: `${base}/features/journal`,
+      lastModified: siteUpdated,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/features/expiry-monitoring`,
+      lastModified: siteUpdated,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/features/license-waste`,
+      lastModified: siteUpdated,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/features/security-assessment`,
+      lastModified: siteUpdated,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    { url: `${base}/msp`, lastModified: siteUpdated, changeFrequency: "monthly", priority: 0.85 },
     { url: `${base}/privacy`, lastModified: siteUpdated, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/terms`, lastModified: siteUpdated, changeFrequency: "yearly", priority: 0.3 },
   ];
