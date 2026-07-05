@@ -8,9 +8,9 @@ import { ThemeLogo } from "./theme/ThemeLogo";
 
 const links = [
   { href: "/why", label: "Why Tenant Hawk" },
-  { href: "/#categories", label: "What it scans" },
+  { href: "/features", label: "Features" },
   { href: "/#how", label: "How it works" },
-  { href: "/#msp", label: "For MSPs" },
+  { href: "/msp", label: "For MSPs" },
   { href: "/#pricing", label: "Pricing" },
   { href: "/learn", label: "Learn" },
 ] as const;

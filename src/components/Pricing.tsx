@@ -42,6 +42,7 @@ const tiers = [
     blurb: "Full visibility for internal IT teams — cost recovery, drift alerts, and executive-ready reports.",
     features: [
       "All four scan categories",
+      "Config Journal - every change with who / what / when diffs",
       "Daily scans + drift alerts",
       "Cost-savings reporting",
       "Category trends & CIS / NIST mapping",
