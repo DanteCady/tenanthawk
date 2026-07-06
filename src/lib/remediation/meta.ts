@@ -131,6 +131,36 @@ export const CHECK_REMEDIATION_META: Record<string, CheckRemediationMeta> = {
     adminSurface: "SharePoint",
     effortLabel: "~1 hour",
   },
+  "hygiene.sharepoint-external-sites": {
+    effort: "moderate",
+    adminSurface: "SharePoint",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.sharepoint-stale-sites": {
+    effort: "moderate",
+    adminSurface: "SharePoint",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.sharepoint-high-storage": {
+    effort: "moderate",
+    adminSurface: "SharePoint",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.sharepoint-empty-sites": {
+    effort: "quick",
+    adminSurface: "SharePoint",
+    effortLabel: "~15 min",
+  },
+  "hygiene.sharepoint-ownerless-sites": {
+    effort: "quick",
+    adminSurface: "SharePoint",
+    effortLabel: "~15 min",
+  },
+  "hygiene.sharepoint-inactive-files": {
+    effort: "moderate",
+    adminSurface: "SharePoint",
+    effortLabel: "~1 hour",
+  },
 };
 
 export function getCheckRemediationMeta(checkId: string): CheckRemediationMeta {

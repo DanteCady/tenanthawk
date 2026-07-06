@@ -18,7 +18,15 @@ import {
   legacyAuthentication,
 } from "./security";
 import { emptyGroups } from "./hygiene";
-import { sharePointSharing } from "./sharepoint";
+import {
+  sharePointSharing,
+  sharePointExternalSitesCheck,
+  sharePointStaleSitesCheck,
+  sharePointHighStorageCheck,
+  sharePointEmptySitesCheck,
+  sharePointOwnerlessSitesCheck,
+  sharePointInactiveFilesCheck,
+} from "./sharepoint";
 import { ownerlessGroupsCheck, ownerlessTeamsCheck, emptyTeamsCheck, staleTeamsCheck, teamsNoActiveChannelsCheck, teamsGuestHeavyCheck, groupsNamingChaosCheck } from "./collaboration";
 import { unusedCopilotLicenses } from "./copilot";
 import { validateRegisteredCheckIds } from "./registry";
@@ -51,6 +59,12 @@ export const checks: Check[] = [
   groupsNamingChaosCheck,
   intuneNonCompliant,
   sharePointSharing,
+  sharePointExternalSitesCheck,
+  sharePointStaleSitesCheck,
+  sharePointHighStorageCheck,
+  sharePointEmptySitesCheck,
+  sharePointOwnerlessSitesCheck,
+  sharePointInactiveFilesCheck,
 ];
 
 const registryErrors = validateRegisteredCheckIds(checks.map((c) => c.id));

@@ -235,5 +235,65 @@ export function getDemoFindings(): FindingDraft[] {
       remediation:
         "Set sharing to 'Only people in your organization' or limit anonymous links in SharePoint admin.",
     },
+    {
+      category: "hygiene",
+      checkId: "hygiene.sharepoint-external-sites",
+      severity: "medium",
+      title: "7 sites with external sharing",
+      description: "7 SharePoint sites allow external sharing beyond org-only access.",
+      impact: { count: 7, entities: ["Client Portal", "Vendor Docs", "Partner Workspace"] },
+      remediation:
+        "Review site sharing settings in SharePoint admin and restrict external access on sensitive sites.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.sharepoint-stale-sites",
+      severity: "medium",
+      title: "18 stale SharePoint sites",
+      description: "18 SharePoint sites had no activity in 180+ days.",
+      impact: { count: 18, entities: ["Legacy-Intranet", "Project-2019", "Archive-HR"] },
+      remediation:
+        "Archive or delete unused SharePoint sites in SharePoint admin, or confirm owners still need them.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.sharepoint-high-storage",
+      severity: "high",
+      title: "4 high-storage SharePoint sites",
+      description: "4 SharePoint sites use more than 50 GB of storage (some over 100 GB).",
+      impact: { count: 4, entities: ["Records-Center", "Media-Library", "Engineering-Share"] },
+      remediation:
+        "Review large sites in SharePoint admin, archive old content, and apply retention policies.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.sharepoint-empty-sites",
+      severity: "low",
+      title: "11 empty SharePoint sites",
+      description: "11 SharePoint sites have zero files and zero page views in the last 30 days.",
+      impact: { count: 11, entities: ["Pilot-Site", "Test-Team-Site"] },
+      remediation: "Delete or archive unused site collections in SharePoint admin.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.sharepoint-ownerless-sites",
+      severity: "medium",
+      title: "5 ownerless SharePoint sites",
+      description: "5 SharePoint sites have no owner listed in the usage report.",
+      impact: { count: 5, entities: ["Old-Project-Site", "Contractor-Uploads"] },
+      remediation:
+        "Assign site owners in SharePoint admin or via the site's Site permissions panel.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.sharepoint-inactive-files",
+      severity: "medium",
+      title: "9 sites with inactive files",
+      description:
+        "9 SharePoint sites contain files but report zero active files in the last 30 days.",
+      impact: { count: 9, entities: ["Policies", "Shared-Documents-Archive"] },
+      remediation:
+        "Review stale document libraries and apply retention or archival policies.",
+    },
   ];
 }

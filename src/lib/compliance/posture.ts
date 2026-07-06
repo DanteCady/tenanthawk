@@ -104,6 +104,30 @@ export const CHECK_COMPLIANCE: Record<string, CheckComplianceMap> = {
     cis: [{ id: "3.3", title: "Configure data access control lists" }],
     nist: [{ id: "AC-3", title: "Access Enforcement" }],
   },
+  "hygiene.sharepoint-external-sites": {
+    cis: [{ id: "3.3", title: "Configure data access control lists" }],
+    nist: [{ id: "AC-3", title: "Access Enforcement" }],
+  },
+  "hygiene.sharepoint-stale-sites": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
+  "hygiene.sharepoint-high-storage": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-8", title: "System Component Inventory" }],
+  },
+  "hygiene.sharepoint-empty-sites": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
+  "hygiene.sharepoint-ownerless-sites": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "AC-2", title: "Account Management" }],
+  },
+  "hygiene.sharepoint-inactive-files": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
 };
 
 export const FRAMEWORK_LABELS: Record<ComplianceFramework, string> = {

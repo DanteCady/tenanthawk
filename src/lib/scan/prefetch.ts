@@ -19,9 +19,24 @@ export interface TeamsActivityRow {
   guests: number;
 }
 
+export interface SharePointSiteRow {
+  siteId: string;
+  siteUrl: string;
+  ownerDisplayName: string;
+  ownerPrincipalName: string;
+  lastActivityDate: string | null;
+  fileCount: number;
+  activeFileCount: number;
+  pageViewCount: number;
+  storageUsedBytes: number;
+  isDeleted: boolean;
+  externalSharing: string | null;
+}
+
 export interface ScanPrefetch {
   groups: PrefetchGroup[];
   teamsActivity: TeamsActivityRow[];
+  sharePointSites: SharePointSiteRow[];
 }
 
 interface GraphGroupRow {
@@ -132,9 +147,46 @@ export async function fetchTeamsActivity(token: string): Promise<TeamsActivityRo
     .filter((r): r is TeamsActivityRow => r !== null);
 }
 
+function parseBool(value: string): boolean {
+  const v = value.trim().toLowerCase();
+  return v === "true" || v === "yes" || v === "1";
+}
+
+/** SharePoint site usage report (30-day window). Empty array if report unavailable. */
+export async function fetchSharePointSites(token: string): Promise<SharePointSiteRow[]> {
+  const rows = await fetchGraphReport<Record<string, string>>(
+    token,
+    "/reports/getSharePointSiteUsageDetail(period='D30')",
+  );
+
+  return rows
+    .map((row) => {
+      const siteId = rowVal(row, "Site Id", "siteId");
+      const siteUrl = rowVal(row, "Site URL", "siteUrl");
+      if (!siteId && !siteUrl) return null;
+
+      const externalRaw = rowVal(row, "External Sharing", "externalSharing") || null;
+
+      return {
+        siteId: siteId || siteUrl,
+        siteUrl: siteUrl || siteId,
+        ownerDisplayName: rowVal(row, "Owner Display Name", "ownerDisplayName"),
+        ownerPrincipalName: rowVal(row, "Owner Principal Name", "ownerPrincipalName"),
+        lastActivityDate: rowVal(row, "Last Activity Date", "lastActivityDate") || null,
+        fileCount: parseCount(rowVal(row, "File Count", "fileCount")),
+        activeFileCount: parseCount(rowVal(row, "Active File Count", "activeFileCount")),
+        pageViewCount: parseCount(rowVal(row, "Page View Count", "pageViewCount")),
+        storageUsedBytes: parseCount(rowVal(row, "Storage Used (Byte)", "storageUsedInBytes")),
+        isDeleted: parseBool(rowVal(row, "Is Deleted", "isDeleted")),
+        externalSharing: externalRaw || null,
+      };
+    })
+    .filter((r): r is SharePointSiteRow => r !== null);
+}
+
 /** Fetch shared scan data for collaboration / Teams checks. Never throws — checks degrade when data is missing. */
 export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
-  const [groups, teamsActivity] = await Promise.all([
+  const [groups, teamsActivity, sharePointSites] = await Promise.all([
     fetchGroups(token).catch((err) => {
       console.warn("[scan] group prefetch failed", err);
       return [] as PrefetchGroup[];
@@ -143,9 +195,13 @@ export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
       console.warn("[scan] teams activity report unavailable", err);
       return [] as TeamsActivityRow[];
     }),
+    fetchSharePointSites(token).catch((err) => {
+      console.warn("[scan] sharepoint site report unavailable", err);
+      return [] as SharePointSiteRow[];
+    }),
   ]);
 
-  return { groups, teamsActivity };
+  return { groups, teamsActivity, sharePointSites };
 }
 
 export function ownerlessGroups(

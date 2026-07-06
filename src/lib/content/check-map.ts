@@ -88,6 +88,30 @@ export const CHECK_GUIDE_MAP: Record<string, CheckGuideLink> = {
     slug: "m365-tenant-hygiene",
     label: "External sharing settings",
   },
+  "hygiene.sharepoint-external-sites": {
+    slug: "m365-tenant-hygiene",
+    label: "Sites with external sharing",
+  },
+  "hygiene.sharepoint-stale-sites": {
+    slug: "m365-tenant-cleanup",
+    label: "Stale SharePoint sites",
+  },
+  "hygiene.sharepoint-high-storage": {
+    slug: "m365-tenant-hygiene",
+    label: "High-storage SharePoint sites",
+  },
+  "hygiene.sharepoint-empty-sites": {
+    slug: "m365-tenant-cleanup",
+    label: "Empty SharePoint sites",
+  },
+  "hygiene.sharepoint-ownerless-sites": {
+    slug: "m365-tenant-hygiene",
+    label: "Ownerless SharePoint sites",
+  },
+  "hygiene.sharepoint-inactive-files": {
+    slug: "m365-tenant-cleanup",
+    label: "Sites with inactive files",
+  },
   "hygiene.intune-noncompliant": {
     slug: "m365-tenant-hygiene",
     label: "Intune compliance gaps",
