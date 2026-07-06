@@ -69,12 +69,31 @@ export function daysSinceActivity(dateStr: string | null): number | null {
 }
 
 async function fetchGroups(token: string): Promise<PrefetchGroup[]> {
-  const rows = await graphGet<GraphGroupRow>(
-    token,
-    "/groups?$select=id,displayName,groupTypes,resourceProvisioningOptions,createdDateTime&$expand=owners($select=id),members($select=id)&$top=999",
+  // Graph returns 400 if owners and members are expanded in the same request.
+  const [withOwners, withMembers] = await Promise.all([
+    graphGet<GraphGroupRow>(
+      token,
+      "/groups?$select=id,displayName,groupTypes,resourceProvisioningOptions,createdDateTime&$expand=owners($select=id)&$top=999",
+    ),
+    graphGet<GraphGroupRow>(
+      token,
+      "/groups?$select=id&$expand=members($select=id)&$top=999",
+    ).catch((err) => {
+      console.warn("[scan] group member count prefetch failed", err);
+      return [] as GraphGroupRow[];
+    }),
+  ]);
+
+  const memberCountById = new Map(
+    withMembers
+      .filter((g) => g.id)
+      .map((g) => [
+        g.id as string,
+        g["members@odata.count"] ?? g.members?.length ?? 0,
+      ]),
   );
 
-  return rows
+  return withOwners
     .filter((g) => g.id)
     .map((g) => ({
       id: g.id as string,
@@ -83,7 +102,7 @@ async function fetchGroups(token: string): Promise<PrefetchGroup[]> {
       resourceProvisioningOptions: g.resourceProvisioningOptions ?? [],
       createdDateTime: g.createdDateTime,
       ownerIds: (g.owners ?? []).map((o) => o.id).filter(Boolean) as string[],
-      memberCount: g["members@odata.count"] ?? g.members?.length ?? 0,
+      memberCount: memberCountById.get(g.id as string) ?? 0,
     }));
 }
 
@@ -113,10 +132,13 @@ export async function fetchTeamsActivity(token: string): Promise<TeamsActivityRo
     .filter((r): r is TeamsActivityRow => r !== null);
 }
 
-/** Fetch shared scan data for collaboration / Teams checks. */
+/** Fetch shared scan data for collaboration / Teams checks. Never throws — checks degrade when data is missing. */
 export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
   const [groups, teamsActivity] = await Promise.all([
-    fetchGroups(token),
+    fetchGroups(token).catch((err) => {
+      console.warn("[scan] group prefetch failed", err);
+      return [] as PrefetchGroup[];
+    }),
     fetchTeamsActivity(token).catch((err) => {
       console.warn("[scan] teams activity report unavailable", err);
       return [] as TeamsActivityRow[];
