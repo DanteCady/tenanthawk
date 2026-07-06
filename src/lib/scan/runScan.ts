@@ -6,15 +6,51 @@ import { fireMarketingWebhook } from "@/lib/marketing/webhook";
 import { parseLicensePricing } from "@/lib/licenses/pricing-overrides";
 import { captureJournal } from "@/lib/journal/capture";
 import { checks } from "./checks";
+import { offeredCheckDefinitions } from "./checks/registry";
 import { getDemoFindings } from "./demo";
 import { getAppToken, isLiveConfigured } from "./graph";
+import { buildScanPrefetch } from "./prefetch";
 import { scoreFindings } from "./score";
-import type { FindingDraft } from "./types";
+import type { FindingDraft, ScanCheckRunResult, ScanMode } from "./types";
+
+const SCORE_VERSION = 2;
+
+async function runChecksParallel(
+  ctx: {
+    tenantId: string;
+    token: string;
+    licensePricing?: ReturnType<typeof parseLicensePricing>;
+    prefetch?: Awaited<ReturnType<typeof buildScanPrefetch>>;
+    scanMode: ScanMode;
+  },
+): Promise<{ drafts: FindingDraft[]; checkRuns: ScanCheckRunResult[] }> {
+  const drafts: FindingDraft[] = [];
+  const checkRuns: ScanCheckRunResult[] = [];
+
+  await Promise.all(
+    checks.map(async (check) => {
+      try {
+        const findings = await check.run(ctx);
+        drafts.push(...findings);
+        checkRuns.push({ id: check.id, status: "ok" });
+      } catch (err) {
+        console.error(`[scan] check failed: ${check.id}`, err);
+        checkRuns.push({
+          id: check.id,
+          status: "error",
+          reason: err instanceof Error ? err.message : String(err),
+        });
+      }
+    }),
+  );
+
+  return { drafts, checkRuns };
+}
 
 /** Run a scan for a connection, persist scan + findings, return the scan id. */
 export async function runScan(
   connectionId: string,
-  options?: { source?: "manual" | "scheduled" },
+  options?: { source?: "manual" | "scheduled"; scanMode?: ScanMode },
 ): Promise<string> {
   const conn = await db
     .selectFrom("connection")
@@ -35,6 +71,8 @@ export async function runScan(
 
   invalidateConnectionHealth(connectionId);
 
+  const scanMode: ScanMode = options?.scanMode ?? "standard";
+
   const scanId = randomUUID();
   await db
     .insertInto("scan")
@@ -43,29 +81,40 @@ export async function runScan(
       connection_id: connectionId,
       status: "running",
       source: options?.source ?? "manual",
+      scan_mode: scanMode,
+      score_version: SCORE_VERSION,
     })
     .execute();
 
   try {
     let drafts: FindingDraft[];
+    let checkRuns: ScanCheckRunResult[] = [];
     let graphToken: string | null = null;
 
     if (conn.mode === "demo" || !isLiveConfigured() || !conn.tenant_id) {
       drafts = getDemoFindings();
+      checkRuns = checks.map((c) => ({ id: c.id, status: "ok" as const }));
     } else {
       const token = await getAppToken(conn.tenant_id);
       graphToken = token;
       const licensePricing = parseLicensePricing(conn.license_pricing);
-      const ctx = { tenantId: conn.tenant_id, token, licensePricing };
-      drafts = [];
-      for (const check of checks) {
-        try {
-          drafts.push(...(await check.run(ctx)));
-        } catch (err) {
-          console.error(`[scan] check failed: ${check.id}`, err);
-        }
-      }
+      const prefetch = await buildScanPrefetch(token);
+      const result = await runChecksParallel({
+        tenantId: conn.tenant_id,
+        token,
+        licensePricing,
+        prefetch,
+        scanMode,
+      });
+      drafts = result.drafts;
+      checkRuns = result.checkRuns;
     }
+
+    const coverageNotes = {
+      sectors: [...new Set(offeredCheckDefinitions().map((d) => d.sector))],
+      offeredChecks: offeredCheckDefinitions().length,
+      scanMode,
+    };
 
     const { overall, categoryScores } = scoreFindings(drafts);
 
@@ -96,6 +145,8 @@ export async function runScan(
         score: overall,
         category_scores: JSON.stringify(categoryScores),
         completed_at: new Date().toISOString(),
+        checks_run: JSON.stringify(checkRuns),
+        coverage_notes: JSON.stringify(coverageNotes),
       })
       .where("id", "=", scanId)
       .execute();

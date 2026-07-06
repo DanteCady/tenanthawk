@@ -15,7 +15,8 @@
     "stripe:founding-promo": "node scripts/stripe-create-founding-promo.mjs",
     "capture:hero": "node scripts/capture-hero-dashboard.mjs",
     "capture:hero:install": "playwright install chromium",
-    "export:guides": "node --experimental-strip-types scripts/export-guides-to-mdx.mjs"
+    "export:guides": "node --experimental-strip-types scripts/export-guides-to-mdx.mjs",
+    "validate:checks": "vitest run src/lib/scan/checks/registry.test.ts"
   },
   "dependencies": {
     "@better-auth/sso": "^1.6.22",

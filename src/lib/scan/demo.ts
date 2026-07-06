@@ -125,6 +125,45 @@ export function getDemoFindings(): FindingDraft[] {
     },
     {
       category: "hygiene",
+      checkId: "hygiene.ownerless-groups",
+      severity: "medium",
+      title: "12 ownerless groups",
+      description:
+        "12 groups have no assigned owners. Ownerless groups are hard to govern and often accumulate stale data.",
+      impact: {
+        count: 12,
+        entities: ["Finance-Approvers", "Contractor-Access-2022", "Old-Sales-Region-West"],
+      },
+      remediation: "Assign at least two owners per group in Entra → Groups, or delete unused groups.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.ownerless-teams",
+      severity: "high",
+      title: "8 ownerless Microsoft Teams",
+      description:
+        "8 Microsoft Teams have no assigned owners. Ownerless Teams are hard to govern and often accumulate stale data.",
+      impact: {
+        count: 8,
+        entities: ["Project Phoenix", "Marketing Archive", "IT Sandbox"],
+      },
+      remediation:
+        "Assign owners in Teams admin or Entra group owners; archive or delete unused Teams.",
+    },
+    {
+      category: "cost",
+      checkId: "cost.unused-copilot-licenses",
+      severity: "high",
+      title: "~$450/mo in unused Copilot seats",
+      description:
+        "15 Microsoft 365 Copilot seats are prepaid but only 0 are assigned — 15 appear unused. Copilot is typically ~$30/user/mo.",
+      impact: { count: 15, usd: 450 },
+      remediation:
+        "Assign Copilot to intended users in M365 Admin → Users, or reduce prepaid Copilot seats in Billing before renewal.",
+      entityRef: "Microsoft_365_Copilot",
+    },
+    {
+      category: "hygiene",
       checkId: "hygiene.inactive-users",
       severity: "low",
       title: "19 inactive enabled users (90+ days)",

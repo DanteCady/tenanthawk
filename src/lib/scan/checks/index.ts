@@ -19,6 +19,9 @@ import {
 } from "./security";
 import { emptyGroups } from "./hygiene";
 import { sharePointSharing } from "./sharepoint";
+import { ownerlessGroupsCheck, ownerlessTeamsCheck } from "./collaboration";
+import { unusedCopilotLicenses } from "./copilot";
+import { validateRegisteredCheckIds } from "./registry";
 
 export const checks: Check[] = [
   // Security
@@ -31,6 +34,7 @@ export const checks: Check[] = [
   disabledUserLicenses,
   unusedLicenses,
   licenseExpiry,
+  unusedCopilotLicenses,
   // Reliability
   expiringSecrets,
   intuneStaleSync,
@@ -38,6 +42,13 @@ export const checks: Check[] = [
   inactiveUsers,
   disabledOutsideGroup,
   emptyGroups,
+  ownerlessGroupsCheck,
+  ownerlessTeamsCheck,
   intuneNonCompliant,
   sharePointSharing,
 ];
+
+const registryErrors = validateRegisteredCheckIds(checks.map((c) => c.id));
+if (registryErrors.length > 0 && process.env.NODE_ENV !== "production") {
+  console.warn("[scan] check registry validation:", registryErrors.join("; "));
+}

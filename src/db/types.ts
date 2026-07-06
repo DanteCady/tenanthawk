@@ -45,6 +45,19 @@ export interface ConnectionTable {
 }
 
 export type ScanSource = "manual" | "scheduled";
+export type ScanMode = "standard" | "deep";
+
+export interface ScanCheckRunResult {
+  id: string;
+  status: "ok" | "skipped" | "error";
+  reason?: string;
+}
+
+export interface ScanCoverageNotes {
+  sectors: string[];
+  offeredChecks: number;
+  scanMode: ScanMode;
+}
 
 export interface ScanTable {
   id: string;
@@ -56,6 +69,10 @@ export interface ScanTable {
   completed_at: TimestampNullable;
   error: Nullable<string>;
   source: ColumnType<ScanSource, ScanSource | undefined, ScanSource>;
+  scan_mode: ColumnType<ScanMode, ScanMode | undefined, ScanMode>;
+  score_version: ColumnType<number, number | undefined, number>;
+  checks_run: Json<ScanCheckRunResult[] | null>;
+  coverage_notes: Json<ScanCoverageNotes | null>;
 }
 
 export interface FindingTable {

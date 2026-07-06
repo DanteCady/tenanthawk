@@ -52,6 +52,18 @@ export const CHECK_GUIDE_MAP: Record<string, CheckGuideLink> = {
     slug: "m365-tenant-cleanup",
     label: "Empty and stale groups",
   },
+  "hygiene.ownerless-groups": {
+    slug: "m365-tenant-cleanup",
+    label: "Ownerless groups",
+  },
+  "hygiene.ownerless-teams": {
+    slug: "m365-tenant-cleanup",
+    label: "Ownerless Microsoft Teams",
+  },
+  "cost.unused-copilot-licenses": {
+    slug: "find-wasted-m365-licenses",
+    label: "Unused Copilot license seats",
+  },
   "hygiene.sharing": {
     slug: "m365-tenant-hygiene",
     label: "External sharing settings",

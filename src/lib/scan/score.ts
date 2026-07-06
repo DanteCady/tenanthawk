@@ -1,15 +1,44 @@
 import type { Category, Severity, CategoryScores } from "@/db/types";
 import type { FindingDraft } from "./types";
+import { CHECK_DEFINITION_BY_ID } from "./checks/registry";
 
 import { SCORE_PENALTIES } from "./catalog";
 
 const PENALTY: Record<Severity, number> = SCORE_PENALTIES;
 const CATEGORIES: Category[] = ["security", "cost", "reliability", "hygiene"];
+const SEVERITY_RANK: Record<Severity, number> = { low: 1, medium: 2, high: 3 };
+
+function isScoredFinding(f: FindingDraft): boolean {
+  const def = CHECK_DEFINITION_BY_ID.get(f.checkId);
+  if (!def) return true;
+  return def.scoreImpact === "full";
+}
+
+/** One penalty per exclusivity group (highest severity wins). */
+function dedupeExclusivityGroups(findings: FindingDraft[]): FindingDraft[] {
+  const byGroup = new Map<string, FindingDraft>();
+  const ungrouped: FindingDraft[] = [];
+
+  for (const f of findings) {
+    const group = CHECK_DEFINITION_BY_ID.get(f.checkId)?.exclusivityGroup;
+    if (!group) {
+      ungrouped.push(f);
+      continue;
+    }
+    const existing = byGroup.get(group);
+    if (!existing || SEVERITY_RANK[f.severity] > SEVERITY_RANK[existing.severity]) {
+      byGroup.set(group, f);
+    }
+  }
+
+  return [...ungrouped, ...byGroup.values()];
+}
 
 export function scoreFindings(findings: FindingDraft[]): {
   overall: number;
   categoryScores: CategoryScores;
 } {
+  const scored = dedupeExclusivityGroups(findings.filter(isScoredFinding));
   const categoryScores: CategoryScores = {
     security: 100,
     cost: 100,
@@ -17,7 +46,7 @@ export function scoreFindings(findings: FindingDraft[]): {
     hygiene: 100,
   };
 
-  for (const f of findings) {
+  for (const f of scored) {
     categoryScores[f.category] = Math.max(
       0,
       categoryScores[f.category] - PENALTY[f.severity],

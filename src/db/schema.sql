@@ -86,6 +86,12 @@ CREATE TABLE IF NOT EXISTS alert_preferences (
 -- Distinguish manual rescans from scheduled cron scans.
 ALTER TABLE scan ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'manual';
 
+-- Scan engine metadata (coverage expansion).
+ALTER TABLE scan ADD COLUMN IF NOT EXISTS scan_mode text NOT NULL DEFAULT 'standard';
+ALTER TABLE scan ADD COLUMN IF NOT EXISTS score_version integer NOT NULL DEFAULT 2;
+ALTER TABLE scan ADD COLUMN IF NOT EXISTS checks_run jsonb;
+ALTER TABLE scan ADD COLUMN IF NOT EXISTS coverage_notes jsonb;
+
 -- Slack / Teams webhook (added after initial alert_preferences table).
 ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS webhook_url text;
 ALTER TABLE alert_preferences ADD COLUMN IF NOT EXISTS webhook_platform text;

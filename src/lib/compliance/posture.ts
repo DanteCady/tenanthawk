@@ -68,6 +68,18 @@ export const CHECK_COMPLIANCE: Record<string, CheckComplianceMap> = {
     cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
     nist: [{ id: "CM-7", title: "Least Functionality" }],
   },
+  "hygiene.ownerless-groups": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "AC-2", title: "Account Management" }],
+  },
+  "hygiene.ownerless-teams": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "AC-2", title: "Account Management" }],
+  },
+  "cost.unused-copilot-licenses": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-8", title: "System Component Inventory" }],
+  },
   "hygiene.intune-noncompliant": {
     cis: [{ id: "10.5", title: "Enable anti-exploitation features" }],
     nist: [{ id: "SI-4", title: "System Monitoring" }],

@@ -1,6 +1,8 @@
-/** Marketing + UI constants for the scan engine. Keep SCAN_CHECK_COUNT in sync with checks/index.ts. */
+/** Marketing + UI constants for the scan engine. Keep in sync with checks/registry.ts offered count. */
 
-export const SCAN_CHECK_COUNT = 15;
+import { scoredCheckCount } from "./checks/registry";
+
+export const SCAN_CHECK_COUNT = scoredCheckCount();
 
 export const SCORE_SCALE = 100;
 
