@@ -76,6 +76,22 @@ export const CHECK_COMPLIANCE: Record<string, CheckComplianceMap> = {
     cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
     nist: [{ id: "AC-2", title: "Account Management" }],
   },
+  "hygiene.empty-teams": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
+  "hygiene.stale-teams": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
+  "hygiene.teams-no-active-channels": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
+  "hygiene.teams-guest-heavy": {
+    cis: [{ id: "6.8", title: "Define and maintain role-based access control" }],
+    nist: [{ id: "AC-3", title: "Access Enforcement" }],
+  },
   "cost.unused-copilot-licenses": {
     cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
     nist: [{ id: "CM-8", title: "System Component Inventory" }],

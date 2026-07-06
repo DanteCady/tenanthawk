@@ -1,3 +1,4 @@
+import { fetchGraphReport } from "./graph-reports";
 import { graphGet } from "./graph";
 
 export interface PrefetchGroup {
@@ -10,8 +11,17 @@ export interface PrefetchGroup {
   memberCount: number;
 }
 
+export interface TeamsActivityRow {
+  teamId: string;
+  teamName: string;
+  lastActivityDate: string | null;
+  activeChannels: number;
+  guests: number;
+}
+
 export interface ScanPrefetch {
   groups: PrefetchGroup[];
+  teamsActivity: TeamsActivityRow[];
 }
 
 interface GraphGroupRow {
@@ -26,7 +36,7 @@ interface GraphGroupRow {
 }
 
 const DAY = 86_400_000;
-const GROUP_GRACE_DAYS = 7;
+export const GROUP_GRACE_DAYS = 7;
 
 export function isTeamGroup(g: PrefetchGroup): boolean {
   return g.resourceProvisioningOptions.some((o) => o.toLowerCase() === "team");
@@ -37,14 +47,34 @@ export function isWithinGracePeriod(createdDateTime: string | undefined, days: n
   return Date.now() - new Date(createdDateTime).getTime() < days * DAY;
 }
 
-/** Fetch groups once per scan for collaboration checks. */
-export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
+function rowVal(row: Record<string, string>, ...keys: string[]): string {
+  for (const key of keys) {
+    if (row[key] !== undefined && row[key] !== "") return row[key];
+    const match = Object.keys(row).find((k) => k.toLowerCase() === key.toLowerCase());
+    if (match && row[match] !== undefined) return row[match] ?? "";
+  }
+  return "";
+}
+
+function parseCount(value: string): number {
+  const n = parseInt(value, 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
+export function daysSinceActivity(dateStr: string | null): number | null {
+  if (!dateStr?.trim()) return null;
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return null;
+  return Math.floor((Date.now() - d.getTime()) / DAY);
+}
+
+async function fetchGroups(token: string): Promise<PrefetchGroup[]> {
   const rows = await graphGet<GraphGroupRow>(
     token,
     "/groups?$select=id,displayName,groupTypes,resourceProvisioningOptions,createdDateTime&$expand=owners($select=id),members($select=id)&$top=999",
   );
 
-  const groups: PrefetchGroup[] = rows
+  return rows
     .filter((g) => g.id)
     .map((g) => ({
       id: g.id as string,
@@ -55,8 +85,45 @@ export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
       ownerIds: (g.owners ?? []).map((o) => o.id).filter(Boolean) as string[],
       memberCount: g["members@odata.count"] ?? g.members?.length ?? 0,
     }));
+}
 
-  return { groups };
+/** Teams usage report (90-day window). Empty array if report unavailable. */
+export async function fetchTeamsActivity(token: string): Promise<TeamsActivityRow[]> {
+  const rows = await fetchGraphReport<Record<string, string>>(
+    token,
+    "/reports/getTeamsTeamActivityDetail(period='D90')",
+  );
+
+  return rows
+    .map((row) => {
+      const teamId = rowVal(row, "Team Id", "teamId");
+      const teamName = rowVal(row, "Team Name", "teamName");
+      if (!teamId && !teamName) return null;
+
+      const lastActivityDate = rowVal(row, "Last Activity Date", "lastActivityDate") || null;
+
+      return {
+        teamId: teamId || teamName,
+        teamName: teamName || teamId,
+        lastActivityDate,
+        activeChannels: parseCount(rowVal(row, "Active Channels", "activeChannels")),
+        guests: parseCount(rowVal(row, "Guests", "guests")),
+      };
+    })
+    .filter((r): r is TeamsActivityRow => r !== null);
+}
+
+/** Fetch shared scan data for collaboration / Teams checks. */
+export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
+  const [groups, teamsActivity] = await Promise.all([
+    fetchGroups(token),
+    fetchTeamsActivity(token).catch((err) => {
+      console.warn("[scan] teams activity report unavailable", err);
+      return [] as TeamsActivityRow[];
+    }),
+  ]);
+
+  return { groups, teamsActivity };
 }
 
 export function ownerlessGroups(
@@ -71,4 +138,8 @@ export function ownerlessGroups(
     if (opts?.teamsOnly === false && isTeamGroup(g)) return false;
     return true;
   });
+}
+
+export function teamGroups(prefetch: ScanPrefetch): PrefetchGroup[] {
+  return prefetch.groups.filter(isTeamGroup);
 }

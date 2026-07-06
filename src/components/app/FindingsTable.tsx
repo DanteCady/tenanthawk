@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown, Lock } from "lucide-react";
 import type { Category, FindingTrackingStatus, Severity } from "@/db/types";
@@ -18,6 +18,11 @@ import {
   isLicenseSkuCode,
 } from "@/lib/licenses/sku-display";
 import type { RemediationEnriched } from "@/lib/remediation/types";
+import {
+  checkSector,
+  SECTOR_LABELS,
+  type ScanSector,
+} from "@/lib/scan/checks/registry";
 
 export interface FindingDTO {
   id: string;
@@ -184,6 +189,7 @@ export function FindingsTable({
 }) {
   const router = useRouter();
   const [filter, setFilter] = useState<"all" | Severity>("all");
+  const [sectorFilter, setSectorFilter] = useState<"all" | ScanSector>("all");
   const [open, setOpen] = useState<string | null>(null);
   const [showHandled, setShowHandled] = useState(false);
   const [enrichedCache, setEnrichedCache] = useState<
@@ -202,8 +208,19 @@ export function FindingsTable({
     return f.tracking === "open";
   });
 
+  const sectorCounts = useMemo(() => {
+    const counts = new Map<ScanSector, number>();
+    for (const f of visible) {
+      const sector = checkSector(f.checkId);
+      if (!sector) continue;
+      counts.set(sector, (counts.get(sector) ?? 0) + 1);
+    }
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  }, [visible]);
+
   const rows = visible
     .filter((f) => filter === "all" || f.severity === filter)
+    .filter((f) => sectorFilter === "all" || checkSector(f.checkId) === sectorFilter)
     .sort((a, b) => SEV_RANK[a.severity] - SEV_RANK[b.severity]);
 
   const handledCount = findings.filter((f) => f.tracking !== "open").length;
@@ -222,6 +239,25 @@ export function FindingsTable({
             {f.label}
           </button>
         ))}
+        {sectorCounts.length > 1 && (
+          <>
+            <span className="hidden h-4 w-px bg-slate-200 sm:inline" aria-hidden />
+            {sectorCounts.map(([sector, count]) => (
+              <button
+                key={sector}
+                type="button"
+                onClick={() =>
+                  setSectorFilter((current) => (current === sector ? "all" : sector))
+                }
+                className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                  sectorFilter === sector ? "filter-chip-active" : "filter-chip"
+                }`}
+              >
+                {SECTOR_LABELS[sector]} ({count})
+              </button>
+            ))}
+          </>
+        )}
         {handledCount > 0 && (
           <button
             type="button"
@@ -316,7 +352,9 @@ export function FindingsTable({
         })}
         {rows.length === 0 && (
           <p className="px-5 py-8 text-center text-sm text-slate-500">
-            No active {filter !== "all" ? filter : ""} findings. 🎉
+            No active
+            {filter !== "all" ? ` ${filter}` : ""}
+            {sectorFilter !== "all" ? ` ${SECTOR_LABELS[sectorFilter]}` : ""} findings. 🎉
           </p>
         )}
       </div>

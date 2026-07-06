@@ -81,6 +81,46 @@ export const CHECK_REMEDIATION_META: Record<string, CheckRemediationMeta> = {
     adminSurface: "Entra",
     effortLabel: "~15 min",
   },
+  "hygiene.ownerless-groups": {
+    effort: "quick",
+    adminSurface: "Entra",
+    effortLabel: "~15 min",
+  },
+  "hygiene.ownerless-teams": {
+    effort: "quick",
+    adminSurface: "Mixed",
+    effortLabel: "~15 min",
+  },
+  "hygiene.empty-teams": {
+    effort: "quick",
+    adminSurface: "Mixed",
+    effortLabel: "~15 min",
+  },
+  "hygiene.stale-teams": {
+    effort: "moderate",
+    adminSurface: "Mixed",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.teams-no-active-channels": {
+    effort: "moderate",
+    adminSurface: "Mixed",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.teams-guest-heavy": {
+    effort: "moderate",
+    adminSurface: "Mixed",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.groups-naming-chaos": {
+    effort: "quick",
+    adminSurface: "Entra",
+    effortLabel: "~15 min",
+  },
+  "cost.unused-copilot-licenses": {
+    effort: "quick",
+    adminSurface: "M365 Admin",
+    effortLabel: "~15 min",
+  },
   "hygiene.intune-noncompliant": {
     effort: "project",
     adminSurface: "Intune",

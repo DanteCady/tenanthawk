@@ -19,7 +19,7 @@ import {
 } from "./security";
 import { emptyGroups } from "./hygiene";
 import { sharePointSharing } from "./sharepoint";
-import { ownerlessGroupsCheck, ownerlessTeamsCheck } from "./collaboration";
+import { ownerlessGroupsCheck, ownerlessTeamsCheck, emptyTeamsCheck, staleTeamsCheck, teamsNoActiveChannelsCheck, teamsGuestHeavyCheck, groupsNamingChaosCheck } from "./collaboration";
 import { unusedCopilotLicenses } from "./copilot";
 import { validateRegisteredCheckIds } from "./registry";
 
@@ -44,6 +44,11 @@ export const checks: Check[] = [
   emptyGroups,
   ownerlessGroupsCheck,
   ownerlessTeamsCheck,
+  emptyTeamsCheck,
+  staleTeamsCheck,
+  teamsNoActiveChannelsCheck,
+  teamsGuestHeavyCheck,
+  groupsNamingChaosCheck,
   intuneNonCompliant,
   sharePointSharing,
 ];

@@ -16,7 +16,8 @@ Run spikes against a live tenant before promoting checks from `backlog` → `v1`
 |-----|-------------------|----------|--------|-------|
 | CP2 | `GET /subscribedSkus` (Copilot SKU parts) | `cost.unused-copilot-licenses` | **Pass (SKU)** | Prepaid vs consumed seat math works without usage reports. |
 | CP1 | `GET /reports/getMicrosoft365CopilotUsageUserDetail(period='D30')` | Copilot usage v2 | Pending | Requires `Reports.Read.All`; 302 CSV or JSON `$format`. |
-| T1 | `GET /groups?$expand=owners,members` | `hygiene.ownerless-groups`, `hygiene.ownerless-teams` | **Pass** | Paged via existing `graphGet`; grace period 7 days. |
+| T1 | `GET /groups?$expand=owners,members` | `hygiene.ownerless-groups`, `hygiene.ownerless-teams`, `hygiene.empty-teams` | **Pass** | Paged via existing `graphGet`; grace period 7 days. |
+| TM1 | `GET /reports/getTeamsTeamActivityDetail(period='D90')` | `hygiene.stale-teams`, `hygiene.teams-no-active-channels`, `hygiene.teams-guest-heavy` | **Pass (CSV)** | 302 CSV parse; Active Channels + Guests columns. |
 | SP1 | `GET /reports/getSharePointSiteUsageDetail(period='D30')` | SharePoint v2 checks | Pending | |
 | EX1 | `GET /reports/getMailboxUsageDetail(period='D30')` | Exchange v2 checks | Pending | |
 

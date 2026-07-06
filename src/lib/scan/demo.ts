@@ -151,6 +151,59 @@ export function getDemoFindings(): FindingDraft[] {
         "Assign owners in Teams admin or Entra group owners; archive or delete unused Teams.",
     },
     {
+      category: "hygiene",
+      checkId: "hygiene.empty-teams",
+      severity: "medium",
+      title: "6 empty Microsoft Teams",
+      description:
+        "6 Microsoft Teams have zero members. Empty Teams clutter the tenant and may indicate abandoned projects.",
+      impact: { count: 6, entities: ["Pilot Rollout", "Q1 Planning"] },
+      remediation: "Archive or delete unused Teams in Teams admin, or add members if the Team is still needed.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.stale-teams",
+      severity: "high",
+      title: "14 stale Microsoft Teams",
+      description:
+        "14 Microsoft Teams had no activity in 90+ days (some 180+ days). Stale Teams add noise to search and Copilot grounding.",
+      impact: { count: 14, entities: ["Legacy Support", "2023 All Hands", "Vendor Coordination"] },
+      remediation:
+        "Review inactive Teams in Teams admin and archive or delete those no longer needed.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.teams-no-active-channels",
+      severity: "medium",
+      title: "9 Teams with no active channels",
+      description:
+        "9 Microsoft Teams report zero active channels in the last 90 days. Channels may be unused or abandoned.",
+      impact: { count: 9, entities: ["Field Ops", "Training Cohort B"] },
+      remediation: "Review channel usage in Teams admin and remove or archive unused channels.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.teams-guest-heavy",
+      severity: "low",
+      title: "2 guest-heavy Teams",
+      description:
+        "2 Microsoft Teams had 10+ guest users active in the last 90 days. Heavy guest presence increases data-exposure risk.",
+      impact: { count: 2, entities: ["Client Delivery", "Partner Workspace"] },
+      remediation:
+        "Review guest access in Teams admin and Entra → External Identities; remove stale guests.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.groups-naming-chaos",
+      severity: "low",
+      title: "27 groups with risky naming",
+      description:
+        "27 groups use Test/Temp/Old/Archive-style names. This is informational — rename or document groups to improve directory hygiene.",
+      impact: { count: 27, entities: ["Test-SSO", "Temp-Onboarding-2023", "Old-Sales-Archive"] },
+      remediation:
+        "Rename or delete ambiguous groups in Entra → Groups so admins can trust directory search.",
+    },
+    {
       category: "cost",
       checkId: "cost.unused-copilot-licenses",
       severity: "high",

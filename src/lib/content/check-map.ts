@@ -60,6 +60,26 @@ export const CHECK_GUIDE_MAP: Record<string, CheckGuideLink> = {
     slug: "m365-tenant-cleanup",
     label: "Ownerless Microsoft Teams",
   },
+  "hygiene.empty-teams": {
+    slug: "m365-tenant-cleanup",
+    label: "Empty Microsoft Teams",
+  },
+  "hygiene.stale-teams": {
+    slug: "m365-tenant-cleanup",
+    label: "Stale Microsoft Teams",
+  },
+  "hygiene.teams-no-active-channels": {
+    slug: "m365-tenant-cleanup",
+    label: "Teams with no active channels",
+  },
+  "hygiene.teams-guest-heavy": {
+    slug: "m365-tenant-hygiene",
+    label: "Guest-heavy Teams",
+  },
+  "hygiene.groups-naming-chaos": {
+    slug: "m365-tenant-cleanup",
+    label: "Risky group naming patterns",
+  },
   "cost.unused-copilot-licenses": {
     slug: "find-wasted-m365-licenses",
     label: "Unused Copilot license seats",

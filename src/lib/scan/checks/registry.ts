@@ -219,6 +219,66 @@ export const CHECK_DEFINITIONS: CheckDefinition[] = [
     offered: true,
   },
   {
+    id: "hygiene.empty-teams",
+    sector: "teams",
+    tier: "v1",
+    category: "hygiene",
+    module: "collaboration.ts",
+    permissions: ["Directory.Read.All"],
+    scoreImpact: "full",
+    marketingLabel: "Empty Microsoft Teams",
+    offered: true,
+  },
+  {
+    id: "hygiene.stale-teams",
+    sector: "teams",
+    tier: "v1",
+    category: "hygiene",
+    module: "collaboration.ts",
+    permissions: ["Reports.Read.All"],
+    scoreImpact: "full",
+    marketingLabel: "Stale Microsoft Teams",
+    offered: true,
+    exclusivityGroup: "teams.stale",
+    graphValidationRef: "TM1",
+  },
+  {
+    id: "hygiene.teams-no-active-channels",
+    sector: "teams",
+    tier: "v1",
+    category: "hygiene",
+    module: "collaboration.ts",
+    permissions: ["Reports.Read.All"],
+    scoreImpact: "full",
+    marketingLabel: "Teams with no active channels",
+    offered: true,
+    exclusivityGroup: "teams.activity",
+    graphValidationRef: "TM1",
+  },
+  {
+    id: "hygiene.teams-guest-heavy",
+    sector: "teams",
+    tier: "v1",
+    category: "hygiene",
+    module: "collaboration.ts",
+    permissions: ["Reports.Read.All"],
+    scoreImpact: "full",
+    marketingLabel: "Guest-heavy Teams",
+    offered: true,
+    graphValidationRef: "TM1",
+  },
+  {
+    id: "hygiene.groups-naming-chaos",
+    sector: "teams",
+    tier: "informational",
+    category: "hygiene",
+    module: "collaboration.ts",
+    permissions: ["Directory.Read.All"],
+    scoreImpact: "informational",
+    marketingLabel: "Groups with risky naming patterns",
+    offered: true,
+  },
+  {
     id: "cost.unused-copilot-licenses",
     sector: "copilot",
     tier: "v1",
@@ -242,6 +302,21 @@ export function offeredCheckDefinitions(): CheckDefinition[] {
 
 export function scoredCheckCount(): number {
   return CHECK_DEFINITIONS.filter((d) => d.offered && d.scoreImpact === "full").length;
+}
+
+export const SECTOR_LABELS: Record<ScanSector, string> = {
+  identity: "Identity",
+  cost: "Cost",
+  teams: "Teams",
+  sharepoint: "SharePoint",
+  exchange: "Exchange",
+  devices: "Devices",
+  apps: "Apps",
+  copilot: "Copilot",
+};
+
+export function checkSector(checkId: string): ScanSector | undefined {
+  return CHECK_DEFINITION_BY_ID.get(checkId)?.sector;
 }
 
 export function validateRegisteredCheckIds(registeredIds: string[]): string[] {

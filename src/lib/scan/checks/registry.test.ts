@@ -11,6 +11,8 @@ describe("check registry", () => {
     const errors = validateRegisteredCheckIds(checks.map((c) => c.id));
     expect(errors).toEqual([]);
     expect(checks.length).toBe(offeredCheckDefinitions().length);
-    expect(scoredCheckCount()).toBe(checks.length);
+    expect(scoredCheckCount()).toBe(
+      offeredCheckDefinitions().filter((d) => d.scoreImpact === "full").length,
+    );
   });
 });
