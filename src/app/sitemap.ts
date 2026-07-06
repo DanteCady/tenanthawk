@@ -5,6 +5,8 @@ import { getAllGlossarySlugs } from "@/lib/content/glossary/loader";
 import { getAllGuides, getGuidesByCategory, parseContentDate } from "@/lib/content/loader";
 import { getSiteUrl } from "@/lib/guides/site-url";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = getSiteUrl();
   const guides = getAllGuides();

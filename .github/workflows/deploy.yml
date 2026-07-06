@@ -68,8 +68,11 @@ jobs:
 
       - name: Prepare standalone artifact
         run: |
+          # Static sitemap fallback — Next's /sitemap.xml route 500s in prod; public/ wins routing.
+          cp .next/server/app/sitemap.xml.body public/sitemap.xml
           cp -r public .next/standalone/public
           cp -r .next/static .next/standalone/.next/static
+          cp -r content/guides .next/standalone/content/guides
           mkdir -p deploy/scripts
           cp -a .next/standalone/. deploy/
           cp scripts/trigger-cron.sh deploy/scripts/trigger-cron.sh
