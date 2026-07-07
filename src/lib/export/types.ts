@@ -26,6 +26,14 @@ export interface ExportMeta {
     reliability: number;
     hygiene: number;
   } | null;
+  scanMode?: "standard" | "deep";
+  sectorScores?: Array<{
+    sector: string;
+    label: string;
+    score: number;
+    letter: string;
+    findingCount: number;
+  }>;
   summary?: {
     total: number;
     high: number;

@@ -6,7 +6,7 @@ import {
 } from "@/lib/remediation/meta";
 
 export type RoadmapPhase = "first" | "month" | "backlog";
-export type RoadmapTracking = "open" | "resolved" | "snoozed";
+export type RoadmapTracking = "open" | "resolved" | "snoozed" | "accepted" | "flagged";
 
 export interface RoadmapFindingInput {
   id: string;
@@ -150,7 +150,7 @@ export function buildRoadmapStops(findings: RoadmapFindingInput[]): RoadmapStop[
 
   stops.sort((a, b) => {
     const statusOrder = (t: RoadmapTracking) =>
-      t === "open" ? 0 : t === "snoozed" ? 1 : 2;
+      t === "open" || t === "flagged" ? 0 : t === "snoozed" ? 1 : 2;
     const sd = statusOrder(a.tracking) - statusOrder(b.tracking);
     if (sd !== 0) return sd;
     return b.priorityScore - a.priorityScore;
@@ -160,11 +160,11 @@ export function buildRoadmapStops(findings: RoadmapFindingInput[]): RoadmapStop[
 }
 
 export function buildRoadmapStats(stops: RoadmapStop[]): RoadmapStats {
-  const open = stops.filter((s) => s.tracking === "open");
+  const open = stops.filter((s) => s.tracking === "open" || s.tracking === "flagged");
   return {
     total: stops.length,
     open: open.length,
-    resolved: stops.filter((s) => s.tracking === "resolved").length,
+    resolved: stops.filter((s) => s.tracking === "resolved" || s.tracking === "accepted").length,
     snoozed: stops.filter((s) => s.tracking === "snoozed").length,
     remainingQuick: open.filter((s) => s.effort === "quick").length,
   };

@@ -11,6 +11,8 @@ import { ExportMenu } from "@/components/app/ExportMenu";
 import { RescanButton } from "@/components/app/RescanButton";
 import { timeAgo } from "@/lib/time";
 import { formatUsd } from "@/lib/format";
+import { scoreFindingsBySector } from "@/lib/scan/sector-score";
+import { checkSector, SECTOR_LABELS } from "@/lib/scan/checks/registry";
 
 const SEVERITY_ORDER = { high: 0, medium: 1, low: 2 } as const;
 
@@ -27,13 +29,32 @@ export default async function ClientScorecardPage() {
     );
   }
 
-  const topFindings = [...activeFindings]
-    .sort(
-      (a, b) =>
-        SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity] ||
-        (b.impact?.usd ?? 0) - (a.impact?.usd ?? 0),
-    )
-    .slice(0, 5);
+  const sectorScores = scoreFindingsBySector(
+    activeFindings.map((finding) => ({
+      category: finding.category,
+      checkId: finding.check_id,
+      severity: finding.severity,
+      title: finding.title,
+      description: finding.description,
+      remediation: finding.remediation,
+      impact: finding.impact ?? undefined,
+      entityRef: finding.entity_ref,
+    })),
+  );
+
+  const topFindingsBySector = sectorScores
+    .map((sector) => {
+      const findings = activeFindings
+        .filter((finding) => checkSector(finding.check_id) === sector.sector)
+        .sort(
+          (a, b) =>
+            SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity] ||
+            (b.impact?.usd ?? 0) - (a.impact?.usd ?? 0),
+        )
+        .slice(0, 3);
+      return { sector, findings };
+    })
+    .filter((entry) => entry.findings.length > 0);
 
   const connectionQuery = `connection=${conn.id}`;
 
@@ -53,13 +74,36 @@ export default async function ClientScorecardPage() {
           </h1>
           <p className="mt-1 text-sm text-slate-600">
             {tenantLabel} · last scan {timeAgo(scan.started_at)}
+            {scan.scan_mode === "deep" ? " · deep scan" : ""}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <ExportMenu isPro={isPro} />
-          <RescanButton />
+          <RescanButton isPro={isPro} />
         </div>
       </div>
+
+      {sectorScores.length > 0 && (
+        <section className="surface-card p-5">
+          <h2 className="text-lg font-semibold text-slate-900">Sector grades</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {sectorScores.map((sector) => (
+              <div
+                key={sector.sector}
+                className="flex items-center justify-between gap-3 rounded-lg border border-slate-100 bg-slate-50/50 px-3 py-2.5"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-slate-900">{sector.label}</p>
+                  <p className="text-xs text-slate-500">
+                    {sector.findingCount} finding{sector.findingCount === 1 ? "" : "s"}
+                  </p>
+                </div>
+                <GradeBadge letter={sector.letter} size="sm" />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="surface-highlight flex flex-col items-center gap-4 p-6 lg:col-span-1">
@@ -96,7 +140,7 @@ export default async function ClientScorecardPage() {
 
       <section className="surface-card p-5">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-slate-900">Top findings</h2>
+          <h2 className="text-lg font-semibold text-slate-900">Top findings by sector</h2>
           <Link
             href="/dashboard/findings"
             className="text-sm font-medium text-blue-700 hover:text-blue-800"
@@ -104,24 +148,36 @@ export default async function ClientScorecardPage() {
             View all
           </Link>
         </div>
-        {topFindings.length === 0 ? (
+        {topFindingsBySector.length === 0 ? (
           <p className="mt-4 text-sm text-slate-600">No open findings - great posture.</p>
         ) : (
-          <ul className="mt-4 divide-y divide-slate-100">
-            {topFindings.map((f) => (
-              <li key={f.id} className="flex flex-wrap items-start gap-3 py-3 first:pt-0">
-                <SeverityBadge severity={f.severity} />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-slate-900">{f.title}</p>
-                  {f.impact?.usd ? (
-                    <p className="mt-0.5 text-xs text-green-700">
-                      ${formatUsd(f.impact.usd)}/mo impact
-                    </p>
-                  ) : null}
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            {topFindingsBySector.map(({ sector, findings }) => (
+              <div key={sector.sector} className="rounded-lg border border-slate-100 p-4">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <h3 className="text-sm font-semibold text-slate-900">
+                    {SECTOR_LABELS[sector.sector]}
+                  </h3>
+                  <GradeBadge letter={sector.letter} size="sm" />
                 </div>
-              </li>
+                <ul className="divide-y divide-slate-100">
+                  {findings.map((finding) => (
+                    <li key={finding.id} className="flex items-start gap-3 py-2.5 first:pt-0">
+                      <SeverityBadge severity={finding.severity} />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-slate-900">{finding.title}</p>
+                        {finding.impact?.usd ? (
+                          <p className="mt-0.5 text-xs text-green-700">
+                            ${formatUsd(finding.impact.usd)}/mo impact
+                          </p>
+                        ) : null}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
 

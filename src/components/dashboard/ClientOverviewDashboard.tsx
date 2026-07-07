@@ -135,7 +135,7 @@ export async function ClientOverviewDashboard() {
             </Link>
           ) : null}
           <ExportMenu isPro={isPro} />
-          <RescanButton />
+          <RescanButton isPro={isPro} />
         </div>
       </div>
 

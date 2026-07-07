@@ -29,6 +29,7 @@ export interface ScanContext {
   licensePricing?: LicensePricingOverrides | null;
   prefetch?: ScanPrefetch;
   scanMode?: ScanMode;
+  deepPrefetch?: import("./deep-prefetch").DeepScanPrefetch;
   /** Populated for composite checks that derive from other scan findings. */
   priorFindings?: FindingDraft[];
 }

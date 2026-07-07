@@ -68,6 +68,7 @@ export async function getDashboardSnapshot() {
         : null,
       tracking: tracking?.status ?? "open",
       snoozedUntil: tracking?.snoozedUntil?.toISOString() ?? null,
+      trackingNote: tracking?.note ?? null,
     };
   });
 

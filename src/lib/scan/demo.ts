@@ -1,8 +1,49 @@
 import { buildCopilotReadinessFindings } from "./copilot-readiness";
-import type { FindingDraft } from "./types";
+import type { FindingDraft, ScanMode } from "./types";
+
+const DEEP_DEMO_FINDINGS: FindingDraft[] = [
+  {
+    category: "hygiene",
+    checkId: "hygiene.inactive-channels",
+    severity: "medium",
+    title: "7 inactive channels",
+    description:
+      "7 channels had no user messages in 180+ days (deep scan sample).",
+    impact: { count: 7, entities: ["Sales · Old Pipeline", "HR · 2024 Onboarding"] },
+    remediation: "Archive unused channels or encourage adoption in active project Teams.",
+  },
+  {
+    category: "hygiene",
+    checkId: "hygiene.teams-disabled-owner",
+    severity: "high",
+    title: "2 Teams with disabled owners",
+    description: "2 Microsoft Teams have only disabled owners.",
+    impact: { count: 2, entities: ["Legacy Project Team", "Archived Ops"] },
+    remediation: "Assign an active owner to each Team in Teams admin or Entra group owners.",
+  },
+  {
+    category: "hygiene",
+    checkId: "hygiene.onedrive-stale",
+    severity: "low",
+    title: "11 stale OneDrive accounts",
+    description: "11 OneDrive accounts had no activity in 90+ days.",
+    impact: { count: 11, entities: ["Jordan Lee", "Sam Patel"] },
+    remediation: "Review inactive OneDrive accounts and reclaim storage or offboard users.",
+  },
+  {
+    category: "hygiene",
+    checkId: "hygiene.shared-mailbox-inactive",
+    severity: "medium",
+    title: "3 inactive shared mailboxes",
+    description: "3 shared mailboxes had no activity in 90+ days.",
+    impact: { count: 3, entities: ["info@contoso.com", "reception@contoso.com"] },
+    remediation:
+      "Convert unused shared mailboxes to groups or remove delegate access for abandoned mailboxes.",
+  },
+];
 
 /** Deterministic, realistic findings so the full product works without Azure. */
-export function getDemoFindings(): FindingDraft[] {
+export function getDemoFindings(scanMode: ScanMode = "standard"): FindingDraft[] {
   const base: FindingDraft[] = [
     // Reliability
     {
@@ -459,5 +500,9 @@ export function getDemoFindings(): FindingDraft[] {
     },
   ];
 
-  return [...base, ...buildCopilotReadinessFindings(base)];
+  const withReadiness = [...base, ...buildCopilotReadinessFindings(base)];
+  if (scanMode === "deep") {
+    return [...withReadiness, ...DEEP_DEMO_FINDINGS];
+  }
+  return withReadiness;
 }

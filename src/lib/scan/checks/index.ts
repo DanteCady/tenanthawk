@@ -67,6 +67,28 @@ import {
   privilegedUserNoMfaCheck,
   pimStandingAccessCheck,
 } from "./identity-extended";
+import {
+  inactiveChannelsCheck,
+  emptyChannelsCheck,
+  privateChannelsOwnerlessCheck,
+  teamsDisabledOwnerCheck,
+  teamsOutdatedAppsCheck,
+  teamsUnverifiedAppsCheck,
+} from "./teams-deep";
+import {
+  sharePointUnusedPagesCheck,
+  sharePointStaleSitePagesCheck,
+  sharePointAnonymousLinksCheck,
+  oneDriveStaleCheck,
+  oneDriveHighStorageCheck,
+  staleTeamSitesStorageCheck,
+} from "./sharepoint-deep";
+import {
+  sharedMailboxNoDelegateCheck,
+  sharedMailboxInactiveCheck,
+  mailboxAutoReplyStaleCheck,
+  resourceMailboxUnusedCheck,
+} from "./exchange-deep";
 import { validateRegisteredCheckIds } from "./registry";
 
 export const checks: Check[] = [
@@ -131,6 +153,22 @@ export const checks: Check[] = [
   sharePointEmptySitesCheck,
   sharePointOwnerlessSitesCheck,
   sharePointInactiveFilesCheck,
+  sharePointUnusedPagesCheck,
+  sharePointStaleSitePagesCheck,
+  sharePointAnonymousLinksCheck,
+  oneDriveStaleCheck,
+  oneDriveHighStorageCheck,
+  staleTeamSitesStorageCheck,
+  inactiveChannelsCheck,
+  emptyChannelsCheck,
+  privateChannelsOwnerlessCheck,
+  teamsDisabledOwnerCheck,
+  teamsOutdatedAppsCheck,
+  teamsUnverifiedAppsCheck,
+  sharedMailboxNoDelegateCheck,
+  sharedMailboxInactiveCheck,
+  mailboxAutoReplyStaleCheck,
+  resourceMailboxUnusedCheck,
 ];
 
 const registryErrors = validateRegisteredCheckIds(checks.map((c) => c.id));

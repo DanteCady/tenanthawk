@@ -3,6 +3,7 @@ import { connectionLabel } from "@/lib/connection/label";
 import { buildReportCustomer } from "@/lib/export/report-customer";
 import type { ExportFinding, ExportMeta } from "@/lib/export/types";
 import { summarize } from "@/lib/summary";
+import { scoreFindingsBySector } from "@/lib/scan/sector-score";
 
 interface ConnectionLike {
   tenant_domain: string | null;
@@ -16,6 +17,7 @@ interface ScanLike {
   started_at: Date | string;
   score: number | null;
   category_scores: CategoryScores | null;
+  scan_mode?: "standard" | "deep" | null;
 }
 
 interface FindingLike {
@@ -48,6 +50,18 @@ export function buildExportPayload(
 ) {
   const tenant = exportTenantLabel(conn);
   const summary = summarize(findings, scan.category_scores);
+  const sectorScores = scoreFindingsBySector(
+    findings.map((finding) => ({
+      category: finding.category,
+      checkId: finding.check_id,
+      severity: finding.severity,
+      title: finding.title,
+      description: finding.description,
+      remediation: finding.remediation,
+      impact: finding.impact ?? undefined,
+      entityRef: finding.entity_ref,
+    })),
+  );
 
   const meta: ExportMeta = {
     tenant,
@@ -63,7 +77,15 @@ export function buildExportPayload(
     scannedAt: new Date(scan.started_at).toISOString(),
     score: scan.score,
     mode: conn.mode,
+    scanMode: scan.scan_mode ?? "standard",
     categoryScores: scan.category_scores,
+    sectorScores: sectorScores.map((sector) => ({
+      sector: sector.sector,
+      label: sector.label,
+      score: sector.score,
+      letter: sector.letter,
+      findingCount: sector.findingCount,
+    })),
     summary: {
       total: summary.total,
       high: summary.high,

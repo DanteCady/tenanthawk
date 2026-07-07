@@ -7,7 +7,10 @@ import { parseLicensePricing } from "@/lib/licenses/pricing-overrides";
 import { captureJournal } from "@/lib/journal/capture";
 import { checks } from "./checks";
 import { offeredCheckDefinitions } from "./checks/registry";
+import { buildDeepScanPrefetch } from "./deep-prefetch";
 import { getDemoFindings } from "./demo";
+import { shouldRunCheck, skipReasonForCheck } from "./check-tier";
+import { reconcileAcceptedFindingsOnScan } from "@/lib/findings/reconcile";
 import { getAppToken, isLiveConfigured } from "./graph";
 import { buildScanPrefetch } from "./prefetch";
 import { fetchReportSettings, resolveReportConcealmentForScan } from "./report-settings";
@@ -22,6 +25,15 @@ async function runCheck(
   check: (typeof checks)[number],
   ctx: ScanContext,
 ): Promise<{ findings: FindingDraft[]; run: ScanCheckRunResult }> {
+  const scanMode = ctx.scanMode ?? "standard";
+  const skipReason = skipReasonForCheck(check.id, scanMode);
+  if (skipReason) {
+    return {
+      findings: [],
+      run: { id: check.id, status: "skipped", reason: skipReason },
+    };
+  }
+
   try {
     const findings = await check.run(ctx);
     return { findings, run: { id: check.id, status: "ok" } };
@@ -111,8 +123,14 @@ export async function runScan(
     };
 
     if (conn.mode === "demo" || !isLiveConfigured() || !conn.tenant_id) {
-      drafts = getDemoFindings();
-      checkRuns = checks.map((check) => ({ id: check.id, status: "ok" as const }));
+      drafts = getDemoFindings(scanMode);
+      checkRuns = checks.map((check) => ({
+        id: check.id,
+        status: shouldRunCheck(check.id, scanMode) ? ("ok" as const) : ("skipped" as const),
+        ...(shouldRunCheck(check.id, scanMode)
+          ? {}
+          : { reason: "Requires deep scan" }),
+      }));
     } else {
       const token = await getAppToken(conn.tenant_id);
       graphToken = token;
@@ -121,17 +139,24 @@ export async function runScan(
         buildScanPrefetch(token),
         fetchReportSettings(token),
       ]);
+      const deepPrefetch =
+        scanMode === "deep"
+          ? await buildDeepScanPrefetch(token, prefetch)
+          : undefined;
       reportConcealment = resolveReportConcealmentForScan(prefetch, graphReportSettings);
       const result = await runChecksParallel({
         tenantId: conn.tenant_id,
         token,
         licensePricing,
         prefetch,
+        deepPrefetch,
         scanMode,
       });
       drafts = result.drafts;
       checkRuns = result.checkRuns;
     }
+
+    await reconcileAcceptedFindingsOnScan(connectionId, drafts);
 
     const coverageNotes = {
       sectors: [...new Set(offeredCheckDefinitions().map((d) => d.sector))],

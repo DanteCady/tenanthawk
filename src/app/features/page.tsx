@@ -55,6 +55,15 @@ const featurePages = [
     body: "Every automated check across Identity, Teams, SharePoint, Exchange, Devices, Apps, and Copilot — plus what's explicitly out of scope.",
   },
   {
+    href: "/features/copilot-readiness",
+    icon: Sparkles,
+    title: "Copilot readiness & ROI",
+    tag: "Pro",
+    tagClass: "bg-violet-100 text-violet-700",
+    chip: "bg-violet-50 text-violet-600",
+    body: "Unused Copilot seats, inactive licensed users, adoption gaps, MFA gaps, and composite readiness blockers for client QBRs.",
+  },
+  {
     href: "/features/security-assessment",
     icon: ShieldAlert,
     title: "Security assessment",

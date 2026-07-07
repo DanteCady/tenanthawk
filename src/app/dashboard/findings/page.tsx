@@ -1,6 +1,7 @@
 import { getDashboardSnapshot } from "@/lib/dashboard/context";
 import { FindingsTable } from "@/components/app/FindingsTable";
 import { isAnnualBillingConfigured } from "@/lib/billing/pricing";
+import { countFindingsBySector } from "@/lib/scan/sector-score";
 import { timeAgo } from "@/lib/time";
 
 const SEV_RANK = { high: 0, medium: 1, low: 2 } as const;
@@ -14,6 +15,7 @@ export default async function FindingsPage() {
     total: summary.total,
     high: summary.high,
     usd: summary.usd,
+    sectorCounts: countFindingsBySector(dtos),
     items: [...dtos]
       .sort((a, b) => SEV_RANK[a.severity] - SEV_RANK[b.severity])
       .map(({ id, severity, category, title }) => ({ id, severity, category, title })),

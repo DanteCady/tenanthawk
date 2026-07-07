@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { isPro } from "@/lib/entitlements";
-import { getActiveConnection } from "@/lib/queries";
+import { getActiveConnection, getLatestScan, getFindings } from "@/lib/queries";
 import { setFindingStatus } from "@/lib/findings/status";
+import { acceptedStatusNote } from "@/lib/findings/reconcile";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,7 @@ export async function POST(req: Request) {
     entityRef?: unknown;
     action?: unknown;
     snoozeDays?: unknown;
+    note?: unknown;
   };
   try {
     body = await req.json();
@@ -41,6 +43,7 @@ export async function POST(req: Request) {
       : body.entityRef === null
         ? null
         : null;
+  const note = typeof body.note === "string" ? body.note : undefined;
 
   if (!checkId) {
     return NextResponse.json({ error: "checkId required" }, { status: 400 });
@@ -52,8 +55,52 @@ export async function POST(req: Request) {
       checkId,
       entityRef,
       status: "resolved",
+      note,
     });
     return NextResponse.json({ ok: true, status: "resolved" });
+  }
+
+  if (action === "accept") {
+    const scan = await getLatestScan(conn.id);
+    const findings = scan ? await getFindings(scan.id) : [];
+    const match = findings.find(
+      (finding) =>
+        finding.check_id === checkId &&
+        (finding.entity_ref ?? "") === (entityRef ?? ""),
+    );
+
+    await setFindingStatus({
+      connectionId: conn.id,
+      checkId,
+      entityRef,
+      status: "accepted",
+      note:
+        note ??
+        (match
+          ? acceptedStatusNote({
+              category: match.category,
+              checkId: match.check_id,
+              severity: match.severity,
+              title: match.title,
+              description: match.description,
+              remediation: match.remediation,
+              impact: match.impact ?? undefined,
+              entityRef: match.entity_ref,
+            })
+          : undefined),
+    });
+    return NextResponse.json({ ok: true, status: "accepted" });
+  }
+
+  if (action === "flag") {
+    await setFindingStatus({
+      connectionId: conn.id,
+      checkId,
+      entityRef,
+      status: "flagged",
+      note,
+    });
+    return NextResponse.json({ ok: true, status: "flagged" });
   }
 
   if (action === "snooze") {
@@ -65,6 +112,7 @@ export async function POST(req: Request) {
       entityRef,
       status: "snoozed",
       snoozeDays,
+      note,
     });
     return NextResponse.json({ ok: true, status: "snoozed", snoozeDays });
   }

@@ -8,6 +8,7 @@ import {
 } from "@/lib/queries";
 import { buildFindingsPdf } from "@/lib/export/pdf";
 import { buildExportPayload, exportFilenameSlug } from "@/lib/export/payload";
+import { filterActiveExportFindings } from "@/lib/export/active-findings";
 
 export const runtime = "nodejs";
 
@@ -31,7 +32,11 @@ export async function GET() {
     return NextResponse.json({ error: "No scan" }, { status: 404 });
   }
 
-  const findings = await getFindings(scan.id);
+  const findings = await filterActiveExportFindings(
+    conn.id,
+    await getFindings(scan.id),
+    true,
+  );
   const { meta, findings: exportFindings, tenant } = buildExportPayload(
     conn,
     scan,

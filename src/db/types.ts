@@ -16,7 +16,7 @@ export type FindingImpact = {
   entities?: string[];
 } | null;
 
-export type FindingTrackingStatus = "resolved" | "snoozed";
+export type FindingTrackingStatus = "resolved" | "snoozed" | "accepted" | "flagged";
 
 // Nullable column with optional insert / nullable update.
 type Nullable<T> = ColumnType<T | null, T | null | undefined, T | null>;

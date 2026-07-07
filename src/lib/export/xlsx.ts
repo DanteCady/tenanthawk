@@ -8,6 +8,7 @@ import {
   formatExportImpact,
   formatReportDate,
 } from "@/lib/export/report-format";
+import { groupExportFindingsBySector } from "@/lib/export/sector-grouping";
 import {
   CATEGORY_SHEET_NAMES,
   EXPORT_COLORS,
@@ -133,6 +134,9 @@ function addOverviewSheet(
   if (summary.usd > 0) {
     healthRows.push(["Recoverable spend (monthly)", `$${summary.usd.toLocaleString()}`]);
   }
+  if (meta.scanMode === "deep") {
+    healthRows.push(["Scan mode", "Deep scan"]);
+  }
 
   for (const [label, value] of healthRows) {
     styleLabelCell(sheet.getCell(`A${r}`));
@@ -185,6 +189,27 @@ function addOverviewSheet(
       }
     });
     r += 1;
+  }
+
+  if (meta.sectorScores && meta.sectorScores.length > 0) {
+    r += 1;
+    styleSectionTitle(sheet.getCell(`A${r}`), "Sector grades");
+    r += 1;
+
+    const sectorHeader = sheet.getRow(r);
+    sectorHeader.values = ["Sector", "Score", "Grade", "Open findings"];
+    applyHeaderRow(sectorHeader, 4);
+    r += 1;
+
+    for (const sector of meta.sectorScores) {
+      const row = sheet.getRow(r);
+      row.values = [sector.label, sector.score, sector.letter, sector.findingCount];
+      row.getCell(3).font = {
+        bold: true,
+        color: { argb: GRADE_TEXT[sector.letter] ?? EXPORT_COLORS.slate },
+      };
+      r += 1;
+    }
   }
 
   r += 1;
@@ -328,6 +353,54 @@ function addCategorySheet(
   }
 }
 
+function addSectorSheet(
+  workbook: ExcelJS.Workbook,
+  label: string,
+  findings: ExportFinding[],
+) {
+  const safeName = label.replace(/[\\/*?:[\]]/g, "").slice(0, 28);
+  const sheet = workbook.addWorksheet(safeName, {
+    views: [{ state: "frozen", ySplit: 3 }],
+  });
+
+  sheet.columns = [
+    { width: 12 },
+    { width: 34 },
+    { width: 42 },
+    { width: 14 },
+    { width: 44 },
+  ];
+
+  sheet.mergeCells("A1:E1");
+  const title = sheet.getCell("A1");
+  title.value = `${label} findings`;
+  title.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: EXPORT_COLORS.navy },
+  };
+  title.font = { bold: true, size: 14, color: { argb: EXPORT_COLORS.white } };
+  sheet.getRow(1).height = 28;
+
+  const header = sheet.getRow(3);
+  header.values = ["Severity", "Finding", "Description", "Impact", "Remediation"];
+  applyHeaderRow(header, 5);
+
+  let rowNum = 4;
+  for (const finding of findings) {
+    const row = sheet.getRow(rowNum);
+    row.values = [
+      finding.severity.toUpperCase(),
+      finding.title,
+      finding.description,
+      formatExportImpact(finding),
+      finding.remediation || finding.description,
+    ];
+    styleSeverityCell(row.getCell(1), finding.severity);
+    rowNum += 1;
+  }
+}
+
 /** Detailed multi-sheet workbook with overview + one sheet per category. */
 export async function buildFindingsXlsx(
   meta: ExportMeta,
@@ -343,6 +416,11 @@ export async function buildFindingsXlsx(
   addOverviewSheet(workbook, meta, findings, summary);
   for (const category of CATEGORY_ORDER) {
     addCategorySheet(workbook, category, findings);
+  }
+  for (const sector of groupExportFindingsBySector(findings)) {
+    if (sector.findings.length > 0) {
+      addSectorSheet(workbook, sector.label, sector.findings);
+    }
   }
 
   const buffer = await workbook.xlsx.writeBuffer();

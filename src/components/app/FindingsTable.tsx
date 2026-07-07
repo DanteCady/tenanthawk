@@ -49,6 +49,7 @@ export interface FindingDTO {
   remediationEnriched?: RemediationEnriched | null;
   tracking: FindingTrackingStatus | "open";
   snoozedUntil?: string | null;
+  trackingNote?: string | null;
 }
 
 const FILTERS: Array<{ key: "all" | Severity; label: string }> = [
@@ -70,6 +71,7 @@ export interface LockedFindingsPreview {
   high: number;
   usd: number;
   items: FindingPreview[];
+  sectorCounts?: Array<{ label: string; count: number }>;
 }
 
 const PREVIEW_LIMIT = 8;
@@ -95,6 +97,11 @@ function LockedFindingsView({
             High ({preview.high})
           </span>
         )}
+        {preview.sectorCounts?.map((sector) => (
+          <span key={sector.label} className="filter-chip pointer-events-none">
+            {sector.label} ({sector.count})
+          </span>
+        ))}
       </div>
 
       <div className="overflow-hidden surface-card">
@@ -209,6 +216,8 @@ function affectedItemsLabel(checkId: string): string {
 
 function trackingLabel(f: FindingDTO): string | null {
   if (f.tracking === "resolved") return "Resolved";
+  if (f.tracking === "accepted") return "Accepted";
+  if (f.tracking === "flagged") return "Flagged";
   if (f.tracking === "snoozed") return "Snoozed";
   return null;
 }
@@ -247,7 +256,7 @@ export function FindingsTable({
 
   const visible = findings.filter((f) => {
     if (showHandled) return true;
-    return f.tracking === "open";
+    return f.tracking === "open" || f.tracking === "flagged";
   });
 
   const sectorCounts = useMemo(() => {
@@ -267,7 +276,9 @@ export function FindingsTable({
     return groupFindingsForDisplay(filtered);
   }, [visible, filter, sectorFilter]);
 
-  const handledCount = findings.filter((f) => f.tracking !== "open").length;
+  const handledCount = findings.filter(
+    (f) => f.tracking !== "open" && f.tracking !== "flagged",
+  ).length;
 
   return (
     <div>
@@ -329,7 +340,7 @@ export function FindingsTable({
           return (
             <div
               key={group.key}
-              className={group.tracking !== "open" ? "opacity-75" : ""}
+              className={group.tracking === "resolved" || group.tracking === "snoozed" || group.tracking === "accepted" ? "opacity-75" : ""}
             >
               <button
                 onClick={() => setOpen(isOpen ? null : group.key)}

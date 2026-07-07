@@ -2,7 +2,9 @@ import "server-only";
 import { randomUUID } from "crypto";
 import { db } from "@/db";
 import type { FindingTrackingStatus } from "@/db/types";
+import { acceptedStatusNote } from "@/lib/findings/reconcile";
 import { findingEntityRef } from "@/lib/findings/key";
+import type { FindingDraft } from "@/lib/scan/types";
 
 export interface FindingTracking {
   checkId: string;
@@ -39,7 +41,8 @@ export async function getFindingStatuses(
 
 export function isFindingHidden(tracking: FindingTracking | undefined): boolean {
   if (!tracking) return false;
-  if (tracking.status === "resolved") return true;
+  if (tracking.status === "resolved" || tracking.status === "accepted") return true;
+  if (tracking.status === "flagged") return false;
   if (
     tracking.status === "snoozed" &&
     tracking.snoozedUntil &&
@@ -57,6 +60,7 @@ export async function setFindingStatus(opts: {
   status: FindingTrackingStatus | "open";
   snoozeDays?: number;
   note?: string;
+  acceptedFinding?: FindingDraft;
 }): Promise<void> {
   const entityRef = findingEntityRef(opts.entityRef);
 
@@ -75,6 +79,12 @@ export async function setFindingStatus(opts: {
       ? new Date(Date.now() + (opts.snoozeDays ?? 7) * 86_400_000)
       : null;
 
+  const note =
+    opts.note ??
+    (opts.status === "accepted" && opts.acceptedFinding
+      ? acceptedStatusNote(opts.acceptedFinding)
+      : null);
+
   await db
     .insertInto("finding_status")
     .values({
@@ -84,14 +94,14 @@ export async function setFindingStatus(opts: {
       entity_ref: entityRef,
       status: opts.status,
       snoozed_until: snoozedUntil?.toISOString() ?? null,
-      note: opts.note ?? null,
+      note,
       updated_at: new Date().toISOString(),
     })
     .onConflict((oc) =>
       oc.columns(["connection_id", "check_id", "entity_ref"]).doUpdateSet({
         status: opts.status as FindingTrackingStatus,
         snoozed_until: snoozedUntil?.toISOString() ?? null,
-        note: opts.note ?? null,
+        note,
         updated_at: new Date().toISOString(),
       }),
     )
