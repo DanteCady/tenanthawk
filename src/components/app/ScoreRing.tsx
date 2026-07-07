@@ -8,9 +8,12 @@ import { GradeBadge } from "./GradeBadge";
 export function ScoreRing({
   score,
   size = 160,
+  showGrade = true,
 }: {
   score: number;
   size?: number;
+  /** Hide the grade pill under the ring (compact list rows). */
+  showGrade?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
@@ -35,7 +38,10 @@ export function ScoreRing({
   }, [inView, score]);
 
   return (
-    <div ref={ref} className="flex flex-col items-center gap-1.5">
+    <div
+      ref={ref}
+      className={`flex flex-col items-center ${showGrade ? "gap-1.5" : ""}`}
+    >
       <div className="relative shrink-0" style={{ width: size, height: size }}>
         <svg viewBox={`0 0 ${size} ${size}`} className="h-full w-full -rotate-90">
           <circle
@@ -72,7 +78,9 @@ export function ScoreRing({
           </span>
         </div>
       </div>
-      <GradeBadge letter={letter} size={size >= 130 ? "md" : "sm"} />
+      {showGrade ? (
+        <GradeBadge letter={letter} size={size >= 130 ? "md" : "sm"} />
+      ) : null}
     </div>
   );
 }

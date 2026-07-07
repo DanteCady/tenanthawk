@@ -4,14 +4,9 @@ import { sql } from "kysely";
 import { db } from "@/db";
 import { getSession } from "@/lib/session";
 import type { Plan } from "@/lib/entitlements";
+import { canSimulatePlan } from "@/lib/billing/demo-plan-switch";
 
 export const runtime = "nodejs";
-
-// DEV ONLY: simulate plan changes without Stripe so the unlock/gating UX can be
-// tested locally. Disabled in production and once real Stripe keys are set.
-function devAllowed() {
-  return process.env.NODE_ENV !== "production" && !process.env.STRIPE_SECRET_KEY;
-}
 
 function normalizeDevPlan(raw: string | undefined): Plan {
   if (raw === "pro" || raw === "msp") return raw;
@@ -19,12 +14,12 @@ function normalizeDevPlan(raw: string | undefined): Plan {
 }
 
 export async function POST(req: NextRequest) {
-  if (!devAllowed()) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!canSimulatePlan(session.user.email)) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
   const userId = session.user.id;
   const { plan: rawPlan } = (await req.json().catch(() => ({}))) as { plan?: string };

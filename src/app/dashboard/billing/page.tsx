@@ -25,6 +25,7 @@ import {
 } from "@/lib/billing/pricing";
 import { formatUsd } from "@/lib/format";
 import { PageHeader } from "@/components/app/PageHeader";
+import { canSimulatePlan } from "@/lib/billing/demo-plan-switch";
 
 function billingSubtitle(plan: Plan) {
   if (isEnterprisePlan(plan)) {
@@ -76,8 +77,7 @@ export default async function BillingPage({
   const enterpriseAnnualAvailable = isEnterpriseAnnualBillingConfigured();
   const enterpriseCheckoutAvailable = isEnterpriseBillingConfigured();
   const stripeConfigured = isStripeBillingConfigured();
-  const devMode =
-    process.env.NODE_ENV !== "production" && !process.env.STRIPE_SECRET_KEY;
+  const showPlanSimulator = canSimulatePlan(session.user.email);
 
   const enterpriseCard = showEnterprisePitch && !isEnterprisePlan(plan) && (
     <div className="surface-card flex h-full flex-col space-y-4 p-6 sm:p-8">
@@ -217,7 +217,7 @@ export default async function BillingPage({
         </p>
       )}
 
-      {devMode && <DevPlanToggle plan={plan} />}
+      {showPlanSimulator && <DevPlanToggle plan={plan} />}
 
       {plan !== "free" && enterpriseCard}
     </div>

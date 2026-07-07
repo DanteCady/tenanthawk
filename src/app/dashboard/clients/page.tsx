@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Building2, FileText, Plus } from "lucide-react";
+import { FileText, Plus } from "lucide-react";
 import { requireVerifiedSession } from "@/lib/session";
 import { getActiveConnection } from "@/lib/queries";
 import { getClientPortfolio } from "@/lib/connection/portfolio";
 import { getMspConsoleAccess } from "@/lib/entitlements/msp-console";
 import { getEnterpriseClientLimit } from "@/lib/billing/enterprise-limits";
 import { connectionLabel } from "@/lib/connection/label";
-import { ScoreRing } from "@/components/app/ScoreRing";
+import { GradeBadge } from "@/components/app/GradeBadge";
 import { timeAgo } from "@/lib/time";
 import { formatUsd } from "@/lib/format";
 import { OpenClientButton } from "@/components/dashboard/MspOverviewDashboard";
@@ -65,105 +65,110 @@ export default async function ClientsPage() {
         )}
       </div>
 
-      <div className="grid gap-4">
-        {portfolio.map((client) => {
-          const isActive = client.id === activeId;
-          return (
-            <div
-              key={client.id}
-              className={`surface-card p-5 ${
-                isActive ? "ring-2 ring-blue-200 ring-offset-2" : ""
-              }`}
-            >
-              <div className="grid grid-cols-1 items-center gap-4 lg:grid-cols-[minmax(0,1fr)_3.25rem_6rem_6.5rem_13.5rem] lg:gap-x-6">
-                <div className="flex min-w-0 items-center gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-                    <Building2 className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="truncate font-semibold text-slate-900">
-                        {client.label}
+      <div className="surface-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[52rem] text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-100 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                <th className="px-5 py-3 font-medium">Client</th>
+                <th className="px-5 py-3 font-medium text-right">Score</th>
+                <th className="px-5 py-3 font-medium text-right">High</th>
+                <th className="px-5 py-3 font-medium text-right">Recoverable / mo</th>
+                <th className="px-5 py-3 font-medium text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {portfolio.map((client) => {
+                const isActive = client.id === activeId;
+                return (
+                  <tr
+                    key={client.id}
+                    className={`border-b border-slate-100 last:border-0 ${
+                      isActive ? "bg-blue-50/50" : "hover:bg-slate-50/80"
+                    }`}
+                  >
+                    <td className="px-5 py-3">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <p className="font-medium text-slate-900">{client.label}</p>
+                        {isActive ? (
+                          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-blue-800">
+                            Selected
+                          </span>
+                        ) : null}
+                        <span
+                          className={
+                            client.mode === "live"
+                              ? "rounded-full border border-[var(--th-brand-muted-border)] bg-[var(--th-brand-muted)] px-2 py-0.5 text-[0.65rem] font-medium text-[var(--th-brand-text)]"
+                              : "badge-free text-[0.65rem]"
+                          }
+                        >
+                          {client.mode === "live" ? "Live" : "Demo"}
+                        </span>
+                        {client.mode === "live" && client.reportNamesConcealed === true ? (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[0.65rem] font-medium text-amber-900">
+                            Report names hidden
+                          </span>
+                        ) : null}
+                        {client.mode === "live" && client.reportNamesConcealed === false ? (
+                          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[0.65rem] font-medium text-emerald-900">
+                            Report names visible
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="mt-0.5 text-xs text-slate-500">
+                        {client.lastScanAt
+                          ? `Last scan ${timeAgo(client.lastScanAt)}`
+                          : "Not scanned yet"}
+                        {client.stale && client.lastScanAt ? " · stale" : ""}
                       </p>
-                      {isActive ? (
-                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-blue-800">
-                          Selected
-                        </span>
-                      ) : null}
-                      <span
-                        className={
-                          client.mode === "live"
-                            ? "rounded-full border border-[var(--th-brand-muted-border)] bg-[var(--th-brand-muted)] px-2 py-0.5 text-[0.65rem] font-medium text-[var(--th-brand-text)]"
-                            : "badge-free text-[0.65rem]"
-                        }
-                      >
-                        {client.mode === "live" ? "Live" : "Demo"}
-                      </span>
-                      {client.mode === "live" && client.reportNamesConcealed === true ? (
-                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[0.65rem] font-medium text-amber-900">
-                          Report names hidden
-                        </span>
-                      ) : null}
-                      {client.mode === "live" && client.reportNamesConcealed === false ? (
-                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[0.65rem] font-medium text-emerald-900">
-                          Report names visible
-                        </span>
-                      ) : null}
-                    </div>
-                    <p className="mt-0.5 text-xs text-slate-500">
-                      {client.lastScanAt
-                        ? `Last scan ${timeAgo(client.lastScanAt)}`
-                        : "Not scanned yet"}
-                      {client.stale && client.lastScanAt ? " · stale" : ""}
-                    </p>
-                  </div>
-                </div>
+                    </td>
 
-                <div className="grid grid-cols-3 items-center gap-4 sm:gap-6 lg:contents">
-                  <div className="flex justify-center lg:justify-self-center">
-                    {client.score != null ? (
-                      <ScoreRing score={client.score} size={52} />
-                    ) : (
-                      <span className="text-sm text-slate-500">No scan</span>
-                    )}
-                  </div>
+                    <td className="px-5 py-3 text-right">
+                      {client.score != null ? (
+                        <div className="inline-flex items-center justify-end gap-2">
+                          <span className="font-semibold tabular-nums text-slate-900">
+                            {client.score}
+                          </span>
+                          <GradeBadge letter={client.grade ?? "-"} size="sm" />
+                        </div>
+                      ) : (
+                        <span className="text-slate-400">—</span>
+                      )}
+                    </td>
 
-                  <div className="text-center text-sm lg:justify-self-center">
-                    <p className="font-semibold tabular-nums text-slate-900">
-                      {client.openHigh} high
-                    </p>
-                    <p className="text-slate-500">open findings</p>
-                  </div>
+                    <td className="px-5 py-3 text-right font-semibold tabular-nums text-slate-900">
+                      {client.openHigh}
+                    </td>
 
-                  <div className="text-center text-sm lg:justify-self-center">
-                    <p className="font-semibold tabular-nums text-green-700">
+                    <td className="px-5 py-3 text-right font-semibold tabular-nums text-green-700">
                       {formatUsd(client.recoverableUsd)}
-                    </p>
-                    <p className="text-slate-500">recoverable / mo</p>
-                  </div>
-                </div>
+                    </td>
 
-                <div className="flex flex-wrap items-center gap-2 lg:justify-end">
-                  <ClientRescanButton connectionId={client.id} compact />
-                  {client.score != null ? (
-                    <Link
-                      href={`/dashboard/client/scorecard?connection=${client.id}`}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
-                    >
-                      <FileText className="h-3.5 w-3.5" />
-                      Scorecard
-                    </Link>
-                  ) : null}
-                  <OpenClientButton
-                    connectionId={client.id}
-                    label={isActive ? "Open" : "Select & open"}
-                    compact
-                  />
-                </div>
-              </div>
-            </div>
-          );
-        })}
+                    <td className="px-5 py-3">
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        <ClientRescanButton connectionId={client.id} compact />
+                        {client.score != null ? (
+                          <Link
+                            href={`/dashboard/client/scorecard?connection=${client.id}`}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+                          >
+                            <FileText className="h-3.5 w-3.5" />
+                            Scorecard
+                          </Link>
+                        ) : null}
+                        <OpenClientButton
+                          connectionId={client.id}
+                          label={isActive ? "Open" : "Select & open"}
+                          compact
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {activeConn ? (
