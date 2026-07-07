@@ -51,6 +51,13 @@ import {
   mailboxHighStorageCheck,
   inactiveMailboxLicensesCheck,
 } from "./exchange";
+import {
+  staleGuestsCheck,
+  guestInviteSprawlCheck,
+  usersNoManagerCheck,
+  privilegedUserNoMfaCheck,
+  pimStandingAccessCheck,
+} from "./identity-extended";
 import { validateRegisteredCheckIds } from "./registry";
 
 export const checks: Check[] = [
@@ -60,6 +67,10 @@ export const checks: Check[] = [
   mfaRegistration,
   adminRoles,
   guestSprawl,
+  staleGuestsCheck,
+  guestInviteSprawlCheck,
+  privilegedUserNoMfaCheck,
+  pimStandingAccessCheck,
   // Cost
   disabledUserLicenses,
   unusedLicenses,
@@ -77,6 +88,7 @@ export const checks: Check[] = [
   intuneStaleSync,
   // Hygiene & workload
   inactiveUsers,
+  usersNoManagerCheck,
   disabledOutsideGroup,
   emptyGroups,
   ownerlessGroupsCheck,

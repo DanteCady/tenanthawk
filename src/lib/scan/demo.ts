@@ -381,5 +381,25 @@ export function getDemoFindings(): FindingDraft[] {
       impact: { count: 8, entities: ["Contoso Portal", "Inventory Sync"] },
       remediation: "Assign at least two owners to each app registration in Entra → App registrations.",
     },
+    {
+      category: "hygiene",
+      checkId: "hygiene.users-no-manager",
+      severity: "medium",
+      title: "42 users without a manager",
+      description: "42 enabled member accounts do not have a manager assigned in Entra ID.",
+      impact: { count: 42, entities: ["Jordan Lee", "Sam Patel", "Alex Morgan"] },
+      remediation:
+        "Assign managers in Entra → Users so access reviews and lifecycle workflows stay accurate.",
+    },
+    {
+      category: "security",
+      checkId: "security.stale-guests",
+      severity: "medium",
+      title: "18 stale guest accounts",
+      description: "18 guest accounts had no sign-in activity in 90+ days (or never signed in).",
+      impact: { count: 18, entities: ["vendor.bot@partner.com", "consultant@external.org"] },
+      remediation:
+        "Review stale guests in Entra → External Identities and remove access that is no longer required.",
+    },
   ];
 }

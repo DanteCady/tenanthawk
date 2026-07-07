@@ -206,6 +206,31 @@ export const CHECK_REMEDIATION_META: Record<string, CheckRemediationMeta> = {
     adminSurface: "Entra",
     effortLabel: "~1 hour",
   },
+  "security.stale-guests": {
+    effort: "moderate",
+    adminSurface: "Entra",
+    effortLabel: "~1 hour",
+  },
+  "security.guest-invite-sprawl": {
+    effort: "quick",
+    adminSurface: "Entra",
+    effortLabel: "~15 min",
+  },
+  "hygiene.users-no-manager": {
+    effort: "moderate",
+    adminSurface: "Entra",
+    effortLabel: "~1 hour",
+  },
+  "security.privileged-user-no-mfa": {
+    effort: "quick",
+    adminSurface: "Entra",
+    effortLabel: "~15 min",
+  },
+  "security.pim-standing-access": {
+    effort: "moderate",
+    adminSurface: "Entra",
+    effortLabel: "~1 hour",
+  },
   "hygiene.sharing": {
     effort: "moderate",
     adminSurface: "SharePoint",

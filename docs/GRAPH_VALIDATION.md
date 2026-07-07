@@ -26,6 +26,9 @@ Run spikes against a live tenant before promoting checks from `backlog` → `v1`
 | AP2 | `GET /oauth2PermissionGrants` | `security.over-permissioned-apps` | Pending | Match risky scopes in `risky-permissions.ts`. |
 | AP3 | `GET /auditLogs/signIns` + credentialed `servicePrincipals` | `hygiene.unused-enterprise-apps` | Pending | 90d sign-in lookback; capped paging. |
 | AP4 | `GET /directoryRoles` (Global Admin) `/members` | `security.app-global-admin-role` | Pending | Filter service principal members. |
+| ID1 | `GET /roleManagement/directory/roleAssignments` + `roleEligibilitySchedules` | `security.pim-standing-access` | **Needs RoleManagement.Read.Directory** | Skips gracefully when PIM APIs are unavailable. |
+| ID2 | `GET /users` (guests, managers) | Identity extended checks | Pending | Guest inactivity and manager assignment. |
+| ID3 | Privileged role members × MFA registration report | `security.privileged-user-no-mfa` | Pending | Cross-reference directory roles with authentication methods report. |
 | DV1 | `GET /devices` + match to Intune via `azureADDeviceId` | Device sector checks | **Pass** | Entra/Intune cross-match works with `Device.Read.All` + managed devices permission. |
 
 ## Permissions reference

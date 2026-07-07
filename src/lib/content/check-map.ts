@@ -184,6 +184,26 @@ export const CHECK_GUIDE_MAP: Record<string, CheckGuideLink> = {
     slug: "m365-security-misconfigurations",
     label: "Multi-tenant apps with credentials",
   },
+  "security.stale-guests": {
+    slug: "m365-security-misconfigurations",
+    label: "Stale guest accounts",
+  },
+  "security.guest-invite-sprawl": {
+    slug: "m365-security-misconfigurations",
+    label: "Guest invitation spike",
+  },
+  "hygiene.users-no-manager": {
+    slug: "m365-tenant-hygiene",
+    label: "Users without a manager",
+  },
+  "security.privileged-user-no-mfa": {
+    slug: "m365-security-misconfigurations",
+    label: "Privileged users without MFA",
+  },
+  "security.pim-standing-access": {
+    slug: "m365-security-misconfigurations",
+    label: "Standing privileged role access",
+  },
   "reliability.intune-stale-sync": {
     slug: "m365-tenant-hygiene",
     label: "Stale Intune device sync",

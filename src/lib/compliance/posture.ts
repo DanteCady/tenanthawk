@@ -192,6 +192,26 @@ export const CHECK_COMPLIANCE: Record<string, CheckComplianceMap> = {
     cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
     nist: [{ id: "AC-3", title: "Access Enforcement" }],
   },
+  "security.stale-guests": {
+    cis: [{ id: "6.1", title: "Establish an access granting process" }],
+    nist: [{ id: "AC-2", title: "Account Management" }],
+  },
+  "security.guest-invite-sprawl": {
+    cis: [{ id: "6.1", title: "Establish an access granting process" }],
+    nist: [{ id: "AC-2", title: "Account Management" }],
+  },
+  "hygiene.users-no-manager": {
+    cis: [{ id: "5.1", title: "Establish and maintain an inventory of accounts" }],
+    nist: [{ id: "AC-2", title: "Account Management" }],
+  },
+  "security.privileged-user-no-mfa": {
+    cis: [{ id: "6.5", title: "Require MFA for administrative access" }],
+    nist: [{ id: "IA-2", title: "Identification and Authentication" }],
+  },
+  "security.pim-standing-access": {
+    cis: [{ id: "5.4", title: "Restrict administrator privileges to dedicated accounts" }],
+    nist: [{ id: "AC-6", title: "Least Privilege" }],
+  },
 };
 
 export const FRAMEWORK_LABELS: Record<ComplianceFramework, string> = {
