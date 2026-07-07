@@ -1,8 +1,9 @@
+import { buildCopilotReadinessFindings } from "./copilot-readiness";
 import type { FindingDraft } from "./types";
 
 /** Deterministic, realistic findings so the full product works without Azure. */
 export function getDemoFindings(): FindingDraft[] {
-  return [
+  const base: FindingDraft[] = [
     // Reliability
     {
       category: "reliability",
@@ -216,6 +217,61 @@ export function getDemoFindings(): FindingDraft[] {
       entityRef: "Microsoft_365_Copilot",
     },
     {
+      category: "cost",
+      checkId: "cost.copilot-licensed-inactive",
+      severity: "high",
+      title: "12 licensed inactive Copilot users",
+      description:
+        "12 Copilot-licensed users had no Copilot activity in the last 30 days. Estimated recoverable spend: ~$360/mo.",
+      impact: {
+        count: 12,
+        usd: 360,
+        entities: ["Jordan Lee", "Sam Patel", "Alex Morgan"],
+      },
+      remediation:
+        "Reassign unused Copilot licenses or coach inactive users on adoption in M365 Admin → Users.",
+    },
+    {
+      category: "cost",
+      checkId: "cost.copilot-assigned-disabled-user",
+      severity: "high",
+      title: "2 disabled accounts with Copilot licenses",
+      description: "2 disabled accounts still hold a Microsoft 365 Copilot license.",
+      impact: { count: 2, usd: 60, entities: ["Former Contractor", "Offboarded Sales Rep"] },
+      remediation: "Remove Copilot licenses from disabled accounts in M365 Admin → Users.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.copilot-app-skew",
+      severity: "low",
+      title: "5 Copilot Chat-only users",
+      description:
+        "5 users used Copilot Chat but not Word, Outlook, Teams, or other Microsoft 365 Copilot apps in the last 30 days.",
+      impact: { count: 5, entities: ["Jordan Lee", "Sam Patel", "Taylor Brooks"] },
+      remediation:
+        "Coach users on Copilot in Word, Outlook, and Teams to improve rollout ROI.",
+    },
+    {
+      category: "security",
+      checkId: "security.copilot-licensed-no-mfa",
+      severity: "high",
+      title: "3 Copilot-licensed users without MFA",
+      description: "3 Copilot-licensed users do not have MFA registered.",
+      impact: { count: 3, entities: ["Jordan Lee", "Sam Patel", "Alex Morgan"] },
+      remediation:
+        "Require MFA for Copilot users via Conditional Access and complete MFA registration.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.copilot-chat-only-usage",
+      severity: "low",
+      title: "62% of active Copilot users are Chat-only",
+      description: "8 of 13 active Copilot users (62%) only used Copilot Chat in the last 30 days.",
+      impact: { count: 8, entities: ["Jordan Lee", "Sam Patel", "Taylor Brooks"] },
+      remediation:
+        "Share rollout guides for Copilot in Word, Excel, Outlook, and Teams to broaden adoption beyond chat.",
+    },
+    {
       category: "hygiene",
       checkId: "hygiene.inactive-users",
       severity: "low",
@@ -402,4 +458,6 @@ export function getDemoFindings(): FindingDraft[] {
         "Review stale guests in Entra → External Identities and remove access that is no longer required.",
     },
   ];
+
+  return [...base, ...buildCopilotReadinessFindings(base)];
 }

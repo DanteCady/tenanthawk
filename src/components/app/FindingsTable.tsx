@@ -203,6 +203,7 @@ function affectedItemsLabel(checkId: string): string {
   if (sector === "devices") return "Affected devices";
   if (sector === "exchange") return "Affected mailboxes";
   if (sector === "apps") return "Affected apps";
+  if (sector === "copilot") return "Affected users";
   return "Affected items";
 }
 

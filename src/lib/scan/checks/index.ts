@@ -37,7 +37,16 @@ import {
   sharePointInactiveFilesCheck,
 } from "./sharepoint";
 import { ownerlessGroupsCheck, ownerlessTeamsCheck, emptyTeamsCheck, staleTeamsCheck, teamsNoActiveChannelsCheck, teamsGuestHeavyCheck, groupsNamingChaosCheck } from "./collaboration";
-import { unusedCopilotLicenses } from "./copilot";
+import {
+  unusedCopilotLicenses,
+  copilotLicensedInactiveCheck,
+  copilotAssignedDisabledUserCheck,
+  copilotLowAdoptionCheck,
+  copilotAppSkewCheck,
+  copilotLicensedNoMfaCheck,
+  copilotChatOnlyUsageCheck,
+  copilotReadinessBlockersCheck,
+} from "./copilot";
 import {
   entraUnmanagedDevicesCheck,
   intuneGhostEnrollmentCheck,
@@ -76,6 +85,13 @@ export const checks: Check[] = [
   unusedLicenses,
   licenseExpiry,
   unusedCopilotLicenses,
+  copilotLicensedInactiveCheck,
+  copilotAssignedDisabledUserCheck,
+  copilotLowAdoptionCheck,
+  copilotAppSkewCheck,
+  copilotLicensedNoMfaCheck,
+  copilotChatOnlyUsageCheck,
+  copilotReadinessBlockersCheck,
   // Reliability
   expiringSecrets,
   servicePrincipalSecretsCheck,

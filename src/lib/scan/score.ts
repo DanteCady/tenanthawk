@@ -26,7 +26,18 @@ function dedupeExclusivityGroups(findings: FindingDraft[]): FindingDraft[] {
       continue;
     }
     const existing = byGroup.get(group);
-    if (!existing || SEVERITY_RANK[f.severity] > SEVERITY_RANK[existing.severity]) {
+    if (!existing) {
+      byGroup.set(group, f);
+      continue;
+    }
+
+    const fOrder = CHECK_DEFINITION_BY_ID.get(f.checkId)?.exclusivityOrder ?? 0;
+    const existingOrder =
+      CHECK_DEFINITION_BY_ID.get(existing.checkId)?.exclusivityOrder ?? 0;
+    const fRank = SEVERITY_RANK[f.severity];
+    const existingRank = SEVERITY_RANK[existing.severity];
+
+    if (fRank > existingRank || (fRank === existingRank && fOrder < existingOrder)) {
       byGroup.set(group, f);
     }
   }

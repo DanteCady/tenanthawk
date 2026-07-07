@@ -12,38 +12,52 @@ import { getAppToken, isLiveConfigured } from "./graph";
 import { buildScanPrefetch } from "./prefetch";
 import { fetchReportSettings, resolveReportConcealmentForScan } from "./report-settings";
 import { scoreFindings } from "./score";
-import type { FindingDraft, ScanCheckRunResult, ScanMode } from "./types";
+import type { FindingDraft, ScanCheckRunResult, ScanContext, ScanMode } from "./types";
 
 const SCORE_VERSION = 2;
 
+const COMPOSITE_CHECK_IDS = new Set(["copilot.readiness-blockers"]);
+
+async function runCheck(
+  check: (typeof checks)[number],
+  ctx: ScanContext,
+): Promise<{ findings: FindingDraft[]; run: ScanCheckRunResult }> {
+  try {
+    const findings = await check.run(ctx);
+    return { findings, run: { id: check.id, status: "ok" } };
+  } catch (err) {
+    console.error(`[scan] check failed: ${check.id}`, err);
+    return {
+      findings: [],
+      run: {
+        id: check.id,
+        status: "error",
+        reason: err instanceof Error ? err.message : String(err),
+      },
+    };
+  }
+}
+
 async function runChecksParallel(
-  ctx: {
-    tenantId: string;
-    token: string;
-    licensePricing?: ReturnType<typeof parseLicensePricing>;
-    prefetch?: Awaited<ReturnType<typeof buildScanPrefetch>>;
-    scanMode: ScanMode;
-  },
+  ctx: ScanContext,
 ): Promise<{ drafts: FindingDraft[]; checkRuns: ScanCheckRunResult[] }> {
+  const primaryChecks = checks.filter((check) => !COMPOSITE_CHECK_IDS.has(check.id));
+  const compositeChecks = checks.filter((check) => COMPOSITE_CHECK_IDS.has(check.id));
+
   const drafts: FindingDraft[] = [];
   const checkRuns: ScanCheckRunResult[] = [];
 
-  await Promise.all(
-    checks.map(async (check) => {
-      try {
-        const findings = await check.run(ctx);
-        drafts.push(...findings);
-        checkRuns.push({ id: check.id, status: "ok" });
-      } catch (err) {
-        console.error(`[scan] check failed: ${check.id}`, err);
-        checkRuns.push({
-          id: check.id,
-          status: "error",
-          reason: err instanceof Error ? err.message : String(err),
-        });
-      }
-    }),
-  );
+  const primaryResults = await Promise.all(primaryChecks.map((check) => runCheck(check, ctx)));
+  for (const result of primaryResults) {
+    drafts.push(...result.findings);
+    checkRuns.push(result.run);
+  }
+
+  for (const check of compositeChecks) {
+    const result = await runCheck(check, { ...ctx, priorFindings: drafts });
+    drafts.push(...result.findings);
+    checkRuns.push(result.run);
+  }
 
   return { drafts, checkRuns };
 }
@@ -98,7 +112,7 @@ export async function runScan(
 
     if (conn.mode === "demo" || !isLiveConfigured() || !conn.tenant_id) {
       drafts = getDemoFindings();
-      checkRuns = checks.map((c) => ({ id: c.id, status: "ok" as const }));
+      checkRuns = checks.map((check) => ({ id: check.id, status: "ok" as const }));
     } else {
       const token = await getAppToken(conn.tenant_id);
       graphToken = token;
