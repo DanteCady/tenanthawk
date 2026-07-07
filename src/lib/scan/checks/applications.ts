@@ -1,6 +1,10 @@
 import type { Severity } from "@/db/types";
 import { graphGet } from "../graph";
 import { isRiskyGraphScope } from "../constants/risky-permissions";
+import {
+  buildCredentialExpiryFindings,
+  collectCredentialExpiries,
+} from "../credential-expiry";
 import type { Check, FindingDraft } from "../types";
 
 export { expiringSecrets } from "./reliability";
@@ -108,47 +112,11 @@ function collectExpiringCredentials(
     keyCredentials?: Credential[];
   }>,
 ): FindingDraft[] {
-  const findings: FindingDraft[] = [];
-  const now = Date.now();
-
-  for (const item of items) {
-    const creds = [
-      ...(item.passwordCredentials ?? []).map((c) => ({ ...c, kind: "secret" as const })),
-      ...(item.keyCredentials ?? []).map((c) => ({ ...c, kind: "certificate" as const })),
-    ];
-    for (const cred of creds) {
-      if (!cred.endDateTime) continue;
-      const days = Math.round((new Date(cred.endDateTime).getTime() - now) / DAY);
-      const name = item.displayName ?? "Unknown app";
-      if (days < 0) {
-        findings.push({
-          category: "reliability",
-          checkId: servicePrincipalSecretsCheck.id,
-          severity: "high",
-          title: `Expired ${cred.kind} on ${name}`,
-          description: `An enterprise app ${cred.kind} expired ${Math.abs(days)} days ago and may already be breaking SSO or integrations.`,
-          remediation:
-            "Rotate the credential in Entra → Enterprise applications → select the app → Certificates & secrets.",
-          entityRef: name,
-          impact: { daysUntil: days, expiresAt: cred.endDateTime },
-        });
-      } else if (days <= 30) {
-        findings.push({
-          category: "reliability",
-          checkId: servicePrincipalSecretsCheck.id,
-          severity: days <= 7 ? "high" : "medium",
-          title: `${cred.kind} on ${name} expires in ${days}d`,
-          description: `An enterprise app ${cred.kind} for ${name} expires in ${days} days.`,
-          remediation:
-            "Rotate the credential before expiry in Entra → Enterprise applications.",
-          entityRef: name,
-          impact: { count: 1, daysUntil: days, expiresAt: cred.endDateTime },
-        });
-      }
-    }
-  }
-
-  return findings;
+  return buildCredentialExpiryFindings(collectCredentialExpiries(items), {
+    checkId: servicePrincipalSecretsCheck.id,
+    remediation:
+      "Rotate expiring credentials in Entra → Enterprise applications → Certificates & secrets before they expire.",
+  });
 }
 
 async function fetchRecentSignInAppIds(token: string): Promise<Set<string>> {

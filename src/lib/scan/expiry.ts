@@ -2,6 +2,7 @@
 
 export const EXPIRY_CHECK_IDS = new Set([
   "reliability.expiring-secrets",
+  "reliability.service-principal-secrets",
   "cost.license-expiry",
 ]);
 

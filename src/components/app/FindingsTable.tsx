@@ -28,6 +28,7 @@ import { formatTeamsEntityLabel } from "@/lib/scan/teams-activity-label";
 import { formatMailboxEntityLabel } from "@/lib/scan/exchange-mailbox-label";
 import { ReportConcealmentBanner } from "@/components/app/ReportConcealmentBanner";
 import type { ReportConcealmentStatus } from "@/lib/scan/report-settings.shared";
+import { groupFindingsForDisplay } from "@/lib/findings/group-display";
 
 export interface FindingDTO {
   id: string;
@@ -36,7 +37,13 @@ export interface FindingDTO {
   severity: Severity;
   title: string;
   description: string;
-  impact: { usd?: number; count?: number; daysUntil?: number; entities?: string[] } | null;
+  impact: {
+    usd?: number;
+    count?: number;
+    daysUntil?: number;
+    expiresAt?: string;
+    entities?: string[];
+  } | null;
   remediation: string;
   entityRef: string | null;
   remediationEnriched?: RemediationEnriched | null;
@@ -50,8 +57,6 @@ const FILTERS: Array<{ key: "all" | Severity; label: string }> = [
   { key: "medium", label: "Medium" },
   { key: "low", label: "Low" },
 ];
-
-const SEV_RANK: Record<Severity, number> = { high: 0, medium: 1, low: 2 };
 
 export interface FindingPreview {
   id: string;
@@ -254,10 +259,12 @@ export function FindingsTable({
     return [...counts.entries()].sort((a, b) => b[1] - a[1]);
   }, [visible]);
 
-  const rows = visible
-    .filter((f) => filter === "all" || f.severity === filter)
-    .filter((f) => sectorFilter === "all" || checkSector(f.checkId) === sectorFilter)
-    .sort((a, b) => SEV_RANK[a.severity] - SEV_RANK[b.severity]);
+  const rows = useMemo(() => {
+    const filtered = visible
+      .filter((f) => filter === "all" || f.severity === filter)
+      .filter((f) => sectorFilter === "all" || checkSector(f.checkId) === sectorFilter);
+    return groupFindingsForDisplay(filtered);
+  }, [visible, filter, sectorFilter]);
 
   const handledCount = findings.filter((f) => f.tracking !== "open").length;
 
@@ -314,34 +321,45 @@ export function FindingsTable({
       ) : null}
 
       <div className="divide-y divide-slate-100 overflow-hidden surface-card">
-        {rows.map((f) => {
-          const isOpen = open === f.id;
-          const badge = trackingLabel(f);
+        {rows.map((group) => {
+          const isOpen = open === group.key;
+          const badge = trackingLabel(group.items[0]);
+          const primary = group.items[0];
           return (
-            <div key={f.id} className={f.tracking !== "open" ? "opacity-75" : ""}>
+            <div
+              key={group.key}
+              className={group.tracking !== "open" ? "opacity-75" : ""}
+            >
               <button
-                onClick={() => setOpen(isOpen ? null : f.id)}
+                onClick={() => setOpen(isOpen ? null : group.key)}
                 className="finding-row-trigger flex w-full items-center gap-3 px-5 py-4 text-left"
               >
-                <SeverityBadge severity={f.severity} />
-                <CategoryIconChip category={f.category} size="sm" />
+                <SeverityBadge severity={group.severity} />
+                <CategoryIconChip category={group.category} size="sm" />
                 <span className="flex min-w-0 flex-1 items-center gap-2">
-                  <span className="truncate text-sm text-slate-900">{f.title}</span>
-                  <FindingScriptIndicator checkId={f.checkId} isPro={isPro} />
-                  {isExpiryCheckId(f.checkId) && f.impact?.daysUntil != null && (
+                  <span className="truncate text-sm text-slate-900">{group.title}</span>
+                  <FindingScriptIndicator checkId={group.checkId} isPro={isPro} />
+                  {isExpiryCheckId(group.checkId) && group.impact?.daysUntil != null && (
                     <span className="shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-[0.65rem] font-medium text-amber-800">
-                      {f.impact.daysUntil <= 0 ? "Expired" : `${f.impact.daysUntil}d`}
+                      {group.impact.daysUntil <= 0
+                        ? "Expired"
+                        : `${group.impact.daysUntil}d`}
                     </span>
                   )}
+                  {group.items.length > 1 ? (
+                    <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[0.65rem] font-medium text-slate-600">
+                      {group.items.length} items
+                    </span>
+                  ) : null}
                   {badge && (
                     <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[0.65rem] font-medium text-slate-600">
                       {badge}
                     </span>
                   )}
                 </span>
-                {f.impact?.usd ? (
+                {group.impact?.usd ? (
                   <span className="hidden text-sm font-medium text-blue-700 sm:inline">
-                    ${formatUsd(f.impact.usd)}/mo
+                    ${formatUsd(group.impact.usd)}/mo
                   </span>
                 ) : null}
                 <ChevronDown
@@ -350,43 +368,70 @@ export function FindingsTable({
               </button>
               {isOpen && (
                 <div className="finding-row-detail space-y-3 px-5 pb-5 pt-1">
-                  <p className="text-sm text-slate-600">{f.description}</p>
-                  <FindingGuideLink checkId={f.checkId} />
-                  {f.impact?.entities && f.impact.entities.length > 0 ? (
+                  <p className="text-sm text-slate-600">{group.description}</p>
+                  <FindingGuideLink checkId={group.checkId} />
+                  {group.impact?.entities && group.impact.entities.length > 0 ? (
                     <div className="text-xs text-slate-500">
                       <p className="mb-1 font-medium text-slate-600">
-                        {affectedItemsLabel(f.checkId)}
+                        {affectedItemsLabel(group.checkId)}
                       </p>
                       <ul className="list-inside list-disc space-y-0.5">
-                        {f.impact.entities.map((name, i) => (
-                          <li key={`${i}-${name}`}>{formatEntityLabel(f.checkId, name)}</li>
+                        {group.impact.entities.map((name, i) => (
+                          <li key={`${i}-${name}`}>
+                            {formatEntityLabel(group.checkId, name)}
+                          </li>
                         ))}
                       </ul>
                     </div>
-                  ) : f.entityRef && isLicenseSkuCode(f.entityRef) ? (
-                    <LicenseEntityLine entityRef={f.entityRef} />
-                  ) : f.entityRef ? (
-                    <p className="text-xs text-slate-500">Affected: {f.entityRef}</p>
+                  ) : group.items.length > 1 ? (
+                    <div className="text-xs text-slate-500">
+                      <p className="mb-1 font-medium text-slate-600">Included findings</p>
+                      <ul className="list-inside list-disc space-y-0.5">
+                        {group.items.map((item) => (
+                          <li key={item.id}>{item.title}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : primary.entityRef && isLicenseSkuCode(primary.entityRef) ? (
+                    <LicenseEntityLine entityRef={primary.entityRef} />
+                  ) : primary.entityRef ? (
+                    <p className="text-xs text-slate-500">Affected: {primary.entityRef}</p>
                   ) : null}
                   <RemediationPanel
-                    findingId={f.id}
-                    checkId={f.checkId}
-                    templateRemediation={f.remediation}
+                    findingId={primary.id}
+                    checkId={group.checkId}
+                    templateRemediation={group.remediation}
                     initialEnriched={
-                      f.remediationEnriched ?? enrichedCache[f.id] ?? null
+                      primary.remediationEnriched ?? enrichedCache[primary.id] ?? null
                     }
                     onEnriched={(data) =>
-                      setEnrichedCache((prev) => ({ ...prev, [f.id]: data }))
+                      setEnrichedCache((prev) => ({ ...prev, [primary.id]: data }))
                     }
                     isPro={isPro}
                     connectionMode={connectionMode}
                   />
-                  <FindingActions
-                    checkId={f.checkId}
-                    entityRef={f.entityRef}
-                    tracking={f.tracking}
-                    onUpdated={() => router.refresh()}
-                  />
+                  {group.items.length === 1 ? (
+                    <FindingActions
+                      checkId={group.checkId}
+                      entityRef={primary.entityRef}
+                      tracking={primary.tracking}
+                      onUpdated={() => router.refresh()}
+                    />
+                  ) : (
+                    <div className="space-y-3 border-t border-slate-100 pt-3">
+                      {group.items.map((item) => (
+                        <div key={item.id} className="rounded-lg border border-slate-100 p-3">
+                          <p className="text-sm font-medium text-slate-800">{item.title}</p>
+                          <FindingActions
+                            checkId={item.checkId}
+                            entityRef={item.entityRef}
+                            tracking={item.tracking}
+                            onUpdated={() => router.refresh()}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
