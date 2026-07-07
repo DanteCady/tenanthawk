@@ -84,6 +84,34 @@ export const CHECK_GUIDE_MAP: Record<string, CheckGuideLink> = {
     slug: "find-wasted-m365-licenses",
     label: "Unused Copilot license seats",
   },
+  "cost.copilot-licensed-inactive": {
+    slug: "find-wasted-m365-licenses",
+    label: "Licensed inactive Copilot users",
+  },
+  "cost.copilot-assigned-disabled-user": {
+    slug: "find-wasted-m365-licenses",
+    label: "Copilot on disabled accounts",
+  },
+  "hygiene.copilot-low-adoption": {
+    slug: "find-wasted-m365-licenses",
+    label: "Low Copilot adoption",
+  },
+  "hygiene.copilot-app-skew": {
+    slug: "find-wasted-m365-licenses",
+    label: "Copilot Chat-only users",
+  },
+  "security.copilot-licensed-no-mfa": {
+    slug: "m365-security-misconfigurations",
+    label: "Copilot users without MFA",
+  },
+  "copilot.readiness-blockers": {
+    slug: "m365-tenant-health-checklist",
+    label: "Copilot readiness blockers",
+  },
+  "hygiene.copilot-chat-only-usage": {
+    slug: "find-wasted-m365-licenses",
+    label: "Copilot Chat-only usage pattern",
+  },
   "hygiene.sharing": {
     slug: "m365-tenant-hygiene",
     label: "External sharing settings",

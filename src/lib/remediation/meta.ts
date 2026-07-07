@@ -121,6 +121,41 @@ export const CHECK_REMEDIATION_META: Record<string, CheckRemediationMeta> = {
     adminSurface: "M365 Admin",
     effortLabel: "~15 min",
   },
+  "cost.copilot-licensed-inactive": {
+    effort: "moderate",
+    adminSurface: "M365 Admin",
+    effortLabel: "~1 hour",
+  },
+  "cost.copilot-assigned-disabled-user": {
+    effort: "quick",
+    adminSurface: "M365 Admin",
+    effortLabel: "~15 min",
+  },
+  "hygiene.copilot-low-adoption": {
+    effort: "project",
+    adminSurface: "M365 Admin",
+    effortLabel: "Half day+",
+  },
+  "hygiene.copilot-app-skew": {
+    effort: "moderate",
+    adminSurface: "M365 Admin",
+    effortLabel: "~1 hour",
+  },
+  "security.copilot-licensed-no-mfa": {
+    effort: "quick",
+    adminSurface: "Entra",
+    effortLabel: "~15 min",
+  },
+  "copilot.readiness-blockers": {
+    effort: "project",
+    adminSurface: "Mixed",
+    effortLabel: "Half day+",
+  },
+  "hygiene.copilot-chat-only-usage": {
+    effort: "moderate",
+    adminSurface: "M365 Admin",
+    effortLabel: "~1 hour",
+  },
   "hygiene.intune-noncompliant": {
     effort: "project",
     adminSurface: "Intune",

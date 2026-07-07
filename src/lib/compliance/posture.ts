@@ -96,6 +96,26 @@ export const CHECK_COMPLIANCE: Record<string, CheckComplianceMap> = {
     cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
     nist: [{ id: "CM-8", title: "System Component Inventory" }],
   },
+  "cost.copilot-licensed-inactive": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-8", title: "System Component Inventory" }],
+  },
+  "cost.copilot-assigned-disabled-user": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-8", title: "System Component Inventory" }],
+  },
+  "hygiene.copilot-low-adoption": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
+  "security.copilot-licensed-no-mfa": {
+    cis: [{ id: "6.5", title: "Require MFA for administrative access" }],
+    nist: [{ id: "IA-2", title: "Identification and Authentication" }],
+  },
+  "copilot.readiness-blockers": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
   "hygiene.intune-noncompliant": {
     cis: [{ id: "10.5", title: "Enable anti-exploitation features" }],
     nist: [{ id: "SI-4", title: "System Monitoring" }],

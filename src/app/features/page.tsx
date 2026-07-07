@@ -46,6 +46,15 @@ const featurePages = [
     body: "Disabled users holding E5s, oversized SKUs, overlapping plans - your reclaimable spend, ranked in dollars against your contracted rates.",
   },
   {
+    href: "/features/coverage",
+    icon: Sparkles,
+    title: "Scan coverage map",
+    tag: "All plans",
+    tagClass: "bg-purple-100 text-purple-700",
+    chip: "bg-purple-50 text-purple-600",
+    body: "Every automated check across Identity, Teams, SharePoint, Exchange, Devices, Apps, and Copilot — plus what's explicitly out of scope.",
+  },
+  {
     href: "/features/security-assessment",
     icon: ShieldAlert,
     title: "Security assessment",
