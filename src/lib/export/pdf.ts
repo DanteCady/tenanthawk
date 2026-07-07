@@ -7,6 +7,7 @@ import { HAWK_MARK_PNG_BASE64 } from "@/lib/export/brand-mark";
 import { CATEGORY_ICON_PNG } from "@/lib/export/category-icons";
 import {
   formatFindingImpact,
+  formatReportDate,
 } from "@/lib/export/report-format";
 import { formatLicenseEntityRef } from "@/lib/licenses/sku-display";
 import { REPORT_FOOTER } from "@/lib/brand";
@@ -24,6 +25,9 @@ import { grade } from "@/lib/scan/score";
 const PAGE = { w: 612, h: 792 };
 const MARGIN = 48;
 const CONTENT_W = PAGE.w - MARGIN * 2;
+const PAGE_BOTTOM = PAGE.h - 56;
+const SECTION_HEADER_HEIGHT = 62;
+const COVER_HEADER_HEIGHT = 96;
 
 const rgb = (r: number, g: number, b: number): [number, number, number] => [r, g, b];
 
@@ -109,6 +113,27 @@ function measureLines(doc: Doc, text: string, maxWidth: number, fontSize: number
 
 function markSection(doc: Doc, sections: PdfSection[], title: string) {
   sections.push({ title, page: doc.getNumberOfPages() });
+}
+
+function ensureSpace(doc: Doc, y: number, required: number): number {
+  if (y + required > PAGE_BOTTOM) {
+    doc.addPage();
+    return MARGIN;
+  }
+  return y;
+}
+
+function startSection(
+  doc: Doc,
+  sections: PdfSection[],
+  index: number,
+  title: string,
+  y: number,
+  minBodyHeight: number,
+): number {
+  y = ensureSpace(doc, y, SECTION_HEADER_HEIGHT + minBodyHeight);
+  markSection(doc, sections, title);
+  return drawSectionHeader(doc, index, title, y);
 }
 
 function drawSectionHeader(doc: Doc, index: number, title: string, y: number): number {
@@ -197,37 +222,131 @@ function drawFooter(doc: Doc, page: number, total: number) {
   doc.text(`Page ${page} of ${total}`, PAGE.w - MARGIN, y, { align: "right" });
 }
 
-function drawHeader(doc: Doc): number {
-  const headerH = 96;
+function drawHeader(doc: Doc) {
   doc.setFillColor(...BRAND.navy);
-  doc.rect(0, 0, PAGE.w, headerH, "F");
+  doc.rect(0, 0, PAGE.w, COVER_HEADER_HEIGHT, "F");
 
   doc.setFillColor(...BRAND.blue);
-  doc.rect(0, headerH - 4, PAGE.w, 4, "F");
+  doc.rect(0, COVER_HEADER_HEIGHT - 4, PAGE.w, 4, "F");
+
+  const logoSize = 44;
+  const logoY = (COVER_HEADER_HEIGHT - logoSize) / 2;
+  const textX = MARGIN + logoSize + 12;
 
   doc.addImage(
     `data:image/png;base64,${HAWK_MARK_PNG_BASE64}`,
     "PNG",
     MARGIN,
-    18,
-    40,
-    40,
+    logoY,
+    logoSize,
+    logoSize,
   );
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
   doc.setTextColor(...BRAND.white);
-  doc.text("Tenant ", MARGIN + 52, 38);
+  doc.text("Tenant ", textX, logoY + 18);
   const tenantW = doc.getTextWidth("Tenant ");
   doc.setTextColor(...BRAND.hawk);
-  doc.text("Hawk", MARGIN + 52 + tenantW, 38);
+  doc.text("Hawk", textX + tenantW, logoY + 18);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
   doc.setTextColor(203, 213, 225);
-  doc.text("Tenant Health Report", MARGIN + 52, 56);
+  doc.text("Tenant Health Report", textX, logoY + 36);
+}
 
-  return headerH + 20;
+function drawCoverBody(doc: Doc, meta: ExportMeta) {
+  let y = COVER_HEADER_HEIGHT + 52;
+
+  const tenant = sanitizePdfText(meta.customer?.organization ?? meta.tenant);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(24);
+  doc.setTextColor(...BRAND.navy);
+  const tenantLines = measureLines(doc, tenant, CONTENT_W, 24);
+  doc.text(tenantLines, MARGIN, y);
+  y += tenantLines.length * 30 + 6;
+
+  const domain = meta.customer?.tenantDomain ?? meta.customer?.tenantId;
+  if (domain) {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    doc.setTextColor(...BRAND.slate);
+    doc.text(sanitizePdfText(domain), MARGIN, y);
+    y += 22;
+  }
+
+  y += 10;
+  doc.setDrawColor(...BRAND.line);
+  doc.setLineWidth(0.75);
+  doc.line(MARGIN, y, PAGE.w - MARGIN, y);
+  y += 40;
+
+  const letter = meta.score != null ? grade(meta.score) : "-";
+  const gradeColor = GRADE_COLORS[letter] ?? GRADE_COLORS.F;
+  const scoreText = meta.score != null ? String(meta.score) : "-";
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(56);
+  doc.setTextColor(...BRAND.navy);
+  doc.text(scoreText, MARGIN, y);
+  const scoreW = doc.getTextWidth(scoreText);
+
+  doc.setFontSize(24);
+  doc.setTextColor(...gradeColor);
+  doc.text(letter, MARGIN + scoreW + 14, y);
+  y += 30;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(12);
+  doc.setTextColor(...BRAND.slate);
+  doc.text("Tenant health score", MARGIN, y);
+  y += 36;
+
+  const summary = meta.summary;
+  if (summary) {
+    const stats = [
+      `${summary.total} open issue${summary.total === 1 ? "" : "s"}`,
+      `${summary.high} high severity`,
+    ];
+    if (summary.usd > 0) {
+      stats.push(`$${summary.usd.toLocaleString()}/mo recoverable`);
+    }
+    doc.setFontSize(12);
+    doc.setTextColor(...BRAND.navy);
+    doc.text(stats.join("   |   "), MARGIN, y);
+    y += 28;
+  }
+
+  doc.setFillColor(...BRAND.panel);
+  doc.setDrawColor(...BRAND.line);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(MARGIN, y, CONTENT_W, 72, 8, 8, "FD");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(...BRAND.muted);
+  doc.text("SCAN DATE", MARGIN + CARD_PAD, y + 22);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  doc.setTextColor(...BRAND.navy);
+  doc.text(sanitizePdfText(formatReportDate(meta.scannedAt)), MARGIN + CARD_PAD, y + 40);
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(...BRAND.muted);
+  doc.text("SCAN MODE", MARGIN + CONTENT_W / 2, y + 22);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  doc.setTextColor(...BRAND.navy);
+  doc.text(meta.scanMode === "deep" ? "Deep scan" : "Standard scan", MARGIN + CONTENT_W / 2, y + 40);
+
+  y = PAGE.h - 88;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(...BRAND.muted);
+  doc.text("Read-only Microsoft 365 tenant assessment", MARGIN, y);
+  doc.text("Confidential — prepared for customer use", MARGIN, y + 16);
 }
 
 function drawCustomerDetails(doc: Doc, meta: ExportMeta, y: number): number {
@@ -620,7 +739,6 @@ function drawFindingsTable(doc: Doc, findings: ExportFinding[], y: number): numb
 
 function drawRemediationSection(doc: Doc, findings: ExportFinding[], startY: number): number {
   let y = startY;
-  const pageBottom = PAGE.h - 56;
   const innerW = CONTENT_W - CARD_PAD * 2;
 
   for (const f of findings.slice(0, 30)) {
@@ -663,10 +781,7 @@ function drawRemediationSection(doc: Doc, findings: ExportFinding[], startY: num
       (entityLines.length > 0 ? 8 + entityLines.length * LINE_SM : 0) +
       CARD_PAD;
 
-    if (y + blockH > pageBottom) {
-      doc.addPage();
-      y = MARGIN;
-    }
+    y = ensureSpace(doc, y, blockH + 10);
 
     const blockTop = y;
     doc.setFillColor(...BRAND.panel);
@@ -719,29 +834,26 @@ export function buildFindingsPdf(
   const sections: PdfSection[] = [];
 
   drawHeader(doc);
+  drawCoverBody(doc, meta);
 
   doc.addPage();
   let y = MARGIN;
 
-  markSection(doc, sections, PDF_SECTIONS[0]);
-  y = drawSectionHeader(doc, 1, PDF_SECTIONS[0], y);
+  y = startSection(doc, sections, 1, PDF_SECTIONS[0], y, 100);
   y = drawCustomerDetails(doc, meta, y);
 
-  markSection(doc, sections, PDF_SECTIONS[1]);
-  y = drawSectionHeader(doc, 2, PDF_SECTIONS[1], y);
+  y = startSection(doc, sections, 2, PDF_SECTIONS[1], y, 110);
   y = drawScoreSummary(doc, meta, y);
 
-  markSection(doc, sections, PDF_SECTIONS[2]);
-  y = drawSectionHeader(doc, 3, PDF_SECTIONS[2], y);
+  y = startSection(doc, sections, 3, PDF_SECTIONS[2], y, 160);
   y = drawCategoryLegend(doc, y);
+  y = ensureSpace(doc, y, 210);
   y = drawCategoryGrades(doc, meta, y);
 
-  markSection(doc, sections, PDF_SECTIONS[3]);
-  y = drawSectionHeader(doc, 4, PDF_SECTIONS[3], y);
+  y = startSection(doc, sections, 4, PDF_SECTIONS[3], y, 80);
   y = drawFindingsTable(doc, findings, y);
 
-  markSection(doc, sections, PDF_SECTIONS[4]);
-  y = drawSectionHeader(doc, 5, PDF_SECTIONS[4], y);
+  y = startSection(doc, sections, 5, PDF_SECTIONS[4], y, 120);
   drawRemediationSection(doc, findings, y);
 
   const tocPageCount = 1;
