@@ -33,7 +33,7 @@ migration commands above. No code changes.
    (read-only): `Directory.Read.All`, `User.Read.All`, `Application.Read.All`,
    `Policy.Read.All`, `Reports.Read.All`, `AuditLog.Read.All`,
    `Organization.Read.All`, `DeviceManagementManagedDevices.Read.All`,
-   `SharePointTenantSettings.Read.All`. For readable SharePoint site names in
+   `Device.Read.All`, `SharePointTenantSettings.Read.All`. For readable SharePoint site names in
    findings (not pseudonymous hashes), also add `Sites.Read.All` and re-consent.
    For readable Microsoft Teams names in activity findings, add
    `Team.ReadBasic.All` and re-consent.

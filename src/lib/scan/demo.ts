@@ -295,5 +295,40 @@ export function getDemoFindings(): FindingDraft[] {
       remediation:
         "Review stale document libraries and apply retention or archival policies.",
     },
+    {
+      category: "hygiene",
+      checkId: "hygiene.entra-unmanaged-devices",
+      severity: "medium",
+      title: "14 Entra devices not in Intune",
+      description:
+        "14 Entra-registered devices are not enrolled in Intune and may lack compliance policies.",
+      impact: {
+        count: 14,
+        entities: ["LAPTOP-ACME-042 (jordan@contoso.com)", "DESKTOP-FIN-09 (finance@contoso.com)"],
+      },
+      remediation:
+        "Enroll corporate devices in Intune or retire stale Entra device records in Entra → Devices.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.personal-device-enrolled",
+      severity: "low",
+      title: "22 personally owned enrolled devices",
+      description:
+        "22 Intune-enrolled devices are marked as personally owned (BYOD). Confirm this matches your access policy.",
+      impact: { count: 22, entities: ["iPhone 15 (alex@contoso.com)", "Pixel 8 (sam@contoso.com)"] },
+      remediation:
+        "Review BYOD enrollment in Intune > Devices and tighten app protection or block personal enrollment if not allowed.",
+    },
+    {
+      category: "reliability",
+      checkId: "reliability.entra-stale-devices",
+      severity: "medium",
+      title: "31 stale Entra devices",
+      description: "31 Entra devices had no sign-in activity in 30+ days.",
+      impact: { count: 31, entities: ["OLD-LAPTOP-2019", "KIOSK-RECEPTION"] },
+      remediation:
+        "Review stale devices in Entra → Devices and disable or delete records for lost or decommissioned hardware.",
+    },
   ];
 }

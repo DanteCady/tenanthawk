@@ -128,6 +128,22 @@ export const CHECK_COMPLIANCE: Record<string, CheckComplianceMap> = {
     cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
     nist: [{ id: "CM-7", title: "Least Functionality" }],
   },
+  "hygiene.entra-unmanaged-devices": {
+    cis: [{ id: "10.5", title: "Enable anti-exploitation features" }],
+    nist: [{ id: "CM-8", title: "System Component Inventory" }],
+  },
+  "hygiene.intune-ghost-enrollment": {
+    cis: [{ id: "10.5", title: "Enable anti-exploitation features" }],
+    nist: [{ id: "CM-8", title: "System Component Inventory" }],
+  },
+  "hygiene.personal-device-enrolled": {
+    cis: [{ id: "10.5", title: "Enable anti-exploitation features" }],
+    nist: [{ id: "AC-19", title: "Access Control for Mobile Devices" }],
+  },
+  "reliability.entra-stale-devices": {
+    cis: [{ id: "10.5", title: "Enable anti-exploitation features" }],
+    nist: [{ id: "SI-4", title: "System Monitoring" }],
+  },
 };
 
 export const FRAMEWORK_LABELS: Record<ComplianceFramework, string> = {

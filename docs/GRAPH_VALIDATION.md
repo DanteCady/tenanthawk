@@ -20,6 +20,7 @@ Run spikes against a live tenant before promoting checks from `backlog` → `v1`
 | TM1 | `GET /reports/getTeamsTeamActivityDetail(period='D90')` | `hygiene.stale-teams`, `hygiene.teams-no-active-channels`, `hygiene.teams-guest-heavy` | **Pass (CSV, obfuscated)** | App-only report hides Team Id; pseudonymous key is in `Team Name`; use `Team Type` for labels. `Team.ReadBasic.All` may unlock real names on some tenants. |
 | SP1 | `GET /reports/getSharePointSiteUsageDetail(period='D30')` | SharePoint v1 checks | **Pass (CSV, obfuscated)** | App-only report hides Site URL; pseudonymous site key is in `Owner Display Name`; use `Root Web Template` for labels. `Sites.Read.All` unlocks real URLs on some tenants. |
 | EX1 | `GET /reports/getMailboxUsageDetail(period='D30')` | Exchange v2 checks | Pending | |
+| DV1 | `GET /devices` + match to Intune via `azureADDeviceId` | Device sector checks | **Pass** | Entra/Intune cross-match works with `Device.Read.All` + managed devices permission. |
 
 ## Permissions reference
 

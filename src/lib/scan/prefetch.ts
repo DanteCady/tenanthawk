@@ -54,6 +54,30 @@ export interface ScanPrefetch {
   groups: PrefetchGroup[];
   teamsActivity: TeamsActivityRow[];
   sharePointSites: SharePointSiteRow[];
+  entraDevices: EntraDeviceRow[];
+  intuneDevices: IntuneDeviceRow[];
+}
+
+export interface EntraDeviceRow {
+  id: string;
+  deviceId: string;
+  displayName: string;
+  accountEnabled: boolean;
+  approximateLastSignInDateTime: string | null;
+  trustType: string;
+  operatingSystem: string;
+  isManaged: boolean;
+}
+
+export interface IntuneDeviceRow {
+  id: string;
+  azureADDeviceId: string;
+  deviceName: string;
+  userPrincipalName: string;
+  managedDeviceOwnerType: string;
+  complianceState: string;
+  lastSyncDateTime: string | null;
+  operatingSystem: string;
 }
 
 interface GraphGroupRow {
@@ -278,9 +302,72 @@ export async function fetchSharePointSites(token: string): Promise<SharePointSit
   return enrichSharePointSiteRows(token, parsed);
 }
 
+interface GraphEntraDevice {
+  id?: string;
+  deviceId?: string;
+  displayName?: string;
+  accountEnabled?: boolean;
+  approximateLastSignInDateTime?: string;
+  trustType?: string;
+  operatingSystem?: string;
+  isManaged?: boolean;
+}
+
+interface GraphIntuneDevice {
+  id?: string;
+  azureADDeviceId?: string;
+  deviceName?: string;
+  userPrincipalName?: string;
+  managedDeviceOwnerType?: string;
+  complianceState?: string;
+  lastSyncDateTime?: string;
+  operatingSystem?: string;
+}
+
+export async function fetchEntraDevices(token: string): Promise<EntraDeviceRow[]> {
+  const rows = await graphGet<GraphEntraDevice>(
+    token,
+    "/devices?$select=id,deviceId,displayName,accountEnabled,approximateLastSignInDateTime,trustType,operatingSystem,isManaged&$top=999",
+  );
+
+  return rows
+    .filter((d) => d.id && d.deviceId)
+    .map((d) => ({
+      id: d.id as string,
+      deviceId: (d.deviceId as string).toLowerCase(),
+      displayName: d.displayName?.trim() || d.operatingSystem || "Unnamed device",
+      accountEnabled: d.accountEnabled !== false,
+      approximateLastSignInDateTime: d.approximateLastSignInDateTime ?? null,
+      trustType: d.trustType ?? "",
+      operatingSystem: d.operatingSystem ?? "",
+      isManaged: d.isManaged === true,
+    }));
+}
+
+export async function fetchIntuneDevices(token: string): Promise<IntuneDeviceRow[]> {
+  const rows = await graphGet<GraphIntuneDevice>(
+    token,
+    "/deviceManagement/managedDevices?$select=id,azureADDeviceId,deviceName,userPrincipalName,managedDeviceOwnerType,complianceState,lastSyncDateTime,operatingSystem&$top=999",
+  );
+
+  return rows
+    .filter((d) => d.id)
+    .map((d) => ({
+      id: d.id as string,
+      azureADDeviceId: (d.azureADDeviceId ?? "").toLowerCase(),
+      deviceName: d.deviceName?.trim() || d.operatingSystem || "Unnamed device",
+      userPrincipalName: d.userPrincipalName?.trim() ?? "",
+      managedDeviceOwnerType: d.managedDeviceOwnerType ?? "",
+      complianceState: d.complianceState ?? "",
+      lastSyncDateTime: d.lastSyncDateTime ?? null,
+      operatingSystem: d.operatingSystem ?? "",
+    }));
+}
+
 /** Fetch shared scan data for collaboration / Teams checks. Never throws — checks degrade when data is missing. */
 export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
-  const [groups, teamsActivity, sharePointSites] = await Promise.all([
+  const [groups, teamsActivity, sharePointSites, entraDevices, intuneDevices] =
+    await Promise.all([
     fetchGroups(token).catch((err) => {
       console.warn("[scan] group prefetch failed", err);
       return [] as PrefetchGroup[];
@@ -293,9 +380,17 @@ export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
       console.warn("[scan] sharepoint site report unavailable", err);
       return [] as SharePointSiteRow[];
     }),
+    fetchEntraDevices(token).catch((err) => {
+      console.warn("[scan] entra device prefetch failed", err);
+      return [] as EntraDeviceRow[];
+    }),
+    fetchIntuneDevices(token).catch((err) => {
+      console.warn("[scan] intune device prefetch failed", err);
+      return [] as IntuneDeviceRow[];
+    }),
   ]);
 
-  return { groups, teamsActivity, sharePointSites };
+  return { groups, teamsActivity, sharePointSites, entraDevices, intuneDevices };
 }
 
 export function ownerlessGroups(

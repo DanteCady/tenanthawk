@@ -116,6 +116,22 @@ export const CHECK_GUIDE_MAP: Record<string, CheckGuideLink> = {
     slug: "m365-tenant-hygiene",
     label: "Intune compliance gaps",
   },
+  "hygiene.entra-unmanaged-devices": {
+    slug: "m365-tenant-hygiene",
+    label: "Entra devices not in Intune",
+  },
+  "hygiene.intune-ghost-enrollment": {
+    slug: "m365-tenant-hygiene",
+    label: "Orphaned Intune enrollments",
+  },
+  "hygiene.personal-device-enrolled": {
+    slug: "m365-tenant-hygiene",
+    label: "Personally owned Intune devices",
+  },
+  "reliability.entra-stale-devices": {
+    slug: "m365-tenant-hygiene",
+    label: "Stale Entra device sign-ins",
+  },
   "reliability.expiring-secrets": {
     slug: "m365-expiring-secrets-and-domains",
     label: "Expiring app secrets and certs",

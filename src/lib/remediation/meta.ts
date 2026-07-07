@@ -126,6 +126,26 @@ export const CHECK_REMEDIATION_META: Record<string, CheckRemediationMeta> = {
     adminSurface: "Intune",
     effortLabel: "Half day+",
   },
+  "hygiene.entra-unmanaged-devices": {
+    effort: "moderate",
+    adminSurface: "Mixed",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.intune-ghost-enrollment": {
+    effort: "moderate",
+    adminSurface: "Intune",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.personal-device-enrolled": {
+    effort: "moderate",
+    adminSurface: "Intune",
+    effortLabel: "~1 hour",
+  },
+  "reliability.entra-stale-devices": {
+    effort: "moderate",
+    adminSurface: "Entra",
+    effortLabel: "~1 hour",
+  },
   "hygiene.sharing": {
     effort: "moderate",
     adminSurface: "SharePoint",

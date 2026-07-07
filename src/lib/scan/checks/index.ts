@@ -29,6 +29,12 @@ import {
 } from "./sharepoint";
 import { ownerlessGroupsCheck, ownerlessTeamsCheck, emptyTeamsCheck, staleTeamsCheck, teamsNoActiveChannelsCheck, teamsGuestHeavyCheck, groupsNamingChaosCheck } from "./collaboration";
 import { unusedCopilotLicenses } from "./copilot";
+import {
+  entraUnmanagedDevicesCheck,
+  intuneGhostEnrollmentCheck,
+  entraStaleDevicesCheck,
+  personalDeviceEnrolledCheck,
+} from "./devices";
 import { validateRegisteredCheckIds } from "./registry";
 
 export const checks: Check[] = [
@@ -58,6 +64,10 @@ export const checks: Check[] = [
   teamsGuestHeavyCheck,
   groupsNamingChaosCheck,
   intuneNonCompliant,
+  entraUnmanagedDevicesCheck,
+  intuneGhostEnrollmentCheck,
+  entraStaleDevicesCheck,
+  personalDeviceEnrolledCheck,
   sharePointSharing,
   sharePointExternalSitesCheck,
   sharePointStaleSitesCheck,
