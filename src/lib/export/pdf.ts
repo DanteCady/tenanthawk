@@ -467,12 +467,36 @@ function drawCategoryGrades(doc: Doc, meta: ExportMeta, y: number): number {
   return sectionTop + sectionH + 20;
 }
 
+function wrapPdfTableCell(doc: Doc, text: string, maxWidth: number, fontSize = 8): string {
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(fontSize);
+  const innerW = Math.max(1, maxWidth - 6);
+  return doc.splitTextToSize(sanitizePdfText(text), innerW).join("\n");
+}
+
+const FINDINGS_TABLE_COL = {
+  severity: 44,
+  category: 54,
+  impact: 72,
+} as const;
+
+function findingsFindingColWidth(): number {
+  return (
+    CONTENT_W -
+    FINDINGS_TABLE_COL.severity -
+    FINDINGS_TABLE_COL.category -
+    FINDINGS_TABLE_COL.impact
+  );
+}
+
 function drawFindingsTable(doc: Doc, findings: ExportFinding[], y: number): number {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(...BRAND.navy);
   doc.text("Findings summary", MARGIN, y);
   y += 8;
+
+  const findingColW = findingsFindingColWidth();
 
   autoTable(doc, {
     startY: y,
@@ -482,28 +506,34 @@ function drawFindingsTable(doc: Doc, findings: ExportFinding[], y: number): numb
     body: findings.map((f) => [
       f.severity.toUpperCase(),
       CATEGORY_META[f.category].label,
-      sanitizePdfText(f.title),
-      formatImpact(f),
+      wrapPdfTableCell(doc, f.title, findingColW),
+      wrapPdfTableCell(doc, formatImpact(f), FINDINGS_TABLE_COL.impact),
     ]),
     styles: {
-      fontSize: 8.5,
-      cellPadding: 5,
+      fontSize: 8,
+      cellPadding: { top: 4, right: 3, bottom: 4, left: 3 },
       lineColor: BRAND.line,
       lineWidth: 0.5,
       textColor: BRAND.navy,
       overflow: "linebreak",
+      valign: "top",
     },
     headStyles: {
       fillColor: BRAND.navy,
       textColor: BRAND.white,
       fontStyle: "bold",
-      fontSize: 8,
+      fontSize: 7.5,
+      cellPadding: { top: 4, right: 3, bottom: 4, left: 3 },
     },
     columnStyles: {
-      0: { cellWidth: 52 },
-      1: { cellWidth: 62 },
-      2: { cellWidth: CONTENT_W - 52 - 62 - 64 },
-      3: { cellWidth: 64, halign: "right", overflow: "linebreak" },
+      0: { cellWidth: FINDINGS_TABLE_COL.severity, overflow: "linebreak" },
+      1: { cellWidth: FINDINGS_TABLE_COL.category, overflow: "linebreak" },
+      2: { cellWidth: findingColW, overflow: "linebreak" },
+      3: {
+        cellWidth: FINDINGS_TABLE_COL.impact,
+        halign: "right",
+        overflow: "linebreak",
+      },
     },
     alternateRowStyles: { fillColor: [252, 252, 253] },
     didParseCell: (data) => {

@@ -1,5 +1,6 @@
 import type { Severity } from "@/db/types";
 import { grade } from "./score";
+import { scoreCostFromFindings } from "./cost-score";
 import { CHECK_DEFINITION_BY_ID, SECTOR_LABELS, type ScanSector } from "./checks/registry";
 import type { FindingDraft } from "./types";
 
@@ -35,11 +36,17 @@ export function scoreFindingsBySector(findings: FindingDraft[]): SectorScore[] {
 
   return [...bySector.entries()]
     .map(([sector, sectorFindings]) => {
-      let score = 100;
+      let score: number;
       let highCount = 0;
-      for (const finding of sectorFindings) {
-        score = Math.max(0, score - PENALTY[finding.severity]);
-        if (finding.severity === "high") highCount += 1;
+      if (sector === "cost") {
+        score = scoreCostFromFindings(sectorFindings);
+        highCount = sectorFindings.filter((f) => f.severity === "high").length;
+      } else {
+        score = 100;
+        for (const finding of sectorFindings) {
+          score = Math.max(0, score - PENALTY[finding.severity]);
+          if (finding.severity === "high") highCount += 1;
+        }
       }
       return {
         sector,

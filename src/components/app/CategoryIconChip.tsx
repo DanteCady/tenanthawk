@@ -27,15 +27,24 @@ export function CategoryIconChip({
 export function CategoryLabel({
   category,
   size = "sm",
+  compact = false,
 }: {
   category: Category;
   size?: "sm" | "md";
+  /** Stack icon above label — fits narrow print/PDF table cells. */
+  compact?: boolean;
 }) {
   const meta = CATEGORY_META[category];
   return (
-    <span className="inline-flex items-center gap-2">
+    <span
+      className={
+        compact
+          ? "inline-flex flex-col items-start gap-1"
+          : "inline-flex items-center gap-2"
+      }
+    >
       <CategoryIconChip category={category} size={size} />
-      <span>{meta.label}</span>
+      <span className={compact ? "text-xs leading-tight" : undefined}>{meta.label}</span>
     </span>
   );
 }

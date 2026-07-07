@@ -51,4 +51,32 @@
     max-width: none !important;
     padding: 0 !important;
   }
+
+  .app-sidebar,
+  .app-header,
+  .app-mobile-drawer {
+    display: none !important;
+  }
+
+  .app-layout {
+    display: block !important;
+  }
+
+  .app-main-column,
+  .app-main {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .report-findings-table {
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .report-findings-table th,
+  .report-findings-table td {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
 }

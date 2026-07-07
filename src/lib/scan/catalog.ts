@@ -17,5 +17,5 @@ export function scoreMethodologyLine(): string {
 }
 
 export function scoreMethodologyDetail(): string {
-  return `Each category starts at ${SCORE_SCALE}. Each finding lowers the category score: high costs ${SCORE_PENALTIES.high} points, medium ${SCORE_PENALTIES.medium}, low ${SCORE_PENALTIES.low}. Your overall score is the average across security, cost, reliability, and hygiene.`;
+  return `Each category starts at ${SCORE_SCALE}. Security, reliability, and hygiene lower by finding severity (high ${SCORE_PENALTIES.high}, medium ${SCORE_PENALTIES.medium}, low ${SCORE_PENALTIES.low}). Cost also weighs estimated recoverable spend so low license waste earns a better grade. Your overall score is the average across all four categories.`;
 }

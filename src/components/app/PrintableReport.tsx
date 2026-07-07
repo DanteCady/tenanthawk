@@ -172,14 +172,20 @@ export function PrintableReport({
         {/* Findings summary table */}
         <section>
           <h2 className="text-sm font-bold text-slate-900">Findings summary</h2>
-          <div className="mt-3 overflow-hidden rounded-lg border border-slate-200">
-            <table className="w-full text-left text-sm">
+          <div className="report-findings-table-wrap mt-3 overflow-hidden rounded-lg border border-slate-200">
+            <table className="report-findings-table w-full table-fixed text-left text-sm">
+              <colgroup>
+                <col className="w-[13%]" />
+                <col className="w-[16%]" />
+                <col className="w-[51%]" />
+                <col className="w-[20%]" />
+              </colgroup>
               <thead className="bg-slate-900 text-xs font-bold uppercase text-white">
                 <tr>
-                  <th className="px-3 py-2.5">Severity</th>
-                  <th className="px-3 py-2.5">Category</th>
-                  <th className="px-3 py-2.5">Finding</th>
-                  <th className="px-3 py-2.5 text-right">Impact</th>
+                  <th className="px-2 py-2.5 print:px-1.5">Severity</th>
+                  <th className="px-2 py-2.5 print:px-1.5">Category</th>
+                  <th className="px-2 py-2.5 print:px-1.5">Finding</th>
+                  <th className="px-2 py-2.5 text-right print:px-1.5">Impact</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -188,16 +194,16 @@ export function PrintableReport({
                     key={f.id}
                     className={i % 2 === 1 ? "bg-slate-50/80" : "bg-white"}
                   >
-                    <td className="px-3 py-2.5 align-top">
+                    <td className="px-2 py-2.5 align-top print:px-1.5">
                       <SeverityBadge severity={f.severity} />
                     </td>
-                    <td className="px-3 py-2.5 align-top text-slate-600">
-                      <CategoryLabel category={f.category} />
+                    <td className="px-2 py-2.5 align-top text-slate-600 print:px-1.5">
+                      <CategoryLabel category={f.category} compact />
                     </td>
-                    <td className="px-3 py-2.5 align-top font-medium text-slate-900">
+                    <td className="break-words px-2 py-2.5 align-top font-medium text-slate-900 print:px-1.5">
                       {f.title}
                     </td>
-                    <td className="px-3 py-2.5 align-top text-right text-slate-600">
+                    <td className="break-words px-2 py-2.5 text-right align-top text-slate-600 print:px-1.5">
                       {formatFindingImpact({
                         impact: f.impact,
                         entityRef: f.entity_ref,

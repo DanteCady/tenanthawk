@@ -1,6 +1,7 @@
 import type { Category, Severity, CategoryScores } from "@/db/types";
 import type { FindingDraft } from "./types";
 import { CHECK_DEFINITION_BY_ID } from "./checks/registry";
+import { scoreCostFromFindings } from "./cost-score";
 
 import { SCORE_PENALTIES } from "./catalog";
 
@@ -58,11 +59,15 @@ export function scoreFindings(findings: FindingDraft[]): {
   };
 
   for (const f of scored) {
+    if (f.category === "cost") continue;
     categoryScores[f.category] = Math.max(
       0,
       categoryScores[f.category] - PENALTY[f.severity],
     );
   }
+
+  const costFindings = scored.filter((f) => f.category === "cost");
+  categoryScores.cost = scoreCostFromFindings(costFindings);
 
   const overall = Math.round(
     CATEGORIES.reduce((sum, c) => sum + categoryScores[c], 0) / CATEGORIES.length,
