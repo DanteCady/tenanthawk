@@ -24,6 +24,7 @@ import {
   type ScanSector,
 } from "@/lib/scan/checks/registry";
 import { formatSharePointEntityLabel } from "@/lib/scan/sharepoint-site-label";
+import { formatTeamsEntityLabel } from "@/lib/scan/teams-activity-label";
 
 export interface FindingDTO {
   id: string;
@@ -166,6 +167,12 @@ function LicenseEntityLine({ entityRef }: { entityRef: string }) {
 function formatEntityLabel(checkId: string, entity: string): string {
   if (checkId.startsWith("hygiene.sharepoint-")) {
     return formatSharePointEntityLabel(entity);
+  }
+  if (
+    checkId === "hygiene.stale-teams" ||
+    checkId.startsWith("hygiene.teams-")
+  ) {
+    return formatTeamsEntityLabel(entity);
   }
   return entity;
 }

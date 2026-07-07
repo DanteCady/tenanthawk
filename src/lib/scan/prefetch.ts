@@ -8,6 +8,7 @@ import {
   isObfuscatedReportToken,
   isSharePointWebUrl,
 } from "./sharepoint-site-label";
+import { dedupeTeamsActivity, parseTeamsActivityRow } from "./teams-activity-label";
 
 export interface PrefetchGroup {
   id: string;
@@ -21,10 +22,14 @@ export interface PrefetchGroup {
 
 export interface TeamsActivityRow {
   teamId: string;
-  teamName: string;
+  /** Pseudonymous team key when Graph obfuscates the usage report (app-only). */
+  reportTeamKey: string;
+  displayName: string;
+  teamType: string;
   lastActivityDate: string | null;
   activeChannels: number;
   guests: number;
+  isDeleted: boolean;
 }
 
 export interface SharePointSiteRow {
@@ -145,23 +150,11 @@ export async function fetchTeamsActivity(token: string): Promise<TeamsActivityRo
     "/reports/getTeamsTeamActivityDetail(period='D90')",
   );
 
-  return rows
-    .map((row) => {
-      const teamId = rowVal(row, "Team Id", "teamId");
-      const teamName = rowVal(row, "Team Name", "teamName");
-      if (!teamId && !teamName) return null;
-
-      const lastActivityDate = rowVal(row, "Last Activity Date", "lastActivityDate") || null;
-
-      return {
-        teamId: teamId || teamName,
-        teamName: teamName || teamId,
-        lastActivityDate,
-        activeChannels: parseCount(rowVal(row, "Active Channels", "activeChannels")),
-        guests: parseCount(rowVal(row, "Guests", "guests")),
-      };
-    })
-    .filter((r): r is TeamsActivityRow => r !== null);
+  return dedupeTeamsActivity(
+    rows
+      .map((row) => parseTeamsActivityRow(row))
+      .filter((r): r is TeamsActivityRow => r !== null && !r.isDeleted),
+  );
 }
 
 function parseBool(value: string): boolean {

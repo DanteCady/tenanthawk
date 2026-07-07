@@ -23,6 +23,9 @@ export function isNullReportSiteId(siteId: string): boolean {
   return hex === "" || /^0+$/.test(hex);
 }
 
+/** Null GUID used when Graph obfuscates usage report ids (Teams, SharePoint, etc.). */
+export const isNullReportId = isNullReportSiteId;
+
 /** Convert report site id to a GUID for Graph /sites/{id} lookups. */
 export function formatSharePointSiteGuid(siteId: string): string | null {
   const hex = siteId.trim().replace(/-/g, "");

@@ -8,6 +8,7 @@ import {
   teamGroups,
 } from "../prefetch";
 import type { ScanPrefetch, TeamsActivityRow } from "../prefetch";
+import { teamsActivityLabel } from "../teams-activity-label";
 
 function aggregateFinding(
   checkId: string,
@@ -153,7 +154,7 @@ export const staleTeamsCheck: Check = {
     return aggregateFinding(
       staleTeamsCheck.id,
       items.length,
-      items.map((r) => r.teamName),
+      items.map((r) => teamsActivityLabel(r)),
       {
         noun: items.length === 1 ? "stale Microsoft Team" : "stale Microsoft Teams",
         description: `${items.length} Microsoft Team${items.length === 1 ? "" : "s"} had no activity in 90+ days${hasVeryStale ? " (some 180+ days)" : ""}. Stale Teams add noise to search and Copilot grounding.`,
@@ -177,7 +178,7 @@ export const teamsNoActiveChannelsCheck: Check = {
     return aggregateFinding(
       teamsNoActiveChannelsCheck.id,
       items.length,
-      items.map((r) => r.teamName),
+      items.map((r) => teamsActivityLabel(r)),
       {
         noun:
           items.length === 1
@@ -204,7 +205,7 @@ export const teamsGuestHeavyCheck: Check = {
     return aggregateFinding(
       teamsGuestHeavyCheck.id,
       items.length,
-      items.map((r) => r.teamName),
+      items.map((r) => teamsActivityLabel(r)),
       {
         noun: items.length === 1 ? "guest-heavy Team" : "guest-heavy Teams",
         description: `${items.length} Microsoft Team${items.length === 1 ? "" : "s"} had 10+ guest users active in the last 90 days. Heavy guest presence increases data-exposure risk.`,
