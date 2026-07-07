@@ -12,6 +12,7 @@ import { getSession } from "@/lib/session";
 import { getPlan, hasProFeatures, isEnterprisePlan } from "@/lib/entitlements";
 import { getMspConsoleAccess } from "@/lib/entitlements/msp-console";
 import { getActiveConnection, getConnections } from "@/lib/queries";
+import { getDefaultConnectionId } from "@/lib/connection/preferences";
 import { connectionLabel } from "@/lib/connection/label";
 import { PlanBadge } from "@/components/app/PlanBadge";
 import { DisconnectTenantButton } from "@/components/app/DisconnectTenantButton";
@@ -24,6 +25,7 @@ import { isLiveConfigured } from "@/lib/scan/graph";
 import { ThemePicker } from "@/components/theme/ThemePicker";
 import { timeAgo } from "@/lib/time";
 import { LicensePricingForm } from "@/components/app/LicensePricingForm";
+import { DefaultClientPicker } from "@/components/app/DefaultClientPicker";
 import { TwoFactorSettings } from "@/components/auth/TwoFactorSettings";
 import { ChangePasswordForm } from "@/components/auth/ChangePasswordForm";
 import {
@@ -70,6 +72,10 @@ export default async function SettingsPage() {
   const alertPrefs = await getAlertPreferences(session.user.id);
   const connections = await getConnections(session.user.id);
   const activeConn = await getActiveConnection(session.user.id);
+  const defaultConnectionId =
+    connections.length > 1
+      ? ((await getDefaultConnectionId(session.user.id)) ?? null)
+      : null;
   const liveConfigured = isLiveConfigured();
 
   const licensePricing = activeConn
@@ -140,8 +146,20 @@ export default async function SettingsPage() {
       >
         {connectionRows.length > 0 ? (
           <div className="space-y-4">
+            {connections.length > 1 ? (
+              <DefaultClientPicker
+                clients={connectionRows.map(({ conn, label }) => ({
+                  id: conn.id,
+                  label,
+                  mode: conn.mode,
+                }))}
+                defaultConnectionId={defaultConnectionId}
+              />
+            ) : null}
+
             {connectionRows.map(({ conn, label, health }) => {
               const isActive = activeConn?.id === conn.id;
+              const isDefault = defaultConnectionId === conn.id;
               return (
                 <div
                   key={conn.id}
@@ -167,6 +185,11 @@ export default async function SettingsPage() {
                         {isActive ? (
                           <span className="font-medium text-[var(--th-brand-text)]">
                             Active client
+                          </span>
+                        ) : null}
+                        {isDefault ? (
+                          <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[0.65rem] font-medium text-violet-900 dark:bg-violet-950/50 dark:text-violet-200">
+                            Default
                           </span>
                         ) : null}
                         · connected {timeAgo(conn.created_at)}

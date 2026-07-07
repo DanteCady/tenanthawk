@@ -4,23 +4,26 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { ThemeLogo } from "@/components/theme/ThemeLogo";
-import type { Plan } from "@/lib/entitlements";
-import { PlanBadge } from "@/components/app/PlanBadge";
 import { getVisibleNavGroups } from "./nav-config";
 import { NavLinks } from "./NavLinks";
+import { SidebarUserProfile } from "./SidebarUserProfile";
 
 export function MobileNavDrawer({
   open,
   onClose,
   isPro,
   showClients,
-  plan,
+  userName,
+  userEmail,
+  userImage,
 }: {
   open: boolean;
   onClose: () => void;
   isPro: boolean;
   showClients: boolean;
-  plan: Plan;
+  userName: string;
+  userEmail: string;
+  userImage?: string | null;
 }) {
   const groups = getVisibleNavGroups(showClients);
 
@@ -64,8 +67,14 @@ export function MobileNavDrawer({
         <nav className="flex-1 overflow-y-auto px-2 py-4">
           <NavLinks groups={groups} isPro={isPro} collapsed={false} onNavigate={onClose} />
         </nav>
-        <div className="border-t border-[var(--th-sidebar-border)] p-4">
-          <PlanBadge plan={plan} />
+        <div className="border-t border-[var(--th-sidebar-border)] p-3">
+          <SidebarUserProfile
+            name={userName}
+            email={userEmail}
+            image={userImage}
+            collapsed={false}
+            onNavigate={onClose}
+          />
         </div>
       </aside>
     </div>

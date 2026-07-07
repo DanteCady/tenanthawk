@@ -151,3 +151,10 @@ CREATE TABLE IF NOT EXISTS config_change (
 
 CREATE INDEX IF NOT EXISTS config_change_connection_idx
   ON config_change (connection_id, detected_at DESC);
+
+-- Workspace default client when multiple tenants are connected (used when no session cookie).
+CREATE TABLE IF NOT EXISTS user_preferences (
+  user_id                 text PRIMARY KEY,
+  default_connection_id   text REFERENCES connection(id) ON DELETE SET NULL,
+  updated_at              timestamptz NOT NULL DEFAULT now()
+);

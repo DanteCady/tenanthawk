@@ -5,6 +5,7 @@ import { db } from "@/db";
 /** Remove all Tenant Hawk app data owned by a user. */
 export async function deleteUserData(userId: string): Promise<void> {
   await db.deleteFrom("connection").where("user_id", "=", userId).execute();
+  await db.deleteFrom("user_preferences").where("user_id", "=", userId).execute();
   await db.deleteFrom("alert_preferences").where("user_id", "=", userId).execute();
   await db.deleteFrom("alert_webhook").where("user_id", "=", userId).execute();
 }

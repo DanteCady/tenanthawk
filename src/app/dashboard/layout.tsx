@@ -24,6 +24,9 @@ export default async function DashboardLayout({
       isPro={isPro}
       showClients={mspAccess.showConsole}
       plan={plan}
+      userName={session.user.name}
+      userEmail={session.user.email}
+      userImage={(session.user as { image?: string | null }).image ?? null}
       showConnectionBlip={!mspAccess.showConsole}
       connectionHealth={connectionHealth}
       tenantLabel={tenantLabel}

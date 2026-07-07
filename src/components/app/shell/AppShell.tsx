@@ -13,6 +13,9 @@ export function AppShell({
   isPro,
   showClients,
   plan,
+  userName,
+  userEmail,
+  userImage,
   showConnectionBlip,
   connectionHealth,
   tenantLabel,
@@ -24,6 +27,9 @@ export function AppShell({
   isPro: boolean;
   showClients: boolean;
   plan: Plan;
+  userName: string;
+  userEmail: string;
+  userImage?: string | null;
   showConnectionBlip: boolean;
   connectionHealth: ConnectionHealth | null;
   tenantLabel: string | null;
@@ -39,7 +45,9 @@ export function AppShell({
       <AppSidebar
         isPro={isPro}
         showClients={showClients}
-        plan={plan}
+        userName={userName}
+        userEmail={userEmail}
+        userImage={userImage}
         collapsed={collapsed}
         hydrated={hydrated}
         onToggle={toggle}
@@ -50,7 +58,9 @@ export function AppShell({
         onClose={() => setMobileOpen(false)}
         isPro={isPro}
         showClients={showClients}
-        plan={plan}
+        userName={userName}
+        userEmail={userEmail}
+        userImage={userImage}
       />
 
       <div className="app-main-column">

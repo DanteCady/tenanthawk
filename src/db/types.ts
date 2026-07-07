@@ -197,6 +197,12 @@ export interface UserTable {
   email: string;
 }
 
+export interface UserPreferencesTable {
+  user_id: string;
+  default_connection_id: Nullable<string>;
+  updated_at: ColumnType<Date, string | undefined, string>;
+}
+
 export interface Database {
   connection: ConnectionTable;
   scan: ScanTable;
@@ -208,5 +214,6 @@ export interface Database {
   report_share: ReportShareTable;
   config_snapshot: ConfigSnapshotTable;
   config_change: ConfigChangeTable;
+  user_preferences: UserPreferencesTable;
   user: UserTable;
 }

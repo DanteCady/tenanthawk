@@ -3,23 +3,26 @@
 import Link from "next/link";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { ThemeLogo } from "@/components/theme/ThemeLogo";
-import { PlanBadge } from "@/components/app/PlanBadge";
-import type { Plan } from "@/lib/entitlements";
 import { getVisibleNavGroups } from "./nav-config";
 import { NavLinks } from "./NavLinks";
 import { SidebarTooltip } from "./SidebarTooltip";
+import { SidebarUserProfile } from "./SidebarUserProfile";
 
 export function AppSidebar({
   isPro,
   showClients,
-  plan,
+  userName,
+  userEmail,
+  userImage,
   collapsed,
   hydrated,
   onToggle,
 }: {
   isPro: boolean;
   showClients: boolean;
-  plan: Plan;
+  userName: string;
+  userEmail: string;
+  userImage?: string | null;
   collapsed: boolean;
   hydrated: boolean;
   onToggle: () => void;
@@ -71,11 +74,18 @@ export function AppSidebar({
           <NavLinks groups={groups} isPro={isPro} collapsed={isCollapsed} />
         </nav>
 
-        {!isCollapsed && (
-          <div className="shrink-0 border-t border-[var(--th-sidebar-border)] p-3">
-            <PlanBadge plan={plan} />
-          </div>
-        )}
+        <div
+          className={`shrink-0 border-t border-[var(--th-sidebar-border)] ${
+            isCollapsed ? "p-2" : "p-3"
+          }`}
+        >
+          <SidebarUserProfile
+            name={userName}
+            email={userEmail}
+            image={userImage}
+            collapsed={isCollapsed}
+          />
+        </div>
       </div>
     </aside>
   );

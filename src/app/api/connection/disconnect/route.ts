@@ -5,6 +5,7 @@ import {
   readActiveConnectionCookie,
   setActiveConnectionCookie,
 } from "@/lib/connection/active";
+import { getDefaultConnectionId } from "@/lib/connection/preferences";
 import { getConnectionById, getConnections } from "@/lib/queries";
 import { invalidateConnectionHealth } from "@/lib/connect/health";
 import { requireSession } from "@/lib/session";
@@ -40,7 +41,12 @@ export async function POST(req: Request) {
     await clearActiveConnectionCookie();
     const remaining = await getConnections(session.user.id);
     if (remaining.length > 0) {
-      await setActiveConnectionCookie(remaining[0].id);
+      const defaultId = await getDefaultConnectionId(session.user.id);
+      const nextId =
+        defaultId && remaining.some((c) => c.id === defaultId)
+          ? defaultId
+          : remaining[0].id;
+      await setActiveConnectionCookie(nextId);
     }
   }
 

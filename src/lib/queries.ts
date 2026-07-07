@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "@/db";
 import { readActiveConnectionCookie } from "@/lib/connection/active";
+import { getDefaultConnectionId } from "@/lib/connection/preferences";
 import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
 import { resolveWorkspaceDataUserId } from "@/lib/enterprise/workspace";
 import { isLiveConfigured } from "@/lib/scan/graph";
@@ -44,6 +45,11 @@ async function resolveDefaultConnectionId(userId: string): Promise<string | unde
   const connections = await getConnections(userId);
   if (connections.length === 0) return undefined;
   if (connections.length === 1) return connections[0].id;
+
+  const storedDefault = await getDefaultConnectionId(userId);
+  if (storedDefault && connections.some((c) => c.id === storedDefault)) {
+    return storedDefault;
+  }
 
   const ranked = await Promise.all(
     connections.map(async (conn) => ({
