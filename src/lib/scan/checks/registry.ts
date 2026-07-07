@@ -612,7 +612,7 @@ export const CHECK_DEFINITIONS: CheckDefinition[] = [
     tier: "v1",
     category: "security",
     module: "identity-extended.ts",
-    permissions: ["RoleManagement.Read.Directory"],
+    permissions: ["RoleManagement.Read.All"],
     scoreImpact: "full",
     marketingLabel: "Standing privileged role access",
     offered: true,

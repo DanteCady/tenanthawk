@@ -33,8 +33,8 @@ migration commands above. No code changes.
    (read-only): `Directory.Read.All`, `User.Read.All`, `Application.Read.All`,
    `Policy.Read.All`, `Reports.Read.All`, `AuditLog.Read.All`,
    `Organization.Read.All`, `DeviceManagementManagedDevices.Read.All`,
-   `Device.Read.All`, `SharePointTenantSettings.Read.All`, `Mail.ReadBasic.All`.
-   Optional for PIM standing-access checks: `RoleManagement.Read.Directory`.
+   `Device.Read.All`, `SharePointTenantSettings.Read.All`, `Mail.ReadBasic.All`,
+   `RoleManagement.Read.All` (PIM standing-access and privileged role checks).
    For readable SharePoint site names in
    findings (not pseudonymous hashes), also add `Sites.Read.All` and re-consent.
    For readable Microsoft Teams names in activity findings, add
