@@ -350,5 +350,36 @@ export function getDemoFindings(): FindingDraft[] {
       remediation:
         "Review large mailboxes in Exchange admin, enable archiving, or apply retention policies.",
     },
+    {
+      category: "security",
+      checkId: "security.over-permissioned-apps",
+      severity: "high",
+      title: "4 over-permissioned enterprise apps",
+      description:
+        "4 enterprise apps grant admin-consented Graph permissions that include high-risk scopes such as Mail.ReadWrite.All.",
+      impact: { count: 4, entities: ["Legacy CRM Sync", "Finance Automation", "HR Data Export"] },
+      remediation:
+        "Review admin-consented permissions in Entra → Enterprise applications and remove unnecessary Graph scopes.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.unused-enterprise-apps",
+      severity: "medium",
+      title: "6 unused enterprise apps",
+      description:
+        "6 credentialed enterprise apps had no sign-in activity in the last 90 days.",
+      impact: { count: 6, entities: ["Old SSO Bridge", "Retired Reporting API"] },
+      remediation:
+        "Disable or remove unused enterprise applications and rotate stale credentials.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.app-without-owners",
+      severity: "medium",
+      title: "8 ownerless app registrations",
+      description: "8 app registrations have no assigned owners.",
+      impact: { count: 8, entities: ["Contoso Portal", "Inventory Sync"] },
+      remediation: "Assign at least two owners to each app registration in Entra → App registrations.",
+    },
   ];
 }

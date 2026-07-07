@@ -22,6 +22,10 @@ Run spikes against a live tenant before promoting checks from `backlog` → `v1`
 | EX1 | `GET /users/{id}/mailboxSettings` (`forwardingSmtpAddress`) | Forwarding checks | **Needs Mail.ReadBasic.All** | App-only returns 403 without permission; checks degrade gracefully. |
 | EX2 | `GET /reports/getMailboxUsageDetail(period='D30')` | Inactive / storage checks | **Pass (CSV, obfuscated)** | Pseudonymous mailbox keys in report; activity + storage columns usable. |
 | RS1 | `GET /admin/reportSettings` (`displayConcealedNames`) | Report concealment banner (optional) | Optional | Authoritative when `ReportSettings.Read.All` is granted; otherwise inferred from obfuscated usage report rows during scan. |
+| AP1 | `GET /applications`, `GET /servicePrincipals` (+ owners expand) | Apps v1 ownership / multi-tenant | Pending | |
+| AP2 | `GET /oauth2PermissionGrants` | `security.over-permissioned-apps` | Pending | Match risky scopes in `risky-permissions.ts`. |
+| AP3 | `GET /auditLogs/signIns` + credentialed `servicePrincipals` | `hygiene.unused-enterprise-apps` | Pending | 90d sign-in lookback; capped paging. |
+| AP4 | `GET /directoryRoles` (Global Admin) `/members` | `security.app-global-admin-role` | Pending | Filter service principal members. |
 | DV1 | `GET /devices` + match to Intune via `azureADDeviceId` | Device sector checks | **Pass** | Entra/Intune cross-match works with `Device.Read.All` + managed devices permission. |
 
 ## Permissions reference

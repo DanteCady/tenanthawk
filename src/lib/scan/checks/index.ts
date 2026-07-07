@@ -5,6 +5,15 @@ import {
   disabledOutsideGroup,
 } from "./identity";
 import { expiringSecrets } from "./reliability";
+import {
+  servicePrincipalSecretsCheck,
+  overPermissionedAppsCheck,
+  unusedEnterpriseAppsCheck,
+  appWithoutOwnersCheck,
+  enterpriseAppNoOwnersCheck,
+  appGlobalAdminRoleCheck,
+  multiTenantAppsCheck,
+} from "./applications";
 import { intuneNonCompliant, intuneStaleSync } from "./intune";
 import {
   unusedLicenses,
@@ -58,6 +67,13 @@ export const checks: Check[] = [
   unusedCopilotLicenses,
   // Reliability
   expiringSecrets,
+  servicePrincipalSecretsCheck,
+  overPermissionedAppsCheck,
+  unusedEnterpriseAppsCheck,
+  appWithoutOwnersCheck,
+  enterpriseAppNoOwnersCheck,
+  appGlobalAdminRoleCheck,
+  multiTenantAppsCheck,
   intuneStaleSync,
   // Hygiene & workload
   inactiveUsers,

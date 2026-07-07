@@ -171,6 +171,41 @@ export const CHECK_REMEDIATION_META: Record<string, CheckRemediationMeta> = {
     adminSurface: "M365 Admin",
     effortLabel: "~1 hour",
   },
+  "reliability.service-principal-secrets": {
+    effort: "quick",
+    adminSurface: "Entra",
+    effortLabel: "~15 min",
+  },
+  "security.over-permissioned-apps": {
+    effort: "moderate",
+    adminSurface: "Entra",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.unused-enterprise-apps": {
+    effort: "moderate",
+    adminSurface: "Entra",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.app-without-owners": {
+    effort: "quick",
+    adminSurface: "Entra",
+    effortLabel: "~15 min",
+  },
+  "hygiene.enterprise-app-no-owners": {
+    effort: "quick",
+    adminSurface: "Entra",
+    effortLabel: "~15 min",
+  },
+  "security.app-global-admin-role": {
+    effort: "moderate",
+    adminSurface: "Entra",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.multi-tenant-apps": {
+    effort: "moderate",
+    adminSurface: "Entra",
+    effortLabel: "~1 hour",
+  },
   "hygiene.sharing": {
     effort: "moderate",
     adminSurface: "SharePoint",

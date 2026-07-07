@@ -164,6 +164,34 @@ export const CHECK_COMPLIANCE: Record<string, CheckComplianceMap> = {
     cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
     nist: [{ id: "CM-8", title: "System Component Inventory" }],
   },
+  "reliability.service-principal-secrets": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "IA-5", title: "Authenticator Management" }],
+  },
+  "security.over-permissioned-apps": {
+    cis: [{ id: "3.3", title: "Configure data access control lists" }],
+    nist: [{ id: "AC-6", title: "Least Privilege" }],
+  },
+  "hygiene.unused-enterprise-apps": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
+  "hygiene.app-without-owners": {
+    cis: [{ id: "5.1", title: "Establish and maintain an inventory of accounts" }],
+    nist: [{ id: "AC-2", title: "Account Management" }],
+  },
+  "hygiene.enterprise-app-no-owners": {
+    cis: [{ id: "5.1", title: "Establish and maintain an inventory of accounts" }],
+    nist: [{ id: "AC-2", title: "Account Management" }],
+  },
+  "security.app-global-admin-role": {
+    cis: [{ id: "5.4", title: "Restrict administrator privileges to dedicated accounts" }],
+    nist: [{ id: "AC-6", title: "Least Privilege" }],
+  },
+  "hygiene.multi-tenant-apps": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "AC-3", title: "Access Enforcement" }],
+  },
 };
 
 export const FRAMEWORK_LABELS: Record<ComplianceFramework, string> = {

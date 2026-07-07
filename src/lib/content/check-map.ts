@@ -156,6 +156,34 @@ export const CHECK_GUIDE_MAP: Record<string, CheckGuideLink> = {
     slug: "m365-expiring-secrets-and-domains",
     label: "Expiring app secrets and certs",
   },
+  "reliability.service-principal-secrets": {
+    slug: "m365-expiring-secrets-and-domains",
+    label: "Expiring enterprise app secrets",
+  },
+  "security.over-permissioned-apps": {
+    slug: "m365-security-misconfigurations",
+    label: "Over-permissioned enterprise apps",
+  },
+  "hygiene.unused-enterprise-apps": {
+    slug: "m365-tenant-hygiene",
+    label: "Unused enterprise apps",
+  },
+  "hygiene.app-without-owners": {
+    slug: "m365-tenant-hygiene",
+    label: "Ownerless app registrations",
+  },
+  "hygiene.enterprise-app-no-owners": {
+    slug: "m365-tenant-hygiene",
+    label: "Ownerless enterprise apps",
+  },
+  "security.app-global-admin-role": {
+    slug: "m365-security-misconfigurations",
+    label: "Apps with Global Administrator role",
+  },
+  "hygiene.multi-tenant-apps": {
+    slug: "m365-security-misconfigurations",
+    label: "Multi-tenant apps with credentials",
+  },
   "reliability.intune-stale-sync": {
     slug: "m365-tenant-hygiene",
     label: "Stale Intune device sync",
