@@ -23,6 +23,7 @@ import {
   SECTOR_LABELS,
   type ScanSector,
 } from "@/lib/scan/checks/registry";
+import { formatSharePointEntityLabel } from "@/lib/scan/sharepoint-site-label";
 
 export interface FindingDTO {
   id: string;
@@ -162,9 +163,25 @@ function LicenseEntityLine({ entityRef }: { entityRef: string }) {
   );
 }
 
+function formatEntityLabel(checkId: string, entity: string): string {
+  if (checkId.startsWith("hygiene.sharepoint-")) {
+    return formatSharePointEntityLabel(entity);
+  }
+  return entity;
+}
+
 function affectedItemsLabel(checkId: string): string {
   if (checkId.startsWith("cost.")) return "Affected accounts";
-  return "Affected groups";
+  const sector = checkSector(checkId);
+  if (sector === "sharepoint") return "Affected sites";
+  if (sector === "teams") {
+    if (checkId.includes("group")) return "Affected groups";
+    return "Affected Teams";
+  }
+  if (sector === "devices") return "Affected devices";
+  if (sector === "exchange") return "Affected mailboxes";
+  if (sector === "apps") return "Affected apps";
+  return "Affected items";
 }
 
 function trackingLabel(f: FindingDTO): string | null {
@@ -317,7 +334,7 @@ export function FindingsTable({
                       </p>
                       <ul className="list-inside list-disc space-y-0.5">
                         {f.impact.entities.map((name, i) => (
-                          <li key={`${i}-${name}`}>{name}</li>
+                          <li key={`${i}-${name}`}>{formatEntityLabel(f.checkId, name)}</li>
                         ))}
                       </ul>
                     </div>

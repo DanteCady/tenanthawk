@@ -33,7 +33,8 @@ migration commands above. No code changes.
    (read-only): `Directory.Read.All`, `User.Read.All`, `Application.Read.All`,
    `Policy.Read.All`, `Reports.Read.All`, `AuditLog.Read.All`,
    `Organization.Read.All`, `DeviceManagementManagedDevices.Read.All`,
-   `SharePointTenantSettings.Read.All`.
+   `SharePointTenantSettings.Read.All`. For readable SharePoint site names in
+   findings (not pseudonymous hashes), also add `Sites.Read.All` and re-consent.
 2. Add a client secret. Set redirect URI to `${APP_URL}/api/connect/callback`.
 3. Set `MS_CLIENT_ID`, `MS_CLIENT_SECRET`, `MS_REDIRECT_URI`. The app switches
    out of demo mode automatically. Customers connect via **Connect Microsoft

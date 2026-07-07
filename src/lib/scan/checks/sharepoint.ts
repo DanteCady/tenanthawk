@@ -1,6 +1,12 @@
 import { graphGet } from "../graph";
 import { daysSinceActivity } from "../prefetch";
 import type { ScanPrefetch, SharePointSiteRow } from "../prefetch";
+import {
+  isNullReportSiteId,
+  isObfuscatedReportToken,
+  isSharePointWebUrl,
+  sharePointSiteLabel,
+} from "../sharepoint-site-label";
 import type { Check, FindingDraft } from "../types";
 import type { Severity } from "@/db/types";
 
@@ -25,16 +31,6 @@ function severityFromCount(
   return "low";
 }
 
-function siteLabel(site: SharePointSiteRow): string {
-  try {
-    const url = new URL(site.siteUrl.startsWith("http") ? site.siteUrl : `https://${site.siteUrl}`);
-    const path = url.pathname.replace(/^\/sites\//, "").replace(/^\/teams\//, "");
-    return path || site.siteUrl;
-  } catch {
-    return site.siteUrl || site.siteId;
-  }
-}
-
 function aggregateSiteFinding(
   checkId: string,
   sites: SharePointSiteRow[],
@@ -54,7 +50,7 @@ function aggregateSiteFinding(
       severity: opts.severity,
       title: `${sites.length} ${opts.noun}`,
       description: opts.description,
-      impact: { count: sites.length, entities: sites.slice(0, 15).map(siteLabel) },
+      impact: { count: sites.length, entities: sites.slice(0, 15).map(sharePointSiteLabel) },
       remediation: opts.remediation,
     },
   ];
@@ -219,8 +215,20 @@ export const sharePointOwnerlessSitesCheck: Check = {
     const sites = getActiveSites(ctx.prefetch);
     if (sites.length === 0) return [];
 
+    // App-only usage reports obfuscate owner fields as hex tokens — skip this check.
+    const reportIsObfuscated = sites.every(
+      (s) =>
+        isNullReportSiteId(s.siteId) &&
+        !isSharePointWebUrl(s.siteUrl) &&
+        isObfuscatedReportToken(s.ownerDisplayName),
+    );
+    if (reportIsObfuscated) return [];
+
     const ownerless = sites.filter(
-      (s) => !s.ownerDisplayName.trim() && !s.ownerPrincipalName.trim(),
+      (s) =>
+        !s.ownerDisplayName.trim() &&
+        !s.ownerPrincipalName.trim() &&
+        !isObfuscatedReportToken(s.ownerDisplayName),
     );
 
     return aggregateSiteFinding(sharePointOwnerlessSitesCheck.id, ownerless, {

@@ -1,5 +1,13 @@
 import { fetchGraphReport } from "./graph-reports";
 import { graphGet } from "./graph";
+import {
+  dedupeSharePointSites,
+  formatSharePointSiteGuid,
+  isBareSharePointSiteId,
+  isNullReportSiteId,
+  isObfuscatedReportToken,
+  isSharePointWebUrl,
+} from "./sharepoint-site-label";
 
 export interface PrefetchGroup {
   id: string;
@@ -21,7 +29,11 @@ export interface TeamsActivityRow {
 
 export interface SharePointSiteRow {
   siteId: string;
+  /** Pseudonymous site key when Graph obfuscates the usage report (app-only). */
+  reportSiteKey: string;
   siteUrl: string;
+  rootWebTemplate: string;
+  displayName?: string;
   ownerDisplayName: string;
   ownerPrincipalName: string;
   lastActivityDate: string | null;
@@ -62,11 +74,16 @@ export function isWithinGracePeriod(createdDateTime: string | undefined, days: n
   return Date.now() - new Date(createdDateTime).getTime() < days * DAY;
 }
 
-function rowVal(row: Record<string, string>, ...keys: string[]): string {
+function rowVal(row: Record<string, unknown>, ...keys: string[]): string {
   for (const key of keys) {
-    if (row[key] !== undefined && row[key] !== "") return row[key];
+    const direct = row[key];
+    if (direct !== undefined && direct !== null && String(direct) !== "") {
+      return String(direct);
+    }
     const match = Object.keys(row).find((k) => k.toLowerCase() === key.toLowerCase());
-    if (match && row[match] !== undefined) return row[match] ?? "";
+    if (match && row[match] !== undefined && row[match] !== null) {
+      return String(row[match] ?? "");
+    }
   }
   return "";
 }
@@ -123,7 +140,7 @@ async function fetchGroups(token: string): Promise<PrefetchGroup[]> {
 
 /** Teams usage report (90-day window). Empty array if report unavailable. */
 export async function fetchTeamsActivity(token: string): Promise<TeamsActivityRow[]> {
-  const rows = await fetchGraphReport<Record<string, string>>(
+  const rows = await fetchGraphReport<Record<string, unknown>>(
     token,
     "/reports/getTeamsTeamActivityDetail(period='D90')",
   );
@@ -152,36 +169,120 @@ function parseBool(value: string): boolean {
   return v === "true" || v === "yes" || v === "1";
 }
 
+function parseSharePointSiteRow(row: Record<string, unknown>): SharePointSiteRow | null {
+  const siteId = rowVal(row, "Site Id", "siteId");
+  const siteUrlRaw = rowVal(row, "Site URL", "siteUrl");
+  const ownerDisplay = rowVal(row, "Owner Display Name", "ownerDisplayName");
+  const rootWebTemplate = rowVal(row, "Root Web Template", "rootWebTemplate");
+
+  if (!siteId && !siteUrlRaw && !ownerDisplay) return null;
+
+  const siteUrl = isSharePointWebUrl(siteUrlRaw) ? siteUrlRaw : "";
+  const obfuscated = isNullReportSiteId(siteId) && !siteUrl;
+  const reportSiteKey =
+    obfuscated && isObfuscatedReportToken(ownerDisplay)
+      ? ownerDisplay
+      : isBareSharePointSiteId(siteId)
+        ? siteId
+        : siteId || ownerDisplay || siteUrlRaw;
+
+  const externalRaw = rowVal(row, "External Sharing", "externalSharing") || null;
+
+  return {
+    siteId: siteId || reportSiteKey,
+    reportSiteKey,
+    siteUrl,
+    rootWebTemplate,
+    displayName: rowVal(row, "Site Name", "siteName", "displayName") || undefined,
+    ownerDisplayName: ownerDisplay,
+    ownerPrincipalName: rowVal(row, "Owner Principal Name", "ownerPrincipalName"),
+    lastActivityDate: rowVal(row, "Last Activity Date", "lastActivityDate") || null,
+    fileCount: parseCount(rowVal(row, "File Count", "fileCount")),
+    activeFileCount: parseCount(rowVal(row, "Active File Count", "activeFileCount")),
+    pageViewCount: parseCount(rowVal(row, "Page View Count", "pageViewCount")),
+    storageUsedBytes: parseCount(rowVal(row, "Storage Used (Byte)", "storageUsedInBytes")),
+    isDeleted: parseBool(rowVal(row, "Is Deleted", "isDeleted")),
+    externalSharing: externalRaw || null,
+  };
+}
+
+const GRAPH = "https://graph.microsoft.com/v1.0";
+const SITE_URL_RESOLVE_CAP = 40;
+
+/** Resolve webUrl/displayName for report rows that only include a site id. */
+async function enrichSharePointSiteRows(
+  token: string,
+  sites: SharePointSiteRow[],
+): Promise<SharePointSiteRow[]> {
+  const deduped = dedupeSharePointSites(sites);
+  const needsUrl = deduped.filter(
+    (s) => !isSharePointWebUrl(s.siteUrl) && !isNullReportSiteId(s.siteId),
+  );
+  if (needsUrl.length === 0) return deduped;
+
+  const byId = new Map(deduped.map((s) => [s.siteId.trim().toLowerCase(), s]));
+
+  let hostname: string | null = null;
+  try {
+    const rootRes = await fetch(`${GRAPH}/sites/root?$select=webUrl`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (rootRes.ok) {
+      const root = (await rootRes.json()) as { webUrl?: string };
+      if (root.webUrl) hostname = new URL(root.webUrl).hostname;
+    }
+  } catch {
+    // /sites/root requires Sites.Read.All on many tenants.
+  }
+
+  for (const site of needsUrl.slice(0, SITE_URL_RESOLVE_CAP)) {
+    const guid = formatSharePointSiteGuid(site.siteId);
+    if (!guid) continue;
+
+    const lookupPaths = [
+      `${GRAPH}/sites/${guid}?$select=webUrl,displayName`,
+      hostname ? `${GRAPH}/sites/${hostname},${guid},${guid}?$select=webUrl,displayName` : null,
+    ].filter(Boolean) as string[];
+
+    for (const path of lookupPaths) {
+      try {
+        const res = await fetch(path, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) continue;
+
+        const json = (await res.json()) as { webUrl?: string; displayName?: string };
+        const key = site.siteId.trim().toLowerCase();
+        const existing = byId.get(key);
+        if (!existing) break;
+
+        byId.set(key, {
+          ...existing,
+          siteUrl: json.webUrl ?? existing.siteUrl,
+          displayName: json.displayName ?? existing.displayName,
+        });
+        break;
+      } catch {
+        // Try next lookup shape.
+      }
+    }
+  }
+
+  return [...byId.values()];
+}
+
 /** SharePoint site usage report (30-day window). Empty array if report unavailable. */
 export async function fetchSharePointSites(token: string): Promise<SharePointSiteRow[]> {
-  const rows = await fetchGraphReport<Record<string, string>>(
+  const rows = await fetchGraphReport<Record<string, unknown>>(
     token,
     "/reports/getSharePointSiteUsageDetail(period='D30')",
   );
 
-  return rows
-    .map((row) => {
-      const siteId = rowVal(row, "Site Id", "siteId");
-      const siteUrl = rowVal(row, "Site URL", "siteUrl");
-      if (!siteId && !siteUrl) return null;
-
-      const externalRaw = rowVal(row, "External Sharing", "externalSharing") || null;
-
-      return {
-        siteId: siteId || siteUrl,
-        siteUrl: siteUrl || siteId,
-        ownerDisplayName: rowVal(row, "Owner Display Name", "ownerDisplayName"),
-        ownerPrincipalName: rowVal(row, "Owner Principal Name", "ownerPrincipalName"),
-        lastActivityDate: rowVal(row, "Last Activity Date", "lastActivityDate") || null,
-        fileCount: parseCount(rowVal(row, "File Count", "fileCount")),
-        activeFileCount: parseCount(rowVal(row, "Active File Count", "activeFileCount")),
-        pageViewCount: parseCount(rowVal(row, "Page View Count", "pageViewCount")),
-        storageUsedBytes: parseCount(rowVal(row, "Storage Used (Byte)", "storageUsedInBytes")),
-        isDeleted: parseBool(rowVal(row, "Is Deleted", "isDeleted")),
-        externalSharing: externalRaw || null,
-      };
-    })
+  const parsed = rows
+    .map((row) => parseSharePointSiteRow(row))
     .filter((r): r is SharePointSiteRow => r !== null);
+
+  return enrichSharePointSiteRows(token, parsed);
 }
 
 /** Fetch shared scan data for collaboration / Teams checks. Never throws — checks degrade when data is missing. */
