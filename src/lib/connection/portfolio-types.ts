@@ -9,4 +9,6 @@ export interface ClientPortfolioRow {
   lastScanAt: Date | null;
   stale: boolean;
   healthStatus: string | null;
+  /** `true` when M365 conceals names in usage reports; `null` if unknown. */
+  reportNamesConcealed: boolean | null;
 }

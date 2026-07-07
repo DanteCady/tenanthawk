@@ -4,6 +4,7 @@ import { connectionLabel } from "@/lib/connection/label";
 import { grade } from "@/lib/scan/score";
 import { summarize } from "@/lib/summary";
 import { getConnections, getFindings, getLatestScan } from "@/lib/queries";
+import { reportConcealmentFromCoverageNotes } from "@/lib/scan/report-settings.shared";
 
 import type { ClientPortfolioRow } from "@/lib/connection/portfolio-types";
 
@@ -22,6 +23,7 @@ export async function getClientPortfolio(userId: string): Promise<ClientPortfoli
       const summary = scan ? summarize(findings, scan.category_scores) : null;
       const health = await getConnectionHealth(conn);
       const lastScanAt = scan?.started_at ? new Date(scan.started_at) : null;
+      const reportConcealment = reportConcealmentFromCoverageNotes(scan?.coverage_notes);
 
       return {
         id: conn.id,
@@ -34,6 +36,12 @@ export async function getClientPortfolio(userId: string): Promise<ClientPortfoli
         lastScanAt,
         stale: !lastScanAt || now - lastScanAt.getTime() > STALE_MS,
         healthStatus: health.status,
+        reportNamesConcealed:
+          reportConcealment.state === "concealed"
+            ? true
+            : reportConcealment.state === "visible"
+              ? false
+              : null,
       };
     }),
   );

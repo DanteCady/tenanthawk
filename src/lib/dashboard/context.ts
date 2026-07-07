@@ -12,6 +12,7 @@ import {
   getScanTrend,
   getScanHistory,
 } from "@/lib/queries";
+import { resolveReportConcealment } from "@/lib/scan/report-settings";
 import { summarize } from "@/lib/summary";
 import { getFindingStatuses, isFindingHidden } from "@/lib/findings/status";
 import { findingStatusKey } from "@/lib/findings/key";
@@ -71,6 +72,7 @@ export async function getDashboardSnapshot() {
   });
 
   const tenantLabel = connectionLabel(conn);
+  const reportConcealment = await resolveReportConcealment(conn, scan);
 
   return {
     session,
@@ -86,5 +88,6 @@ export async function getDashboardSnapshot() {
     mspAccess,
     dtos,
     tenantLabel,
+    reportConcealment,
   };
 }

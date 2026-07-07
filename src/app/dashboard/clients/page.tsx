@@ -75,8 +75,8 @@ export default async function ClientsPage() {
                 isActive ? "ring-2 ring-blue-200 ring-offset-2" : ""
               }`}
             >
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex min-w-0 flex-1 items-center gap-4">
+              <div className="grid grid-cols-1 items-center gap-4 lg:grid-cols-[minmax(0,1fr)_3.25rem_6rem_6.5rem_13.5rem] lg:gap-x-6">
+                <div className="flex min-w-0 items-center gap-4">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                     <Building2 className="h-5 w-5" />
                   </div>
@@ -99,6 +99,16 @@ export default async function ClientsPage() {
                       >
                         {client.mode === "live" ? "Live" : "Demo"}
                       </span>
+                      {client.mode === "live" && client.reportNamesConcealed === true ? (
+                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[0.65rem] font-medium text-amber-900">
+                          Report names hidden
+                        </span>
+                      ) : null}
+                      {client.mode === "live" && client.reportNamesConcealed === false ? (
+                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[0.65rem] font-medium text-emerald-900">
+                          Report names visible
+                        </span>
+                      ) : null}
                     </div>
                     <p className="mt-0.5 text-xs text-slate-500">
                       {client.lastScanAt
@@ -109,42 +119,46 @@ export default async function ClientsPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                  {client.score != null ? (
-                    <ScoreRing score={client.score} size={52} />
-                  ) : (
-                    <span className="text-sm text-slate-500">No scan</span>
-                  )}
+                <div className="grid grid-cols-3 items-center gap-4 sm:gap-6 lg:contents">
+                  <div className="flex justify-center lg:justify-self-center">
+                    {client.score != null ? (
+                      <ScoreRing score={client.score} size={52} />
+                    ) : (
+                      <span className="text-sm text-slate-500">No scan</span>
+                    )}
+                  </div>
 
-                  <div className="text-right text-sm">
-                    <p className="font-semibold text-slate-900">{client.openHigh} high</p>
+                  <div className="text-center text-sm lg:justify-self-center">
+                    <p className="font-semibold tabular-nums text-slate-900">
+                      {client.openHigh} high
+                    </p>
                     <p className="text-slate-500">open findings</p>
                   </div>
 
-                  <div className="text-right text-sm">
-                    <p className="font-semibold text-green-700">
+                  <div className="text-center text-sm lg:justify-self-center">
+                    <p className="font-semibold tabular-nums text-green-700">
                       {formatUsd(client.recoverableUsd)}
                     </p>
                     <p className="text-slate-500">recoverable / mo</p>
                   </div>
+                </div>
 
-                  <div className="flex flex-wrap items-center gap-2">
-                    <ClientRescanButton connectionId={client.id} compact />
-                    {client.score != null ? (
-                      <Link
-                        href={`/dashboard/client/scorecard?connection=${client.id}`}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
-                      >
-                        <FileText className="h-3.5 w-3.5" />
-                        Scorecard
-                      </Link>
-                    ) : null}
-                    <OpenClientButton
-                      connectionId={client.id}
-                      label={isActive ? "Open" : "Select & open"}
-                      compact
-                    />
-                  </div>
+                <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+                  <ClientRescanButton connectionId={client.id} compact />
+                  {client.score != null ? (
+                    <Link
+                      href={`/dashboard/client/scorecard?connection=${client.id}`}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-700"
+                    >
+                      <FileText className="h-3.5 w-3.5" />
+                      Scorecard
+                    </Link>
+                  ) : null}
+                  <OpenClientButton
+                    connectionId={client.id}
+                    label={isActive ? "Open" : "Select & open"}
+                    compact
+                  />
                 </div>
               </div>
             </div>

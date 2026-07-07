@@ -1,8 +1,10 @@
 import {
-  abbreviateReportToken,
   isNullReportId,
   isObfuscatedReportToken,
 } from "./sharepoint-site-label";
+
+const GB = 1024 ** 3;
+const MB = 1024 ** 2;
 
 export interface MailboxUsageRow {
   reportMailboxKey: string;
@@ -14,6 +16,47 @@ export interface MailboxUsageRow {
   hasArchive: boolean;
   isDeleted: boolean;
   isObfuscated: boolean;
+}
+
+export type MailboxLabelContext = "inactive" | "storage" | "default";
+
+function formatStorageSize(bytes: number): string {
+  if (bytes >= GB) {
+    const gb = bytes / GB;
+    return `${gb >= 10 ? Math.round(gb) : gb.toFixed(1)} GB`;
+  }
+  if (bytes >= MB) return `${Math.round(bytes / MB)} MB`;
+  if (bytes > 0) return "<1 MB";
+  return "0 GB";
+}
+
+function formatItemCount(count: number): string {
+  if (count >= 10_000) return `${Math.round(count / 1000)}k items`;
+  if (count >= 1000) return `${(count / 1000).toFixed(1)}k items`;
+  return `${count} items`;
+}
+
+function formatActivityClause(lastActivityDate: string | null): string {
+  if (!lastActivityDate) return "no activity on record";
+  return `last active ${lastActivityDate}`;
+}
+
+function obfuscatedMailboxLabel(
+  row: MailboxUsageRow,
+  context: MailboxLabelContext,
+): string {
+  const storage = formatStorageSize(row.storageUsedBytes);
+  const items = formatItemCount(row.itemCount);
+  const activity = formatActivityClause(row.lastActivityDate);
+  const archive = row.hasArchive ? " · archive enabled" : "";
+
+  if (context === "inactive") {
+    return `Inactive mailbox · ${storage} · ${activity}`;
+  }
+  if (context === "storage") {
+    return `Mailbox · ${storage} · ${items}${archive}`;
+  }
+  return `Mailbox · ${storage} · ${activity}`;
 }
 
 export function parseMailboxUsageRow(row: Record<string, unknown>): MailboxUsageRow | null {
@@ -63,19 +106,24 @@ export function dedupeMailboxRows(rows: MailboxUsageRow[]): MailboxUsageRow[] {
   return [...byKey.values()];
 }
 
-export function mailboxUsageLabel(row: MailboxUsageRow): string {
+export function mailboxUsageLabel(
+  row: MailboxUsageRow,
+  context: MailboxLabelContext = "default",
+): string {
   if (!row.isObfuscated) {
     return row.displayName || row.userPrincipalName || "Unknown mailbox";
   }
-  return `Mailbox (${abbreviateReportToken(row.reportMailboxKey)})`;
+  return obfuscatedMailboxLabel(row, context);
 }
+
+const LEGACY_OBFUSCATED_MAILBOX = /^Mailbox \([0-9A-F]{6,12}…\)$/i;
 
 export function formatMailboxEntityLabel(entity: string): string {
   const value = entity.trim();
   if (!value) return "Unknown mailbox";
   if (value.includes("@")) return value;
-  if (isObfuscatedReportToken(value)) {
-    return `Mailbox (${abbreviateReportToken(value)})`;
+  if (LEGACY_OBFUSCATED_MAILBOX.test(value) || isObfuscatedReportToken(value)) {
+    return "Mailbox (identity hidden in usage report)";
   }
   return value;
 }

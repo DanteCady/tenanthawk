@@ -26,6 +26,8 @@ import {
 import { formatSharePointEntityLabel } from "@/lib/scan/sharepoint-site-label";
 import { formatTeamsEntityLabel } from "@/lib/scan/teams-activity-label";
 import { formatMailboxEntityLabel } from "@/lib/scan/exchange-mailbox-label";
+import { ReportConcealmentBanner } from "@/components/app/ReportConcealmentBanner";
+import type { ReportConcealmentStatus } from "@/lib/scan/report-settings.shared";
 
 export interface FindingDTO {
   id: string;
@@ -211,6 +213,7 @@ export function FindingsTable({
   annualAvailable = false,
   isPro = true,
   connectionMode = "live",
+  reportConcealment,
 }: {
   findings?: FindingDTO[];
   /** Free tier: summary + title previews without remediation details. */
@@ -218,6 +221,7 @@ export function FindingsTable({
   annualAvailable?: boolean;
   isPro?: boolean;
   connectionMode?: "live" | "demo";
+  reportConcealment?: ReportConcealmentStatus;
 }) {
   const router = useRouter();
   const [filter, setFilter] = useState<"all" | Severity>("all");
@@ -302,6 +306,12 @@ export function FindingsTable({
           </button>
         )}
       </div>
+
+      {sectorFilter === "exchange" &&
+      connectionMode === "live" &&
+      reportConcealment ? (
+        <ReportConcealmentBanner status={reportConcealment} compact />
+      ) : null}
 
       <div className="divide-y divide-slate-100 overflow-hidden surface-card">
         {rows.map((f) => {

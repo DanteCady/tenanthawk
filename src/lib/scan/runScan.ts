@@ -10,6 +10,7 @@ import { offeredCheckDefinitions } from "./checks/registry";
 import { getDemoFindings } from "./demo";
 import { getAppToken, isLiveConfigured } from "./graph";
 import { buildScanPrefetch } from "./prefetch";
+import { fetchReportSettings, resolveReportConcealmentForScan } from "./report-settings";
 import { scoreFindings } from "./score";
 import type { FindingDraft, ScanCheckRunResult, ScanMode } from "./types";
 
@@ -90,6 +91,10 @@ export async function runScan(
     let drafts: FindingDraft[];
     let checkRuns: ScanCheckRunResult[] = [];
     let graphToken: string | null = null;
+    let reportConcealment: ReturnType<typeof resolveReportConcealmentForScan> = {
+      reportDisplayConcealedNames: null,
+      reportSettingsReadable: false,
+    };
 
     if (conn.mode === "demo" || !isLiveConfigured() || !conn.tenant_id) {
       drafts = getDemoFindings();
@@ -98,7 +103,11 @@ export async function runScan(
       const token = await getAppToken(conn.tenant_id);
       graphToken = token;
       const licensePricing = parseLicensePricing(conn.license_pricing);
-      const prefetch = await buildScanPrefetch(token);
+      const [prefetch, graphReportSettings] = await Promise.all([
+        buildScanPrefetch(token),
+        fetchReportSettings(token),
+      ]);
+      reportConcealment = resolveReportConcealmentForScan(prefetch, graphReportSettings);
       const result = await runChecksParallel({
         tenantId: conn.tenant_id,
         token,
@@ -114,6 +123,8 @@ export async function runScan(
       sectors: [...new Set(offeredCheckDefinitions().map((d) => d.sector))],
       offeredChecks: offeredCheckDefinitions().length,
       scanMode,
+      reportDisplayConcealedNames: reportConcealment.reportDisplayConcealedNames,
+      reportSettingsReadable: reportConcealment.reportSettingsReadable,
     };
 
     const { overall, categoryScores } = scoreFindings(drafts);

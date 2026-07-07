@@ -57,6 +57,9 @@ export interface ScanCoverageNotes {
   sectors: string[];
   offeredChecks: number;
   scanMode: ScanMode;
+  /** M365 org setting: true when usage reports hide user/group/site names. */
+  reportDisplayConcealedNames?: boolean | null;
+  reportSettingsReadable?: boolean;
 }
 
 export interface ScanTable {

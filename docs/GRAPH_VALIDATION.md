@@ -21,6 +21,7 @@ Run spikes against a live tenant before promoting checks from `backlog` → `v1`
 | SP1 | `GET /reports/getSharePointSiteUsageDetail(period='D30')` | SharePoint v1 checks | **Pass (CSV, obfuscated)** | App-only report hides Site URL; pseudonymous site key is in `Owner Display Name`; use `Root Web Template` for labels. `Sites.Read.All` unlocks real URLs on some tenants. |
 | EX1 | `GET /users/{id}/mailboxSettings` (`forwardingSmtpAddress`) | Forwarding checks | **Needs Mail.ReadBasic.All** | App-only returns 403 without permission; checks degrade gracefully. |
 | EX2 | `GET /reports/getMailboxUsageDetail(period='D30')` | Inactive / storage checks | **Pass (CSV, obfuscated)** | Pseudonymous mailbox keys in report; activity + storage columns usable. |
+| RS1 | `GET /admin/reportSettings` (`displayConcealedNames`) | Report concealment banner (optional) | Optional | Authoritative when `ReportSettings.Read.All` is granted; otherwise inferred from obfuscated usage report rows during scan. |
 | DV1 | `GET /devices` + match to Intune via `azureADDeviceId` | Device sector checks | **Pass** | Entra/Intune cross-match works with `Device.Read.All` + managed devices permission. |
 
 ## Permissions reference

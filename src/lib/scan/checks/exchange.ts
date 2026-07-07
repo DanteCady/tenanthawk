@@ -228,7 +228,7 @@ export const inactiveMailboxesCheck: Check = {
       inactiveMailboxesCheck.id,
       "hygiene",
       inactive.length,
-      inactive.map(mailboxUsageLabel),
+      inactive.map((m) => mailboxUsageLabel(m, "inactive")),
       {
         noun: inactive.length === 1 ? "inactive mailbox" : "inactive mailboxes",
         description: `${inactive.length} mailbox${inactive.length === 1 ? "" : "es"} had no activity in 90+ days${hasVeryStale ? " (some 180+ days)" : ""}.`,
@@ -256,7 +256,7 @@ export const mailboxHighStorageCheck: Check = {
       mailboxHighStorageCheck.id,
       "hygiene",
       heavy.length,
-      heavy.map(mailboxUsageLabel),
+      heavy.map((m) => mailboxUsageLabel(m, "storage")),
       {
         noun: heavy.length === 1 ? "high-storage mailbox" : "high-storage mailboxes",
         description: `${heavy.length} mailbox${heavy.length === 1 ? "" : "es"} use more than 50 GB of storage${hasVeryHeavy ? " (some over 100 GB)" : ""}.`,

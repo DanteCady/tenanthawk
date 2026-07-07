@@ -336,7 +336,7 @@ export function getDemoFindings(): FindingDraft[] {
       severity: "medium",
       title: "19 inactive mailboxes",
       description: "19 mailboxes had no activity in 90+ days (some 180+ days).",
-      impact: { count: 19, entities: ["Mailbox (82CB004E…)", "Mailbox (D6E07E26…)"] },
+      impact: { count: 19, entities: ["Inactive mailbox · 1.2 GB · last active 2023-04-10", "Inactive mailbox · 0 GB · no activity on record"] },
       remediation:
         "Review inactive mailboxes in Exchange admin, convert to shared, or remove licenses from unused accounts.",
     },
