@@ -57,6 +57,19 @@ const GRADE_COLORS: Record<string, [number, number, number]> = {
 
 type Doc = jsPDF & { lastAutoTable?: { finalY: number } };
 
+type PdfSection = {
+  title: string;
+  page: number;
+};
+
+const PDF_SECTIONS = [
+  "Customer details",
+  "Health score summary",
+  "Category analysis",
+  "Findings summary",
+  "Remediation details",
+] as const;
+
 /** jsPDF Helvetica cannot render Unicode arrows - they break into spaced glyphs. */
 export function sanitizePdfText(text: string): string {
   return text
@@ -92,6 +105,79 @@ const TITLE_LINE = 13;
 function measureLines(doc: Doc, text: string, maxWidth: number, fontSize: number): string[] {
   doc.setFontSize(fontSize);
   return doc.splitTextToSize(text, maxWidth);
+}
+
+function markSection(doc: Doc, sections: PdfSection[], title: string) {
+  sections.push({ title, page: doc.getNumberOfPages() });
+}
+
+function drawSectionHeader(doc: Doc, index: number, title: string, y: number): number {
+  doc.setFillColor(...BRAND.blue);
+  doc.rect(MARGIN, y, 4, 22, "F");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(...BRAND.navy);
+  doc.text(`${index}. ${title}`, MARGIN + 12, y + 15);
+
+  y += 30;
+  doc.setDrawColor(...BRAND.line);
+  doc.setLineWidth(0.5);
+  doc.line(MARGIN, y, PAGE.w - MARGIN, y);
+  return y + 16;
+}
+
+function drawSubsectionTitle(doc: Doc, title: string, y: number): number {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(...BRAND.slate);
+  doc.text(title, MARGIN, y);
+  return y + 14;
+}
+
+function drawTableOfContents(doc: Doc, sections: PdfSection[], pageOffset: number) {
+  doc.setPage(2);
+
+  let y = MARGIN + 8;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.setTextColor(...BRAND.navy);
+  doc.text("Table of contents", MARGIN, y);
+  y += 10;
+  doc.setDrawColor(...BRAND.line);
+  doc.setLineWidth(0.75);
+  doc.line(MARGIN, y, PAGE.w - MARGIN, y);
+  y += 28;
+
+  sections.forEach((section, index) => {
+    const targetPage = section.page + pageOffset;
+    const label = `${index + 1}. ${section.title}`;
+    const pageLabel = String(targetPage);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(...BRAND.navy);
+    const labelW = doc.getTextWidth(label);
+    doc.text(label, MARGIN, y);
+
+    doc.setFont("helvetica", "bold");
+    const pageW = doc.getTextWidth(pageLabel);
+    doc.setTextColor(...BRAND.blue);
+    doc.text(pageLabel, PAGE.w - MARGIN, y, { align: "right" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(...BRAND.muted);
+    const dotsStart = MARGIN + labelW + 10;
+    const dotsEnd = PAGE.w - MARGIN - pageW - 8;
+    const dotW = doc.getTextWidth(".");
+    for (let x = dotsStart; x < dotsEnd; x += dotW * 1.4) {
+      doc.text(".", x, y);
+    }
+
+    doc.link(MARGIN, y - 11, CONTENT_W, 16, { pageNumber: targetPage });
+    y += 24;
+  });
 }
 
 function drawFooter(doc: Doc, page: number, total: number) {
@@ -148,12 +234,6 @@ function drawCustomerDetails(doc: Doc, meta: ExportMeta, y: number): number {
   if (!meta.customer) return y;
 
   const rows = reportCustomerRows(meta.customer);
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(...BRAND.navy);
-  doc.text("Customer details", MARGIN, y);
-  y += 14;
 
   const colW = CONTENT_W / 2 - CARD_PAD - 4;
   const rowsPerCol = Math.ceil(rows.length / 2);
@@ -273,11 +353,7 @@ function drawScoreSummary(doc: Doc, meta: ExportMeta, y: number): number {
 }
 
 function drawCategoryLegend(doc: Doc, y: number): number {
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
-  doc.setTextColor(...BRAND.navy);
-  doc.text("What the categories mean", MARGIN, y);
-  y += 14;
+  y = drawSubsectionTitle(doc, "What the categories mean", y);
 
   const iconSize = 18;
   const iconGap = 6;
@@ -409,11 +485,7 @@ function drawCategoryGrades(doc: Doc, meta: ExportMeta, y: number): number {
   const scores = normalizeCategoryScores(meta.categoryScores);
   const sectionTop = y;
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(...BRAND.navy);
-  doc.text("Category grades", MARGIN, y);
-  y += 16;
+  y = drawSubsectionTitle(doc, "Category grades", y);
 
   const leftW = CONTENT_W * 0.52;
   const rightW = CONTENT_W - leftW - 14;
@@ -490,12 +562,6 @@ function findingsFindingColWidth(): number {
 }
 
 function drawFindingsTable(doc: Doc, findings: ExportFinding[], y: number): number {
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(...BRAND.navy);
-  doc.text("Findings summary", MARGIN, y);
-  y += 8;
-
   const findingColW = findingsFindingColWidth();
 
   autoTable(doc, {
@@ -556,12 +622,6 @@ function drawRemediationSection(doc: Doc, findings: ExportFinding[], startY: num
   let y = startY;
   const pageBottom = PAGE.h - 56;
   const innerW = CONTENT_W - CARD_PAD * 2;
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(...BRAND.navy);
-  doc.text("Remediation details", MARGIN, y);
-  y += 16;
 
   for (const f of findings.slice(0, 30)) {
     const fix = sanitizePdfText(f.remediation || f.description);
@@ -656,14 +716,37 @@ export function buildFindingsPdf(
   findings: ExportFinding[],
 ): Uint8Array {
   const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "letter" }) as Doc;
+  const sections: PdfSection[] = [];
 
-  let y = drawHeader(doc);
+  drawHeader(doc);
+
+  doc.addPage();
+  let y = MARGIN;
+
+  markSection(doc, sections, PDF_SECTIONS[0]);
+  y = drawSectionHeader(doc, 1, PDF_SECTIONS[0], y);
   y = drawCustomerDetails(doc, meta, y);
+
+  markSection(doc, sections, PDF_SECTIONS[1]);
+  y = drawSectionHeader(doc, 2, PDF_SECTIONS[1], y);
   y = drawScoreSummary(doc, meta, y);
+
+  markSection(doc, sections, PDF_SECTIONS[2]);
+  y = drawSectionHeader(doc, 3, PDF_SECTIONS[2], y);
   y = drawCategoryLegend(doc, y);
   y = drawCategoryGrades(doc, meta, y);
+
+  markSection(doc, sections, PDF_SECTIONS[3]);
+  y = drawSectionHeader(doc, 4, PDF_SECTIONS[3], y);
   y = drawFindingsTable(doc, findings, y);
+
+  markSection(doc, sections, PDF_SECTIONS[4]);
+  y = drawSectionHeader(doc, 5, PDF_SECTIONS[4], y);
   drawRemediationSection(doc, findings, y);
+
+  const tocPageCount = 1;
+  doc.insertPage(2);
+  drawTableOfContents(doc, sections, tocPageCount);
 
   const total = doc.getNumberOfPages();
   for (let page = 1; page <= total; page++) {
