@@ -35,6 +35,13 @@ import {
   entraStaleDevicesCheck,
   personalDeviceEnrolledCheck,
 } from "./devices";
+import {
+  mailboxForwardingExternalCheck,
+  mailboxForwardingEnabledCheck,
+  inactiveMailboxesCheck,
+  mailboxHighStorageCheck,
+  inactiveMailboxLicensesCheck,
+} from "./exchange";
 import { validateRegisteredCheckIds } from "./registry";
 
 export const checks: Check[] = [
@@ -68,6 +75,11 @@ export const checks: Check[] = [
   intuneGhostEnrollmentCheck,
   entraStaleDevicesCheck,
   personalDeviceEnrolledCheck,
+  mailboxForwardingExternalCheck,
+  mailboxForwardingEnabledCheck,
+  inactiveMailboxesCheck,
+  mailboxHighStorageCheck,
+  inactiveMailboxLicensesCheck,
   sharePointSharing,
   sharePointExternalSitesCheck,
   sharePointStaleSitesCheck,

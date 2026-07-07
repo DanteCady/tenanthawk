@@ -146,6 +146,31 @@ export const CHECK_REMEDIATION_META: Record<string, CheckRemediationMeta> = {
     adminSurface: "Entra",
     effortLabel: "~1 hour",
   },
+  "hygiene.inactive-mailboxes": {
+    effort: "moderate",
+    adminSurface: "Mixed",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.mailbox-high-storage": {
+    effort: "moderate",
+    adminSurface: "Mixed",
+    effortLabel: "~1 hour",
+  },
+  "hygiene.mailbox-forwarding-external": {
+    effort: "quick",
+    adminSurface: "Mixed",
+    effortLabel: "~15 min",
+  },
+  "hygiene.mailbox-forwarding-enabled": {
+    effort: "quick",
+    adminSurface: "Mixed",
+    effortLabel: "~15 min",
+  },
+  "cost.inactive-mailbox-licenses": {
+    effort: "moderate",
+    adminSurface: "M365 Admin",
+    effortLabel: "~1 hour",
+  },
   "hygiene.sharing": {
     effort: "moderate",
     adminSurface: "SharePoint",

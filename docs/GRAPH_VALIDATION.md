@@ -19,7 +19,8 @@ Run spikes against a live tenant before promoting checks from `backlog` → `v1`
 | T1 | `GET /groups?$expand=owners` + separate `members` pass | `hygiene.ownerless-groups`, `hygiene.ownerless-teams`, `hygiene.empty-teams` | **Pass** | Graph 400 if owners+members expanded together; merged by group id. |
 | TM1 | `GET /reports/getTeamsTeamActivityDetail(period='D90')` | `hygiene.stale-teams`, `hygiene.teams-no-active-channels`, `hygiene.teams-guest-heavy` | **Pass (CSV, obfuscated)** | App-only report hides Team Id; pseudonymous key is in `Team Name`; use `Team Type` for labels. `Team.ReadBasic.All` may unlock real names on some tenants. |
 | SP1 | `GET /reports/getSharePointSiteUsageDetail(period='D30')` | SharePoint v1 checks | **Pass (CSV, obfuscated)** | App-only report hides Site URL; pseudonymous site key is in `Owner Display Name`; use `Root Web Template` for labels. `Sites.Read.All` unlocks real URLs on some tenants. |
-| EX1 | `GET /reports/getMailboxUsageDetail(period='D30')` | Exchange v2 checks | Pending | |
+| EX1 | `GET /users/{id}/mailboxSettings` (`forwardingSmtpAddress`) | Forwarding checks | **Needs Mail.ReadBasic.All** | App-only returns 403 without permission; checks degrade gracefully. |
+| EX2 | `GET /reports/getMailboxUsageDetail(period='D30')` | Inactive / storage checks | **Pass (CSV, obfuscated)** | Pseudonymous mailbox keys in report; activity + storage columns usable. |
 | DV1 | `GET /devices` + match to Intune via `azureADDeviceId` | Device sector checks | **Pass** | Entra/Intune cross-match works with `Device.Read.All` + managed devices permission. |
 
 ## Permissions reference

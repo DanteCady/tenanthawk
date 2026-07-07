@@ -330,5 +330,25 @@ export function getDemoFindings(): FindingDraft[] {
       remediation:
         "Review stale devices in Entra → Devices and disable or delete records for lost or decommissioned hardware.",
     },
+    {
+      category: "hygiene",
+      checkId: "hygiene.inactive-mailboxes",
+      severity: "medium",
+      title: "19 inactive mailboxes",
+      description: "19 mailboxes had no activity in 90+ days (some 180+ days).",
+      impact: { count: 19, entities: ["Mailbox (82CB004E…)", "Mailbox (D6E07E26…)"] },
+      remediation:
+        "Review inactive mailboxes in Exchange admin, convert to shared, or remove licenses from unused accounts.",
+    },
+    {
+      category: "hygiene",
+      checkId: "hygiene.mailbox-high-storage",
+      severity: "high",
+      title: "3 high-storage mailboxes",
+      description: "3 mailboxes use more than 50 GB of storage (some over 100 GB).",
+      impact: { count: 3, entities: ["exec-archive@contoso.com", "legal-hold@contoso.com"] },
+      remediation:
+        "Review large mailboxes in Exchange admin, enable archiving, or apply retention policies.",
+    },
   ];
 }

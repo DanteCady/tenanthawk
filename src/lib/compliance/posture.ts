@@ -144,6 +144,26 @@ export const CHECK_COMPLIANCE: Record<string, CheckComplianceMap> = {
     cis: [{ id: "10.5", title: "Enable anti-exploitation features" }],
     nist: [{ id: "SI-4", title: "System Monitoring" }],
   },
+  "hygiene.inactive-mailboxes": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-7", title: "Least Functionality" }],
+  },
+  "hygiene.mailbox-high-storage": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-8", title: "System Component Inventory" }],
+  },
+  "hygiene.mailbox-forwarding-external": {
+    cis: [{ id: "3.3", title: "Configure data access control lists" }],
+    nist: [{ id: "AC-4", title: "Information Flow Enforcement" }],
+  },
+  "hygiene.mailbox-forwarding-enabled": {
+    cis: [{ id: "3.3", title: "Configure data access control lists" }],
+    nist: [{ id: "AC-4", title: "Information Flow Enforcement" }],
+  },
+  "cost.inactive-mailbox-licenses": {
+    cis: [{ id: "4.1", title: "Establish and maintain a secure configuration process" }],
+    nist: [{ id: "CM-8", title: "System Component Inventory" }],
+  },
 };
 
 export const FRAMEWORK_LABELS: Record<ComplianceFramework, string> = {

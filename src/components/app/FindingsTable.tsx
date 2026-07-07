@@ -25,6 +25,7 @@ import {
 } from "@/lib/scan/checks/registry";
 import { formatSharePointEntityLabel } from "@/lib/scan/sharepoint-site-label";
 import { formatTeamsEntityLabel } from "@/lib/scan/teams-activity-label";
+import { formatMailboxEntityLabel } from "@/lib/scan/exchange-mailbox-label";
 
 export interface FindingDTO {
   id: string;
@@ -173,6 +174,13 @@ function formatEntityLabel(checkId: string, entity: string): string {
     checkId.startsWith("hygiene.teams-")
   ) {
     return formatTeamsEntityLabel(entity);
+  }
+  if (
+    checkId.startsWith("hygiene.mailbox-") ||
+    checkId === "hygiene.inactive-mailboxes" ||
+    checkId === "cost.inactive-mailbox-licenses"
+  ) {
+    return formatMailboxEntityLabel(entity);
   }
   return entity;
 }

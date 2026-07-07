@@ -9,6 +9,11 @@ import {
   isSharePointWebUrl,
 } from "./sharepoint-site-label";
 import { dedupeTeamsActivity, parseTeamsActivityRow } from "./teams-activity-label";
+import {
+  dedupeMailboxRows,
+  parseMailboxUsageRow,
+  type MailboxUsageRow,
+} from "./exchange-mailbox-label";
 
 export interface PrefetchGroup {
   id: string;
@@ -56,6 +61,7 @@ export interface ScanPrefetch {
   sharePointSites: SharePointSiteRow[];
   entraDevices: EntraDeviceRow[];
   intuneDevices: IntuneDeviceRow[];
+  mailboxUsage: MailboxUsageRow[];
 }
 
 export interface EntraDeviceRow {
@@ -364,9 +370,22 @@ export async function fetchIntuneDevices(token: string): Promise<IntuneDeviceRow
     }));
 }
 
+export async function fetchMailboxUsage(token: string): Promise<MailboxUsageRow[]> {
+  const rows = await fetchGraphReport<Record<string, unknown>>(
+    token,
+    "/reports/getMailboxUsageDetail(period='D30')",
+  );
+
+  return dedupeMailboxRows(
+    rows
+      .map((row) => parseMailboxUsageRow(row))
+      .filter((r): r is MailboxUsageRow => r !== null && !r.isDeleted),
+  );
+}
+
 /** Fetch shared scan data for collaboration / Teams checks. Never throws — checks degrade when data is missing. */
 export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
-  const [groups, teamsActivity, sharePointSites, entraDevices, intuneDevices] =
+  const [groups, teamsActivity, sharePointSites, entraDevices, intuneDevices, mailboxUsage] =
     await Promise.all([
     fetchGroups(token).catch((err) => {
       console.warn("[scan] group prefetch failed", err);
@@ -388,9 +407,13 @@ export async function buildScanPrefetch(token: string): Promise<ScanPrefetch> {
       console.warn("[scan] intune device prefetch failed", err);
       return [] as IntuneDeviceRow[];
     }),
+    fetchMailboxUsage(token).catch((err) => {
+      console.warn("[scan] mailbox usage report unavailable", err);
+      return [] as MailboxUsageRow[];
+    }),
   ]);
 
-  return { groups, teamsActivity, sharePointSites, entraDevices, intuneDevices };
+  return { groups, teamsActivity, sharePointSites, entraDevices, intuneDevices, mailboxUsage };
 }
 
 export function ownerlessGroups(

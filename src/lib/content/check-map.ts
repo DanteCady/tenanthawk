@@ -132,6 +132,26 @@ export const CHECK_GUIDE_MAP: Record<string, CheckGuideLink> = {
     slug: "m365-tenant-hygiene",
     label: "Stale Entra device sign-ins",
   },
+  "hygiene.inactive-mailboxes": {
+    slug: "m365-tenant-hygiene",
+    label: "Inactive mailboxes",
+  },
+  "hygiene.mailbox-high-storage": {
+    slug: "m365-tenant-hygiene",
+    label: "High-storage mailboxes",
+  },
+  "hygiene.mailbox-forwarding-external": {
+    slug: "m365-security-misconfigurations",
+    label: "External mailbox forwarding",
+  },
+  "hygiene.mailbox-forwarding-enabled": {
+    slug: "m365-security-misconfigurations",
+    label: "Mailbox forwarding enabled",
+  },
+  "cost.inactive-mailbox-licenses": {
+    slug: "find-wasted-m365-licenses",
+    label: "Licensed inactive mailboxes",
+  },
   "reliability.expiring-secrets": {
     slug: "m365-expiring-secrets-and-domains",
     label: "Expiring app secrets and certs",
