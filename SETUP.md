@@ -106,7 +106,7 @@ nano /var/www/tenanthawk/.env   # production secrets — not in git
 **Pipelines:**
 
 - **CI** (`.github/workflows/ci.yml`) — lint, typecheck, build on PRs and `main`
-- **Deploy** (`.github/workflows/deploy.yml`) — build standalone bundle, rsync to `/var/www/tenanthawk/app`, PM2 restart on push to `main`
+- **Deploy** (`.github/workflows/deploy.yml`) — build standalone bundle, rsync to `/var/www/tenanthawk/app`, apply `db/schema.sql` via `scripts/migrate.sh`, then PM2 restart on push to `main`
 
 Download the Lightsail SSH key under **Account → SSH keys** and paste the full PEM into `LIGHTSAIL_SSH_KEY`.
 

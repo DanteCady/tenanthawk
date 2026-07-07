@@ -13,6 +13,11 @@ if [[ -f "$ENV_FILE" ]]; then
   set +a
 fi
 
+MIGRATE="$APP_ROOT/app/scripts/migrate.sh"
+if [[ -x "$MIGRATE" ]]; then
+  bash "$MIGRATE"
+fi
+
 cd "$APP_ROOT/app"
 
 if pm2 describe tenanthawk >/dev/null 2>&1; then
