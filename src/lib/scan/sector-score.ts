@@ -4,7 +4,6 @@ import { scoreCostFromFindings } from "./cost-score";
 import { CHECK_DEFINITION_BY_ID, SECTOR_LABELS, type ScanSector } from "./checks/registry";
 import type { FindingDraft } from "./types";
 
-const SEVERITY_RANK: Record<Severity, number> = { low: 1, medium: 2, high: 3 };
 const PENALTY: Record<Severity, number> = { high: 18, medium: 7, low: 3 };
 
 export interface SectorScore {

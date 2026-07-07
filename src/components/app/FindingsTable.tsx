@@ -247,17 +247,13 @@ export function FindingsTable({
     Record<string, RemediationEnriched>
   >({});
 
-  if (!findings) {
-    if (!lockedPreview) return null;
-    return (
-      <LockedFindingsView preview={lockedPreview} annualAvailable={annualAvailable} />
-    );
-  }
-
-  const visible = findings.filter((f) => {
-    if (showHandled) return true;
-    return f.tracking === "open" || f.tracking === "flagged";
-  });
+  const visible = useMemo(() => {
+    if (!findings) return [];
+    return findings.filter((f) => {
+      if (showHandled) return true;
+      return f.tracking === "open" || f.tracking === "flagged";
+    });
+  }, [findings, showHandled]);
 
   const sectorCounts = useMemo(() => {
     const counts = new Map<ScanSector, number>();
@@ -276,9 +272,19 @@ export function FindingsTable({
     return groupFindingsForDisplay(filtered);
   }, [visible, filter, sectorFilter]);
 
-  const handledCount = findings.filter(
-    (f) => f.tracking !== "open" && f.tracking !== "flagged",
-  ).length;
+  const handledCount = useMemo(() => {
+    if (!findings) return 0;
+    return findings.filter(
+      (f) => f.tracking !== "open" && f.tracking !== "flagged",
+    ).length;
+  }, [findings]);
+
+  if (!findings) {
+    if (!lockedPreview) return null;
+    return (
+      <LockedFindingsView preview={lockedPreview} annualAvailable={annualAvailable} />
+    );
+  }
 
   return (
     <div>
