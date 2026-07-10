@@ -39,7 +39,8 @@ export function Hero({ dashboardPreview }: { dashboardPreview: React.ReactNode }
             className="mt-6 text-balance text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl"
           >
             M365 tenant health,{" "}
-            <span className="text-gradient">without the detective work</span>.
+            <span className="text-gradient">without the detective work</span>
+            .
           </motion.h1>
 
           <motion.p
@@ -74,8 +75,15 @@ export function Hero({ dashboardPreview }: { dashboardPreview: React.ReactNode }
           >
             <span className="inline-flex items-center gap-2">
               <Lock className="h-4 w-4 text-green-500" />
-              Read-only. No credentials stored
+              Read-only Graph access · no credentials stored
             </span>
+            <span className="hidden h-4 w-px bg-slate-200 sm:block" />
+            <a
+              href="#security"
+              className="transition-colors hover:text-slate-700"
+            >
+              See how we protect your data
+            </a>
             <span className="hidden h-4 w-px bg-slate-200 sm:block" />
             <span>Connect in 2 minutes · no credit card</span>
           </motion.div>

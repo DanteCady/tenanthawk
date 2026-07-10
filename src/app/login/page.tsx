@@ -4,6 +4,14 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import { EnterpriseLoginForm } from "@/components/auth/EnterpriseAuth";
 import { getOrganizationBySlug } from "@/lib/enterprise/workspace";
 import { parseHostContext } from "@/lib/platform/admin";
+import { buildPageMetadata } from "@/lib/seo/site";
+
+export const metadata = buildPageMetadata({
+  title: "Sign in",
+  description: "Sign in to your Tenant Hawk dashboard.",
+  path: "/login",
+  noIndex: true,
+});
 
 export default async function LoginPage({
   searchParams,

@@ -31,9 +31,23 @@ fi
 echo "→ Nginx site (adjust server_name if needed)..."
 cat >/etc/nginx/sites-available/tenanthawk <<'NGINX'
 server {
+    listen 80;
+    listen [::]:80;
+    server_name www.tenanthawk.io;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://tenanthawk.io$request_uri;
+    }
+}
+
+server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name tenanthawk.io www.tenanthawk.io *.tenanthawk.io;
+    server_name tenanthawk.io *.tenanthawk.io;
 
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
@@ -47,7 +61,20 @@ server {
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name tenanthawk.io www.tenanthawk.io *.tenanthawk.io;
+    server_name www.tenanthawk.io;
+
+    ssl_certificate /etc/letsencrypt/live/tenanthawk.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/tenanthawk.io/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    return 301 https://tenanthawk.io$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name tenanthawk.io *.tenanthawk.io;
 
     ssl_certificate /etc/letsencrypt/live/tenanthawk.io/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/tenanthawk.io/privkey.pem;

@@ -68,6 +68,16 @@ export async function Footer() {
             </p>
             <ul className="mt-3 space-y-2 text-xs">
               <li>
+                <Link href="/about" className={footerLinkClass}>
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className={footerLinkClass}>
+                  Contact
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy" className={footerLinkClass}>
                   Privacy
                 </Link>
@@ -75,6 +85,11 @@ export async function Footer() {
               <li>
                 <Link href="/terms" className={footerLinkClass}>
                   Terms
+                </Link>
+              </li>
+              <li>
+                <Link href="/#security" className={footerLinkClass}>
+                  Security
                 </Link>
               </li>
             </ul>

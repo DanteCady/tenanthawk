@@ -56,6 +56,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
     { url: `${base}/msp`, lastModified: siteUpdated, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${base}/pricing`, lastModified: siteUpdated, changeFrequency: "monthly", priority: 0.88 },
+    { url: `${base}/about`, lastModified: siteUpdated, changeFrequency: "yearly", priority: 0.5 },
+    { url: `${base}/contact`, lastModified: siteUpdated, changeFrequency: "yearly", priority: 0.45 },
     { url: `${base}/privacy`, lastModified: siteUpdated, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/terms`, lastModified: siteUpdated, changeFrequency: "yearly", priority: 0.3 },
   ];
