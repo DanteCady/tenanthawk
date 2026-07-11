@@ -58,7 +58,7 @@ function FeatureList({ features }: { features: string[] }) {
   );
 }
 
-export function Pricing() {
+export function Pricing({ showHeader = true }: { showHeader?: boolean }) {
   const [interval, setInterval] = useState<Interval>("monthly");
   const annual = interval === "annual";
 
@@ -77,18 +77,27 @@ export function Pricing() {
     }`;
 
   return (
-    <section id="pricing" className="scroll-mt-16 border-t border-mk-line">
-      <div className="mx-auto max-w-6xl px-6 py-20 sm:px-8 sm:py-26">
-        <Reveal className="mx-auto mb-6 max-w-[620px] text-center">
-          <p className="mk-eyebrow mb-5">Pricing</p>
-          <h2 className="mb-[18px] text-balance text-3xl font-[640] leading-[1.12] tracking-[-0.03em] sm:text-[40px]">
-            Think ROI, not subscription lines.
-          </h2>
-          <p className="text-pretty text-[16.5px] leading-[1.6] text-mk-soft">
-            Every scan surfaces reclaimable spend. Recover one unused E5 license (~$
-            {E5_LICENSE_MONTHLY_USD_LIST}/mo at list) and Pro has already paid for itself.
-          </p>
-        </Reveal>
+    <section
+      id="pricing"
+      className={`scroll-mt-16 ${showHeader ? "border-t border-mk-line" : ""}`}
+    >
+      <div
+        className={`mx-auto max-w-6xl px-6 pb-20 sm:px-8 sm:pb-26 ${
+          showHeader ? "pt-20 sm:pt-26" : "pt-10"
+        }`}
+      >
+        {showHeader ? (
+          <Reveal className="mx-auto mb-6 max-w-[620px] text-center">
+            <p className="mk-eyebrow mb-5">Pricing</p>
+            <h2 className="mb-[18px] text-balance text-3xl font-[640] leading-[1.12] tracking-[-0.03em] sm:text-[40px]">
+              Think ROI, not subscription lines.
+            </h2>
+            <p className="text-pretty text-[16.5px] leading-[1.6] text-mk-soft">
+              Every scan surfaces reclaimable spend. Recover one unused E5 license (~$
+              {E5_LICENSE_MONTHLY_USD_LIST}/mo at list) and Pro has already paid for itself.
+            </p>
+          </Reveal>
+        ) : null}
 
         <Reveal className="mb-2 flex justify-center">
           <div className="rounded-full border border-mk-amber-line bg-mk-amber-wash px-4 py-[7px] text-[13.5px] text-mk-amber-deep">
