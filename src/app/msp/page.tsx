@@ -56,6 +56,10 @@ const FAQ: FeatureFaqItem[] = [
     q: "How do I know which client needs attention first?",
     a: "The portfolio roll-up ranks clients by open high-severity findings, stale scans, and connection issues. Instead of rotating through ten admin centers, you open one console and see who needs work today.",
   },
+  {
+    q: "How do you handle security and client data?",
+    a: "Read-only Microsoft Graph access via standard admin consent — no agents, no stored client credentials, and clients can revoke access in Entra at any time. We use HTTPS, hashed passwords, and optional 2FA for your Tenant Hawk logins. Disconnect a tenant or delete your account and we remove the associated data. See our privacy policy for retention and subprocessors.",
+  },
 ];
 
 export default function MspPage() {

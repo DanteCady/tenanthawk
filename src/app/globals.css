@@ -4,6 +4,40 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
+  /* marketing v2 — editorial paper theme */
+  --font-market: var(--font-instrument-sans);
+  --font-mkmono: var(--font-plex-mono);
+
+  --color-mk-paper: #faf9f7;
+  --color-mk-panel: #fcfbf9;
+  --color-mk-tint: #f1efe9;
+  --color-mk-ink: #12161f;
+  --color-mk-ink2: #2a3140;
+  --color-mk-soft: #4b5261;
+  --color-mk-muted: #6b7280;
+  --color-mk-faint: #b8b2a6;
+  --color-mk-line: #e9e6e0;
+  --color-mk-line2: #e4e0d8;
+  --color-mk-line3: #eeece6;
+  --color-mk-linesoft: #f0ede7;
+  --color-mk-amber: #c98a12;
+  --color-mk-amber-deep: #8a6420;
+  --color-mk-amber-wash: #f6eedc;
+  --color-mk-amber-line: #ebddbb;
+  --color-mk-amber-bright: #d9a33c;
+  --color-mk-green: #1f7a4d;
+  --color-mk-rust: #9a3412;
+  --color-mk-rust-wash: #fceee4;
+  --color-mk-night: #10141d;
+  --color-mk-night-card: #171c27;
+  --color-mk-night-line: #232a38;
+  --color-mk-night-line2: #262d3b;
+  --color-mk-night-row: #1e2431;
+  --color-mk-night-text: #f5f3ee;
+  --color-mk-night-soft: #9aa1ae;
+  --color-mk-night-muted: #6e7686;
+  --color-mk-cream: #e8e5de;
+
   /* hawk amber/gold accent */
   --color-hawk-50: #fffbeb;
   --color-hawk-100: #fef3c7;
@@ -27,6 +61,60 @@
   --color-good: #34d399;
   --color-warn: #fbbf24;
   --color-bad: #f87171;
+}
+
+/* marketing v2 — shared editorial elements */
+.marketing-v2 {
+  background-color: var(--color-mk-paper);
+  color: var(--color-mk-ink);
+  font-family: var(--font-market), -apple-system, sans-serif;
+}
+
+.marketing-v2 ::selection {
+  background: #f5e3c2;
+}
+
+.mk-eyebrow {
+  font-family: var(--font-mkmono), monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-mk-amber-deep);
+}
+
+.mk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--color-mk-ink);
+  color: #fff;
+  font-weight: 550;
+  border-radius: 10px;
+  transition: background-color 0.15s;
+}
+
+.mk-btn:hover {
+  background: var(--color-mk-ink2);
+  color: #fff;
+}
+
+.mk-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #dedad2;
+  color: var(--color-mk-ink);
+  font-weight: 550;
+  border-radius: 10px;
+  transition: border-color 0.15s;
+}
+
+.mk-btn-ghost:hover {
+  border-color: var(--color-mk-faint);
 }
 
 @media print {

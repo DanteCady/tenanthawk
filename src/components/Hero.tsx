@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { ArrowRight, Lock, ScanLine } from "lucide-react";
 
 const container: Variants = {
   hidden: {},
@@ -15,82 +14,63 @@ const item: Variants = {
 
 export function Hero({ dashboardPreview }: { dashboardPreview: React.ReactNode }) {
   return (
-    <section className="relative overflow-hidden pt-32 pb-8 sm:pt-40 sm:pb-12">
-      <div className="theme-aura pointer-events-none absolute inset-0 -z-10" />
-      <div className="theme-grid pointer-events-none absolute inset-0 -z-10 h-[960px]" />
-
-      <div className="relative mx-auto max-w-6xl px-6">
+    <section className="pt-28 sm:pt-36">
+      <div className="mx-auto max-w-6xl px-6 sm:px-8">
         <motion.div
-          className="mx-auto max-w-3xl text-center"
+          className="max-w-3xl"
           variants={container}
           initial="hidden"
           animate="show"
         >
           <motion.div
             variants={item}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm"
+            className="mk-eyebrow mb-7 inline-flex items-center gap-2 rounded-full border border-mk-amber-line bg-mk-amber-wash px-3 py-1.5"
           >
-            <ScanLine className="h-3.5 w-3.5 text-blue-500" />
-            For M365 admins, IT consultants &amp; MSPs
+            <span className="h-1.5 w-1.5 rounded-full bg-mk-amber" />
+            For M365 admins, consultants &amp; MSPs
           </motion.div>
 
           <motion.h1
             variants={item}
-            className="mt-6 text-balance text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl"
+            className="mb-6 text-balance text-4xl font-[640] leading-[1.04] tracking-[-0.035em] sm:text-5xl lg:text-[62px]"
           >
-            M365 tenant health,{" "}
-            <span className="text-gradient">without the detective work</span>
-            .
+            M365 tenant health, without the detective work.
           </motion.h1>
 
           <motion.p
             variants={item}
-            className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-600 sm:text-xl"
+            className="mb-9 max-w-[620px] text-pretty text-lg leading-[1.55] text-mk-soft sm:text-[19px]"
           >
-            Scan your tenant in minutes to uncover security gaps, licensing waste,
-            configuration drift, and configuration issues. Get a health score,
-            estimated savings, and prioritized fixes, all without making changes
-            to your environment.
+            One read-only scan. One health score. Dollar impact on every finding,
+            and a prioritized fix list — without a single change to your
+            environment.
           </motion.p>
 
-          <motion.div
-            variants={item}
-            className="mt-8 flex flex-wrap items-center justify-center gap-3"
-          >
-            <a href="/signup" className="group btn-primary px-6 py-3.5">
-              Run a free scan
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          <motion.div variants={item} className="mb-5 flex flex-wrap items-center gap-3.5">
+            <a href="/signup" className="mk-btn px-6 py-3.5 text-base">
+              Run a free scan <span aria-hidden>→</span>
             </a>
-            <a
-              href="#how"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3.5 font-semibold text-slate-700 transition-colors hover:border-slate-400 hover:text-slate-900"
-            >
+            <a href="#how" className="mk-btn-ghost px-6 py-3.5 text-base">
               See how it works
             </a>
           </motion.div>
 
           <motion.div
             variants={item}
-            className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-slate-500"
+            className="flex flex-wrap items-center gap-2.5 text-[13.5px] text-mk-muted"
           >
-            <span className="inline-flex items-center gap-2">
-              <Lock className="h-4 w-4 text-green-500" />
-              Read-only Graph access · no credentials stored
-            </span>
-            <span className="hidden h-4 w-px bg-slate-200 sm:block" />
-            <a
-              href="#security"
-              className="transition-colors hover:text-slate-700"
-            >
-              See how we protect your data
+            <a href="/security" className="transition-colors hover:text-mk-ink">
+              Read-only Graph access
             </a>
-            <span className="hidden h-4 w-px bg-slate-200 sm:block" />
-            <span>Connect in 2 minutes · no credit card</span>
+            <span className="text-mk-faint">·</span>
+            <span>No credentials stored</span>
+            <span className="text-mk-faint">·</span>
+            <span>No credit card</span>
           </motion.div>
         </motion.div>
 
         <motion.div
-          className="mt-12 sm:mt-14 lg:mt-16"
+          className="mt-14 sm:mt-16"
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, ease: "easeOut", delay: 0.22 }}

@@ -1,157 +1,126 @@
-import {
-  AlertTriangle,
-  ArrowRight,
-  Building2,
-  KeyRound,
-  LayoutDashboard,
-  PieChart,
-  ShieldCheck,
-} from "lucide-react";
 import { Reveal } from "./Reveal";
 import { ENTERPRISE_CLIENT_CAP_DEFAULT } from "@/lib/billing/pricing";
 
 const features = [
   {
-    icon: LayoutDashboard,
     title: "Portfolio roll-up",
-    body: "Average health score, open high findings, and recoverable spend across every client. One glance before your next client check-in.",
-    chip: "bg-blue-50 text-blue-600",
+    desc: "average score, open highs, and recoverable spend across every client at a glance.",
   },
   {
-    icon: Building2,
-    title: "Client list & switching",
-    body: "Connect each tenant read only, jump between clients in one click, and rescan any portfolio tenant from the console.",
-    chip: "bg-green-50 text-green-600",
+    title: "Needs-attention queue",
+    desc: "stale scans, open highs, and connection issues surface before your next check-in.",
   },
   {
-    icon: KeyRound,
-    title: "Branded subdomain + SSO",
-    body: "Your team signs in at acme.tenanthawk.io with your IdP - Okta, Entra, or SAML.",
-    chip: "bg-violet-50 text-violet-600",
-  },
-  {
-    icon: PieChart,
     title: "Per-client scorecards",
-    body: "Shareable scorecards with category grades and trends. Built for client updates, onboarding reviews, and exec summaries.",
-    chip: "bg-amber-50 text-amber-600",
+    desc: "shareable grades and trends, built for client updates and exec summaries.",
   },
   {
-    icon: AlertTriangle,
-    title: "Needs attention queue",
-    body: "See which clients have stale scans, open high findings, or connection issues before your next check in. The portfolio surfaces who needs work first.",
-    chip: "bg-red-50 text-red-400",
+    title: "Branded subdomain + SSO",
+    desc: "your team signs in at acme.tenanthawk.io with Okta, Entra, or SAML.",
   },
-  {
-    icon: ShieldCheck,
-    title: "Full platform on every client",
-    body: "Every client tenant gets the full Pro scan: findings with dollar impact, remediation steps, daily scans, exports, and alerts. Same depth on client ten as client one.",
-    chip: "bg-teal-50 text-teal-400",
-  },
-] as const;
+];
+
+const portfolioStats = [
+  { label: "Avg. score", value: "74" },
+  { label: "Open high", value: "23" },
+  { label: "Recoverable / mo", value: "$1,840" },
+];
+
+const clients = [
+  { initial: "N", avatarBg: "#2a3547", avatarFg: "#b9c2d4", name: "Northwind Traders", meta: "Scanned 2h ago", high: "2 high", highColor: "#d98e5f", score: "81", grade: "B", gradeColor: "#5fb98a" },
+  { initial: "F", avatarBg: "#3b2f47", avatarFg: "#c7b9d4", name: "Fabrikam", meta: "Scanned 5h ago", high: "7 high", highColor: "#e06c4c", score: "68", grade: "D", gradeColor: "#e06c4c" },
+  { initial: "C", avatarBg: "#2f4740", avatarFg: "#b9d4c7", name: "Contoso", meta: "Scanned 1d ago", high: "4 high", highColor: "#d98e5f", score: "76", grade: "C", gradeColor: "#d9a33c" },
+  { initial: "W", avatarBg: "#47402f", avatarFg: "#d4cbb9", name: "Wingtip Toys", meta: "Scan stale · 9d", high: "—", highColor: "#6e7686", score: "72", grade: "C", gradeColor: "#d9a33c" },
+];
 
 export function MspConsoleSection() {
   return (
-    <section id="msp" className="scroll-mt-24 border-y border-slate-200 bg-slate-900 py-24 text-white">
-      <div className="mx-auto max-w-6xl px-6">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-blue-300">
-            For consultants &amp; MSPs
-          </p>
-          <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
-            Every client tenant. One clear view.
-          </h2>
-          <p className="mt-4 text-lg text-slate-300">
-            Pro covers one tenant for in house teams. Consultants and MSPs use{" "}
-            <span className="font-semibold text-white">Enterprise</span> to manage
-            up to {ENTERPRISE_CLIENT_CAP_DEFAULT} client tenants from one console.
-          </p>
-        </Reveal>
-
-        <Reveal className="mt-12" delay={0.06}>
-          <div className="overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-800/60 shadow-2xl ring-1 ring-white/10">
-            <div className="border-b border-slate-700/80 px-5 py-3">
-              <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
-                Client portfolio
-              </p>
-            </div>
-            <div className="grid gap-px bg-slate-700/50 sm:grid-cols-4">
-              {[
-                { label: "Avg. score", value: "74", accent: true },
-                { label: "Clients", value: "8" },
-                { label: "Open high", value: "23" },
-                { label: "Recoverable / mo", value: "$1,840" },
-              ].map((stat) => (
-                <div key={stat.label} className="bg-slate-800/90 px-5 py-4">
-                  <p className="text-xs text-slate-400">{stat.label}</p>
-                  <p
-                    className={`mt-1 text-2xl font-bold ${
-                      stat.accent ? "text-blue-300" : "text-white"
-                    }`}
-                  >
-                    {stat.value}
-                  </p>
+    <section id="msp" className="scroll-mt-16 bg-mk-night">
+      <div className="mx-auto max-w-6xl px-6 py-20 sm:px-8 sm:py-28">
+        <div className="grid items-center gap-14 lg:grid-cols-[5fr_6fr] lg:gap-20">
+          <Reveal>
+            <p className="mk-eyebrow mb-5 !text-mk-amber-bright">For consultants &amp; MSPs</p>
+            <h2 className="mb-5 text-balance text-3xl font-[640] leading-[1.12] tracking-[-0.03em] text-mk-night-text sm:text-[40px]">
+              Every client tenant. One clear view.
+            </h2>
+            <p className="mb-9 text-pretty text-[16.5px] leading-[1.6] text-mk-night-soft">
+              Manage up to {ENTERPRISE_CLIENT_CAP_DEFAULT} client tenants from one console.
+              Every client gets the full scan — findings with dollar impact, daily rescans,
+              drift alerts, and shareable scorecards for your next check-in.
+            </p>
+            <div className="mb-10 flex flex-col gap-4">
+              {features.map((mf) => (
+                <div key={mf.title} className="flex gap-3.5">
+                  <span className="pt-px font-semibold text-mk-amber-bright">—</span>
+                  <div>
+                    <span className="text-[15px] font-semibold text-mk-cream">{mf.title}</span>
+                    <span className="text-[15px] text-mk-night-soft"> — {mf.desc}</span>
+                  </div>
                 </div>
               ))}
             </div>
-            <div className="divide-y divide-slate-700/80">
-              {[
-                { name: "Northwind Traders", score: 81, grade: "B", high: 2 },
-                { name: "Fabrikam", score: 68, grade: "D", high: 7 },
-                { name: "Contoso", score: 76, grade: "C", high: 4 },
-              ].map((client) => (
-                <div
-                  key={client.name}
-                  className="flex flex-wrap items-center justify-between gap-3 bg-slate-800/40 px-5 py-3.5"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-700 text-xs font-bold text-slate-200">
-                      {client.name.slice(0, 1)}
-                    </span>
-                    <div>
-                      <p className="text-sm font-medium text-white">{client.name}</p>
-                      <p className="text-xs text-slate-400">{client.high} open high</p>
+            <a
+              href="#pricing"
+              className="inline-flex items-center gap-2 rounded-[10px] bg-mk-night-text px-6 py-3 text-[15.5px] font-[550] text-mk-ink transition-colors hover:bg-white"
+            >
+              See Enterprise pricing <span aria-hidden>→</span>
+            </a>
+          </Reveal>
+
+          {/* portfolio console mock */}
+          <Reveal delay={0.1}>
+            <div className="overflow-hidden rounded-[14px] border border-mk-night-line2 bg-mk-night-card shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]">
+              <div className="flex items-center justify-between border-b border-mk-night-line px-5 py-4">
+                <span className="text-sm font-semibold text-mk-cream">Client portfolio</span>
+                <span className="font-mkmono text-[11px] text-mk-night-muted">
+                  8 tenants connected
+                </span>
+              </div>
+              <div className="grid grid-cols-3 border-b border-mk-night-line">
+                {portfolioStats.map((ps) => (
+                  <div key={ps.label} className="border-r border-mk-night-line px-5 py-[18px] last:border-r-0">
+                    <div className="text-[11.5px] text-mk-night-muted">{ps.label}</div>
+                    <div className="mt-1.5 text-[22px] font-[650] tracking-[-0.02em] text-mk-night-text">
+                      {ps.value}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-slate-200">{client.score}</span>
-                    <span className="rounded-md bg-slate-700 px-2 py-0.5 text-xs font-bold text-slate-200">
-                      {client.grade}
-                    </span>
+                ))}
+              </div>
+              {clients.map((cl) => (
+                <div
+                  key={cl.name}
+                  className="grid grid-cols-[34px_1fr_100px_60px] items-center gap-3.5 border-b border-mk-night-row px-5 py-[13px] last:border-b-0"
+                >
+                  <span
+                    className="flex h-[30px] w-[30px] items-center justify-center rounded-lg text-[13px] font-[650]"
+                    style={{ background: cl.avatarBg, color: cl.avatarFg }}
+                  >
+                    {cl.initial}
+                  </span>
+                  <div>
+                    <div className="text-[13.5px] font-[550] text-mk-cream">{cl.name}</div>
+                    <div className="mt-px text-[11.5px] text-mk-night-muted">{cl.meta}</div>
                   </div>
+                  <span
+                    className="text-right font-mkmono text-[11px]"
+                    style={{ color: cl.highColor }}
+                  >
+                    {cl.high}
+                  </span>
+                  <span className="text-right text-[13px] font-[650] text-mk-night-text">
+                    {cl.score}{" "}
+                    <span
+                      className="font-mkmono text-[10.5px] font-medium"
+                      style={{ color: cl.gradeColor }}
+                    >
+                      {cl.grade}
+                    </span>
+                  </span>
                 </div>
               ))}
             </div>
-          </div>
-        </Reveal>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {features.map((f, i) => (
-            <Reveal key={f.title} delay={0.08 + i * 0.06}>
-              <div className="h-full rounded-2xl border border-slate-700/80 bg-slate-800/40 p-6">
-                <span
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${f.chip}`}
-                >
-                  <f.icon className="h-5 w-5" strokeWidth={1.9} />
-                </span>
-                <h3 className="mt-4 text-lg font-bold text-white">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-400">{f.body}</p>
-              </div>
-            </Reveal>
-          ))}
+          </Reveal>
         </div>
-
-        <Reveal className="mt-12 text-center" delay={0.2}>
-          <a
-            href="#pricing"
-            className="group inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-100"
-          >
-            See Enterprise pricing
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </a>
-          <p className="mt-3 text-sm text-slate-400">
-            Start free on one tenant, then upgrade when you&apos;re ready to add clients.
-          </p>
-        </Reveal>
       </div>
     </section>
   );

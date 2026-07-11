@@ -1,113 +1,100 @@
-import { KeyRound, ShieldAlert, Sparkles, Wallet } from "lucide-react";
+import Link from "next/link";
 import { Reveal } from "./Reveal";
+import { SCAN_CHECK_COUNT } from "@/lib/scan/catalog";
 
 const categories = [
   {
-    icon: ShieldAlert,
-    title: "Security",
-    blurb: "Catch the gaps before an auditor or an attacker does.",
-    accent: "text-red-600",
-    chip: "bg-red-50 text-red-600",
-    dot: "bg-red-500",
-    ring: "hover:border-red-200",
-    checks: [
-      "Conditional Access drift & risky exclusions",
-      "MFA gaps and legacy auth still enabled",
-      "Over-privileged apps & stale admin roles",
-      "Guest accounts that should be gone",
+    n: "01",
+    name: "Security",
+    tagline: "Catch the gaps before an auditor — or an attacker — does.",
+    items: [
+      "Conditional Access gaps, including policies stuck in report-only",
+      "MFA registration gaps and legacy auth still enabled",
+      "Standing privileged access that should be eligible-only",
+      "Over-permissioned enterprise apps & guest sprawl",
     ],
   },
   {
-    icon: Wallet,
-    title: "Cost",
-    blurb: "Stop paying for licenses nobody uses.",
-    accent: "text-green-600",
-    chip: "bg-green-50 text-green-600",
-    dot: "bg-green-500",
-    ring: "hover:border-green-200",
-    checks: [
-      "Licenses on disabled or never-active users",
-      "Oversized SKUs (E5 where E3 would do)",
-      "Duplicate & overlapping license plans",
-      "Monthly reclaimable-spend report",
+    n: "02",
+    name: "Cost",
+    tagline: "Stop paying for licenses nobody uses.",
+    items: [
+      "Licenses still on disabled accounts, with the $/month figure",
+      "Paid seats sitting unassigned or on inactive users",
+      "Copilot licenses nobody is actually using",
+      "Subscriptions lapsing or stuck in grace period",
     ],
   },
   {
-    icon: KeyRound,
-    title: "Reliability",
-    blurb: "Never get blindsided by a silent expiry again.",
-    accent: "text-blue-600",
-    chip: "bg-blue-50 text-blue-600",
-    dot: "bg-blue-500",
-    ring: "hover:border-blue-200",
-    checks: [
-      "App registration secrets & certs expiring",
-      "Expiring domains and DNS issues",
-      "Mailboxes approaching storage limits",
-      "Service health & integration alerts",
+    n: "03",
+    name: "Reliability",
+    tagline: "Never get blindsided by a silent expiry again.",
+    items: [
+      "App registration secrets & certs about to expire",
+      "Enterprise app credentials on the same countdown",
+      "Intune devices that quietly stopped syncing",
+      "Entra devices with stale sign-ins",
     ],
   },
   {
-    icon: Sparkles,
-    title: "Hygiene",
-    blurb: "Keep the tenant tidy as it grows.",
-    accent: "text-yellow-600",
-    chip: "bg-yellow-50 text-yellow-600",
-    dot: "bg-yellow-500",
-    ring: "hover:border-yellow-200",
-    checks: [
-      "Empty & orphaned groups and teams",
-      "Inactive users and stale accounts",
-      "Unmanaged or duplicate devices",
-      "Misconfigured sharing & defaults",
+    n: "04",
+    name: "Hygiene",
+    tagline: "Keep the tenant tidy as it grows.",
+    items: [
+      "Inactive users — non-interactive sign-ins considered too",
+      "Empty and ownerless groups, teams, and channels",
+      "External mailbox forwarding and stale auto-replies",
+      "Stale SharePoint sites and org-wide sharing posture",
     ],
   },
 ];
 
 export function Categories() {
   return (
-    <section id="categories" className="scroll-mt-24 bg-white py-24">
-      <div className="mx-auto max-w-6xl px-6">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
-            What Tenant Hawk scans
-          </p>
-          <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            Four kinds of tenant debt, one place to clear it
+    <section id="scans" className="scroll-mt-16 border-t border-mk-line">
+      <div className="mx-auto max-w-6xl px-6 py-20 sm:px-8 sm:py-26">
+        <Reveal className="mb-16 max-w-[640px]">
+          <p className="mk-eyebrow mb-5">What Tenant Hawk scans</p>
+          <h2 className="mb-[18px] text-balance text-3xl font-[640] leading-[1.12] tracking-[-0.03em] sm:text-[40px]">
+            Four kinds of tenant debt, one place to clear it.
           </h2>
-          <p className="mt-4 text-lg text-slate-600">
-            Every check rolls up into your health score with a clear severity, a
-            dollar impact where it matters, and the exact steps to fix it.
+          <p className="text-pretty text-[16.5px] leading-[1.6] text-mk-soft">
+            Every check rolls into your health score with a clear severity, a dollar
+            impact where it matters, and the exact steps to fix it.
           </p>
         </Reveal>
 
-        <div className="mt-16 grid gap-5 md:grid-cols-2">
+        <div className="grid border-l border-t border-mk-line sm:grid-cols-2 lg:grid-cols-4">
           {categories.map((c, i) => (
-            <Reveal key={c.title} delay={(i % 2) * 0.08}>
-              <div
-                className={`group h-full rounded-2xl border border-slate-200 bg-white p-7 shadow-sm transition-all hover:shadow-lg hover:shadow-slate-200/60 ${c.ring}`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${c.chip}`}>
-                    <c.icon className="h-5 w-5" strokeWidth={1.9} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-900">{c.title}</h3>
-                    <p className="text-sm text-slate-500">{c.blurb}</p>
-                  </div>
+            <Reveal key={c.name} delay={i * 0.06} className="h-full">
+              <div className="h-full border-b border-r border-mk-line bg-white px-[26px] pb-9 pt-8">
+                <div className="mb-[22px] font-mkmono text-[11.5px] text-mk-faint">{c.n}</div>
+                <div className="mb-2 text-xl font-[640] tracking-[-0.015em]">{c.name}</div>
+                <div className="mb-6 min-h-[44px] text-sm leading-[1.55] text-mk-muted">
+                  {c.tagline}
                 </div>
-                <ul className="mt-5 space-y-2.5">
-                  {c.checks.map((check) => (
-                    <li key={check} className="flex items-start gap-2.5 text-sm text-slate-600">
-                      <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${c.dot}`} />
-                      {check}
-                    </li>
+                <div className="flex flex-col gap-2.5">
+                  {c.items.map((it) => (
+                    <div key={it} className="flex gap-2.5 text-[13.5px] leading-[1.45] text-mk-ink2">
+                      <span className="font-semibold text-mk-amber">—</span>
+                      <span>{it}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={0.15} className="mt-10">
+          <Link
+            href="/features/coverage"
+            className="border-b-[1.5px] border-mk-amber pb-0.5 text-[15.5px] font-[550] text-mk-ink transition-colors hover:text-[#b36a00]"
+          >
+            See all {SCAN_CHECK_COUNT} checks, the Graph data each one reads, and where to
+            be skeptical →
+          </Link>
+        </Reveal>
       </div>
     </section>
   );

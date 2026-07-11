@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, IBM_Plex_Mono, Instrument_Sans } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { rootMetadata } from "@/lib/seo/site";
 import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme/scope";
@@ -15,6 +15,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument-sans",
+  subsets: ["latin"],
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
 export const metadata = rootMetadata;
 
 export default function RootLayout({
@@ -26,7 +37,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="light"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSans.variable} ${plexMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

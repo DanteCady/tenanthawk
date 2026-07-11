@@ -9,6 +9,7 @@ import { Stats } from "@/components/Stats";
 import { ProblemSection } from "@/components/ProblemSection";
 import { Categories } from "@/components/Categories";
 import { HowItWorks } from "@/components/HowItWorks";
+import { TrustSection } from "@/components/TrustSection";
 import { MspConsoleSection } from "@/components/MspConsoleSection";
 import { Pricing } from "@/components/Pricing";
 import { WaitlistSection } from "@/components/WaitlistSection";
@@ -43,7 +44,7 @@ export default async function Home() {
           softwareApplicationSchema(),
         ]}
       />
-      <div className="marketing-page marketing-landing min-h-screen">
+      <div className="marketing-v2 min-h-screen">
         <Navbar />
         <main className="flex-1">
           <Hero dashboardPreview={<HeroDashboardPreview />} />
@@ -53,6 +54,7 @@ export default async function Home() {
           <HowItWorks />
           <MspConsoleSection />
           <Pricing />
+          <TrustSection />
           <WaitlistSection />
         </main>
         <Footer />
