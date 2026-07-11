@@ -33,7 +33,8 @@ export function rateLimitKey(userId: string, action: string): string {
   return `${action}:${userId}`;
 }
 
-export type PlanTier = "free" | "pro" | "msp";
+/** Trial accounts get pro-level limits — they have the pro feature set. */
+export type PlanTier = "free" | "trial" | "pro" | "msp";
 
 export const RATE_LIMITS = {
   /** Manual re-scan from dashboard */

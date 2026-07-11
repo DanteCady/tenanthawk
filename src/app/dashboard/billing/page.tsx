@@ -1,7 +1,14 @@
 import { redirect } from "next/navigation";
 import { Check } from "lucide-react";
 import { getSession } from "@/lib/session";
-import { getPlan, isEnterprisePlan, isProPlan, type Plan } from "@/lib/entitlements";
+import {
+  getPlan,
+  getTrialStatus,
+  isEnterprisePlan,
+  isProPlan,
+  isUnpaidPlan,
+  type Plan,
+} from "@/lib/entitlements";
 import { getEnterpriseClientLimit } from "@/lib/billing/enterprise-limits";
 import { ProUpgradeOptions } from "@/components/app/UpgradeButton";
 import { EnterpriseUpgradeOptions } from "@/components/app/EnterpriseUpgradeButton";
@@ -27,12 +34,15 @@ import { formatUsd } from "@/lib/format";
 import { PageHeader } from "@/components/app/PageHeader";
 import { canSimulatePlan } from "@/lib/billing/demo-plan-switch";
 
-function billingSubtitle(plan: Plan) {
+function billingSubtitle(plan: Plan, trialDaysLeft = 0) {
   if (isEnterprisePlan(plan)) {
     return "Enterprise Starter — flat monthly platform fee for MSPs and consultants.";
   }
   if (isProPlan(plan)) {
     return "Pro is for internal IT teams — billed per connected tenant.";
+  }
+  if (plan === "trial") {
+    return `Full access for ${trialDaysLeft} more day${trialDaysLeft === 1 ? "" : "s"} — upgrade to keep daily scans, dollar findings, and alerts.`;
   }
   return "Choose Pro for your organization or Enterprise for MSPs and consultants.";
 }
@@ -69,6 +79,7 @@ export default async function BillingPage({
 
   const { upgrade } = await searchParams;
   const plan = await getPlan(session.user.id);
+  const trial = await getTrialStatus(session.user.id);
   const clientLimit = await getEnterpriseClientLimit(session.user.id, session.user.email);
   const clientCap = getEnterpriseClientCap();
   const showEnterprisePitch =
@@ -116,9 +127,9 @@ export default async function BillingPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Billing" description={billingSubtitle(plan)} />
+      <PageHeader title="Billing" description={billingSubtitle(plan, trial.daysLeft)} />
 
-      {plan === "free" ? (
+      {isUnpaidPlan(plan) ? (
         <div
           className={`grid gap-6 ${showEnterprisePitch ? "xl:grid-cols-2 xl:items-start" : ""}`}
         >
@@ -209,7 +220,7 @@ export default async function BillingPage({
         </div>
       )}
 
-      {plan === "free" && (
+      {isUnpaidPlan(plan) && (
         <p className="text-center text-xs text-[var(--th-text-faint)]">
           Pro: ${PRO_MONTHLY_USD}/mo or ${formatUsd(PRO_ANNUAL_USD)}/yr per tenant · Enterprise
           Starter: ${ENTERPRISE_MONTHLY_USD}/mo or ${formatUsd(ENTERPRISE_ANNUAL_USD)}/yr (
@@ -219,7 +230,7 @@ export default async function BillingPage({
 
       {showPlanSimulator && <DevPlanToggle plan={plan} />}
 
-      {plan !== "free" && enterpriseCard}
+      {!isUnpaidPlan(plan) && enterpriseCard}
     </div>
   );
 }

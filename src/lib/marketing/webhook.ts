@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import type { FindingDraft, Severity } from "@/lib/scan/types";
 import { connectionLabel } from "@/lib/connection/label";
+import { isTrialActive, trialDaysLeft } from "@/lib/billing/trial";
 
 /**
  * Fires a marketing-lifecycle webhook (e.g. to n8n) when a scan completes.
@@ -30,7 +31,7 @@ export async function fireMarketingWebhook(input: {
     const [user, subscription, connectionCount] = await Promise.all([
       db
         .selectFrom("user")
-        .select(["email", "name"])
+        .select(["email", "name", "createdAt"])
         .where("id", "=", conn.user_id)
         .executeTakeFirst(),
       db
@@ -67,6 +68,9 @@ export async function fireMarketingWebhook(input: {
 
     const tenantName = connectionLabel(conn);
 
+    const createdAt = user.createdAt ? new Date(user.createdAt) : null;
+    const onTrial = !isPaid && createdAt !== null && isTrialActive(createdAt);
+
     const payload = {
       event: "scan.completed",
       source,
@@ -75,7 +79,10 @@ export async function fireMarketingWebhook(input: {
           ? "enterprise"
           : isPaid
             ? "pro"
-            : "free",
+            : onTrial
+              ? "trial"
+              : "free",
+      trialDaysLeft: onTrial && createdAt ? trialDaysLeft(createdAt) : 0,
       isLikelyMsp: Number(connectionCount?.count ?? 0) > 1,
       user: { email: user.email, name: user.name ?? null },
       tenant: { name: tenantName },

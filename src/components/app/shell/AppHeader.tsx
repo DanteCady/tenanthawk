@@ -13,6 +13,7 @@ import { getDashboardPageTitle } from "@/components/app/shell/page-titles";
 
 export function AppHeader({
   plan,
+  trialDaysLeft,
   showConnectionBlip,
   connectionHealth,
   tenantLabel,
@@ -22,6 +23,7 @@ export function AppHeader({
   onOpenMobileNav,
 }: {
   plan: Plan;
+  trialDaysLeft: number;
   showConnectionBlip: boolean;
   connectionHealth: ConnectionHealth | null;
   tenantLabel: string | null;
@@ -94,6 +96,15 @@ export function AppHeader({
           <div className="hidden sm:block">
             <PlanBadge plan={plan} />
           </div>
+          {plan === "trial" && (
+            <Link
+              href="/dashboard/billing"
+              className="btn-primary px-3 py-1.5 text-sm"
+              title="Full access during your trial — upgrade to keep it"
+            >
+              {trialDaysLeft} day{trialDaysLeft === 1 ? "" : "s"} left · Upgrade
+            </Link>
+          )}
           {plan === "free" && (
             <Link href="/dashboard/billing" className="btn-primary px-3 py-1.5 text-sm">
               Upgrade

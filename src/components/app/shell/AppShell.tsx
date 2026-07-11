@@ -13,6 +13,7 @@ export function AppShell({
   isPro,
   showClients,
   plan,
+  trialDaysLeft,
   userName,
   userEmail,
   userImage,
@@ -27,6 +28,7 @@ export function AppShell({
   isPro: boolean;
   showClients: boolean;
   plan: Plan;
+  trialDaysLeft: number;
   userName: string;
   userEmail: string;
   userImage?: string | null;
@@ -66,6 +68,7 @@ export function AppShell({
       <div className="app-main-column">
         <AppHeader
           plan={plan}
+          trialDaysLeft={trialDaysLeft}
           showConnectionBlip={showConnectionBlip}
           connectionHealth={connectionHealth}
           tenantLabel={tenantLabel}

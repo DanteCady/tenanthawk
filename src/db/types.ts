@@ -191,10 +191,12 @@ export interface ConfigChangeTable {
 }
 
 // Read-only view of Better Auth's `user` table.
+// Read-only view of the Better Auth `user` table (camelCase columns).
 export interface UserTable {
   id: string;
   name: string;
   email: string;
+  createdAt: ColumnType<Date, never, never>;
 }
 
 export interface UserPreferencesTable {

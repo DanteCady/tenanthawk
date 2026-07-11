@@ -21,10 +21,10 @@ import { formatUsd } from "@/lib/format";
 type Interval = "monthly" | "annual";
 
 const FREE_FEATURES = [
+  "14 days of full access — every check, dollar figures included",
   "1 tenant",
-  "Reliability scan — expiring secrets & certs",
-  "Weekly health score",
-  "Email alerts",
+  "After the trial: weekly reliability scan (expiring secrets & certs)",
+  "Health score & email alerts, forever",
 ];
 
 const PRO_FEATURES = [
@@ -128,7 +128,8 @@ export function Pricing({ showHeader = true }: { showHeader?: boolean }) {
             <div className="flex h-full flex-col rounded-[14px] border border-mk-line2 bg-white px-[30px] py-[34px]">
               <div className="mb-1.5 text-[17px] font-[650]">Free</div>
               <div className="mb-6 min-h-[42px] text-sm text-mk-muted">
-                See your score on a single tenant.
+                Start with the full product for 14 days — no card. Keep a weekly
+                score after.
               </div>
               <div className="mb-7">
                 <span className="text-[40px] font-[650] tracking-[-0.03em]">$0</span>{" "}
