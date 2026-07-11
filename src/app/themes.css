@@ -1077,50 +1077,6 @@ html[data-theme="hawk"] .text-slate-400 {
   color: var(--th-text-faint) !important;
 }
 
-html[data-theme="dark"] .marketing-page .text-slate-900,
-html[data-theme="dark"] .marketing-page .text-slate-800,
-html[data-theme="dark"] .marketing-page .text-slate-700,
-html[data-theme="dark"] .marketing-page .text-slate-600,
-html[data-theme="dark"] .marketing-page .text-slate-500,
-html[data-theme="dark"] .marketing-page .text-slate-400,
-html[data-theme="dark"] .marketing-page .text-slate-300,
-html[data-theme="hawk"] .marketing-page .text-slate-900,
-html[data-theme="hawk"] .marketing-page .text-slate-800,
-html[data-theme="hawk"] .marketing-page .text-slate-700,
-html[data-theme="hawk"] .marketing-page .text-slate-600,
-html[data-theme="hawk"] .marketing-page .text-slate-500,
-html[data-theme="hawk"] .marketing-page .text-slate-400,
-html[data-theme="hawk"] .marketing-page .text-slate-300 {
-  color: #fff !important;
-}
-
-html[data-theme="dark"] .learn-page .text-slate-900,
-html[data-theme="dark"] .learn-page .text-slate-800,
-html[data-theme="dark"] .learn-page .text-slate-700,
-html[data-theme="dark"] .learn-page .text-slate-600,
-html[data-theme="dark"] .learn-page .text-slate-500,
-html[data-theme="dark"] .learn-page .text-slate-400,
-html[data-theme="dark"] .learn-page .text-slate-300,
-html[data-theme="hawk"] .learn-page .text-slate-900,
-html[data-theme="hawk"] .learn-page .text-slate-800,
-html[data-theme="hawk"] .learn-page .text-slate-700,
-html[data-theme="hawk"] .learn-page .text-slate-600,
-html[data-theme="hawk"] .learn-page .text-slate-500,
-html[data-theme="hawk"] .learn-page .text-slate-400,
-html[data-theme="hawk"] .learn-page .text-slate-300 {
-  color: #fff !important;
-}
-
-html[data-theme="dark"] .learn-page .hover\:text-slate-900:hover,
-html[data-theme="dark"] .learn-page .hover\:text-slate-800:hover,
-html[data-theme="dark"] .learn-page .hover\:text-slate-700:hover,
-html[data-theme="dark"] .learn-page .hover\:text-slate-600:hover,
-html[data-theme="hawk"] .learn-page .hover\:text-slate-900:hover,
-html[data-theme="hawk"] .learn-page .hover\:text-slate-800:hover,
-html[data-theme="hawk"] .learn-page .hover\:text-slate-700:hover,
-html[data-theme="hawk"] .learn-page .hover\:text-slate-600:hover {
-  color: #fff !important;
-}
 
 html[data-theme="dark"] .border-slate-200,
 html[data-theme="dark"] .border-slate-100,

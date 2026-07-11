@@ -16,11 +16,7 @@ import {
   THEME_STORAGE_KEY,
   type Theme,
 } from "@/lib/theme";
-import {
-  isAppThemePath,
-  readStoredAppTheme,
-  systemPreferredTheme,
-} from "@/lib/theme/scope";
+import { isAppThemePath, readStoredAppTheme } from "@/lib/theme/scope";
 
 type ThemeContextValue = {
   theme: Theme;
@@ -48,12 +44,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const syncSystemTheme = () => applyTheme(systemPreferredTheme());
-    syncSystemTheme();
-
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    media.addEventListener("change", syncSystemTheme);
-    return () => media.removeEventListener("change", syncSystemTheme);
+    // Marketing pages are always light — no OS preference sync.
+    applyTheme("light");
   }, [appThemeActive, pathname]);
 
   const setTheme = useCallback(
