@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { enrichConnectionProfile } from "@/lib/connect/enrichConnection";
 import { invalidateConnectionHealth } from "@/lib/connect/health";
 import { fireMarketingWebhook } from "@/lib/marketing/webhook";
+import { captureServerEvent } from "@/lib/analytics/server";
 import { parseLicensePricing } from "@/lib/licenses/pricing-overrides";
 import { captureJournal } from "@/lib/journal/capture";
 import { checks } from "./checks";
@@ -220,6 +221,15 @@ export async function runScan(
       drafts,
       score: overall,
       source: options?.source ?? "manual",
+    });
+
+    captureServerEvent(conn.user_id, "scan_completed", {
+      connection_id: connectionId,
+      scan_id: scanId,
+      score: overall,
+      source: options?.source ?? "manual",
+      mode: graphToken ? "live" : "demo",
+      finding_count: drafts.length,
     });
 
     return scanId;

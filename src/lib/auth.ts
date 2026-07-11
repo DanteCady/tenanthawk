@@ -25,6 +25,7 @@ import {
   isEnterpriseSsoEnabled,
 } from "./enterprise/config";
 import { getPlan, isEnterprisePlan } from "./entitlements";
+import { captureServerEvent, identifyServerUser } from "./analytics/server";
 
 const stripeClient = new Stripe(
   process.env.STRIPE_SECRET_KEY || "sk_test_placeholder",
@@ -63,6 +64,19 @@ export const auth = betterAuth({
       }
     : undefined,
   database: pool,
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          identifyServerUser(user.id, { email: user.email, name: user.name ?? null });
+          captureServerEvent(user.id, "signup_completed", {
+            account_type:
+              (user as { accountType?: string | null }).accountType ?? "individual",
+          });
+        },
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -161,6 +175,12 @@ export const auth = betterAuth({
             promotionCodeFromUpgradeMetadata(metadata),
           );
           return { params: discountParams };
+        },
+        async onSubscriptionComplete({ subscription, plan }) {
+          captureServerEvent(subscription.referenceId, "plan_upgraded", {
+            plan: plan.name,
+          });
+          identifyServerUser(subscription.referenceId, { plan: plan.name });
         },
       },
     }),

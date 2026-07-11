@@ -11,6 +11,7 @@ import {
   ACTIVE_CONNECTION_COOKIE,
 } from "@/lib/connection/constants";
 import { appRedirectUrl } from "@/lib/platform/urls";
+import { captureServerEvent } from "@/lib/analytics/server";
 
 export const runtime = "nodejs";
 
@@ -89,6 +90,10 @@ export async function GET(req: NextRequest) {
 
   await enrichConnectionProfile(conn.id, tenant);
   invalidateConnectionHealth(conn.id);
+  captureServerEvent(userId, "tenant_connected", {
+    connection_id: conn.id,
+    via: returnTo === "clients" ? "clients_console" : "onboarding",
+  });
 
   try {
     await runScan(conn.id);
