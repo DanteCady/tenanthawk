@@ -26,6 +26,7 @@ import {
 } from "./enterprise/config";
 import { getPlan, isEnterprisePlan } from "./entitlements";
 import { captureServerEvent, identifyServerUser } from "./analytics/server";
+import { fireSignupWebhook } from "./marketing/webhook";
 
 const stripeClient = new Stripe(
   process.env.STRIPE_SECRET_KEY || "sk_test_placeholder",
@@ -68,10 +69,14 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
+          const accountType =
+            (user as { accountType?: string | null }).accountType ?? "individual";
           identifyServerUser(user.id, { email: user.email, name: user.name ?? null });
-          captureServerEvent(user.id, "signup_completed", {
-            account_type:
-              (user as { accountType?: string | null }).accountType ?? "individual",
+          captureServerEvent(user.id, "signup_completed", { account_type: accountType });
+          await fireSignupWebhook({
+            email: user.email,
+            name: user.name,
+            accountType,
           });
         },
       },

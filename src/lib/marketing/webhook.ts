@@ -1,7 +1,50 @@
 import { db } from "@/db";
 import type { FindingDraft, Severity } from "@/lib/scan/types";
 import { connectionLabel } from "@/lib/connection/label";
-import { isTrialActive, trialDaysLeft } from "@/lib/billing/trial";
+import { isTrialActive, TRIAL_DAYS, trialDaysLeft } from "@/lib/billing/trial";
+
+async function postMarketingWebhook(payload: Record<string, unknown>): Promise<void> {
+  const url = process.env.MARKETING_WEBHOOK_URL;
+  if (!url) return;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-th-signature": process.env.MARKETING_WEBHOOK_SECRET ?? "",
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/**
+ * Fires when an account is created — the day-0 trigger for the trial email
+ * sequence. Same gating and never-throws contract as the scan webhook.
+ */
+export async function fireSignupWebhook(input: {
+  email: string;
+  name?: string | null;
+  accountType?: string | null;
+}): Promise<void> {
+  if (!process.env.MARKETING_WEBHOOK_URL) return;
+  try {
+    await postMarketingWebhook({
+      event: "user.signedup",
+      user: { email: input.email, name: input.name ?? null },
+      accountType: input.accountType ?? "individual",
+      trialDaysLeft: TRIAL_DAYS,
+    });
+  } catch (err) {
+    console.warn(`[marketing-webhook] signup skipped: ${String(err)}`);
+  }
+}
 
 /**
  * Fires a marketing-lifecycle webhook (e.g. to n8n) when a scan completes.
@@ -96,21 +139,7 @@ export async function fireMarketingWebhook(input: {
       },
     };
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4000);
-    try {
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "x-th-signature": process.env.MARKETING_WEBHOOK_SECRET ?? "",
-        },
-        body: JSON.stringify(payload),
-        signal: controller.signal,
-      });
-    } finally {
-      clearTimeout(timeout);
-    }
+    await postMarketingWebhook(payload);
   } catch (err) {
     console.warn(`[marketing-webhook] skipped: ${String(err)}`);
   }
