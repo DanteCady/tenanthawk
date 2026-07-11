@@ -49,7 +49,7 @@ export default function CopilotReadinessPage() {
   return (
     <>
       <JsonLd data={faqPageSchema(FAQ)} />
-      <div className="marketing-page min-h-screen bg-white text-slate-900">
+      <div className="marketing-v2 min-h-screen">
         <Navbar />
         <main className="flex-1">
           <FeatureHero
@@ -88,10 +88,10 @@ export default function CopilotReadinessPage() {
             ]}
           />
 
-          <section className="border-t border-slate-100 bg-slate-50 py-16">
+          <section className="border-t border-mk-linesoft bg-mk-panel py-16">
             <div className="mx-auto max-w-3xl px-6 text-center">
               <Reveal>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-mk-soft">
                   See the full check list on the{" "}
                   <Link href="/features/coverage" className="font-medium text-violet-700 hover:underline">
                     coverage map

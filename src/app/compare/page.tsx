@@ -14,18 +14,18 @@ export const metadata = buildPageMetadata({
 
 export default function CompareIndexPage() {
   return (
-    <div className="marketing-page min-h-screen bg-white text-slate-900">
+    <div className="marketing-v2 min-h-screen">
       <Navbar />
       <main className="flex-1 pt-32 pb-24">
         <div className="mx-auto max-w-4xl px-6">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
+            <p className="mk-eyebrow">
               Compare
             </p>
-            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-mk-ink sm:text-5xl">
               How Tenant Hawk compares
             </h1>
-            <p className="mt-4 text-lg text-slate-600">
+            <p className="mt-4 text-lg text-mk-soft">
               We tell you when Microsoft&apos;s own tools are the better fit. These pages
               explain what Tenant Hawk adds: one health score, license waste in dollars, and
               read-only scans in minutes.

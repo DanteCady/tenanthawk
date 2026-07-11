@@ -103,7 +103,7 @@ export default function JournalFeaturePage() {
   return (
     <>
       <JsonLd data={faqPageSchema(FAQ)} />
-      <div className="marketing-page min-h-screen bg-white text-slate-900">
+      <div className="marketing-v2 min-h-screen">
         <Navbar />
         <main className="flex-1">
           {/* Hero */}
@@ -111,13 +111,13 @@ export default function JournalFeaturePage() {
             <div className="mx-auto max-w-6xl px-6">
               <div className="grid items-center gap-12 lg:grid-cols-2">
                 <Reveal>
-                  <p className="text-sm font-semibold uppercase tracking-widest text-purple-600">
+                  <p className="mk-eyebrow">
                     The Journal
                   </p>
-                  <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                  <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-mk-ink sm:text-5xl">
                     “Who changed that Conditional Access policy?”
                   </h1>
-                  <p className="mt-5 text-lg text-slate-600">
+                  <p className="mt-5 text-lg text-mk-soft">
                     Now there&apos;s an answer. Tenant Hawk journals every config change in
                     your Microsoft 365 tenant - the exact field, the before and after
                     value, and the admin who made it. Like a git history for your tenant.
@@ -125,18 +125,18 @@ export default function JournalFeaturePage() {
                   <div className="mt-8 flex flex-wrap items-center gap-4">
                     <a
                       href="/signup"
-                      className="btn-primary inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold shadow-none hover:shadow-md"
+                      className="mk-btn inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold shadow-none hover:shadow-md"
                     >
                       Start free scan
                     </a>
                     <Link
                       href="/#pricing"
-                      className="inline-flex items-center justify-center rounded-xl border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400"
+                      className="inline-flex items-center justify-center rounded-xl border border-mk-line2 px-6 py-3 text-sm font-semibold text-mk-ink hover:border-mk-faint"
                     >
                       See pricing
                     </Link>
                   </div>
-                  <p className="mt-4 text-xs text-slate-500">
+                  <p className="mt-4 text-xs text-mk-muted">
                     Read-only Graph access · 2-minute setup · Journal included in Pro
                   </p>
                 </Reveal>
@@ -148,13 +148,13 @@ export default function JournalFeaturePage() {
           </section>
 
           {/* Why audit logs aren't enough */}
-          <section className="bg-slate-50 py-20">
+          <section className="bg-mk-panel py-20">
             <div className="mx-auto max-w-6xl px-6">
               <Reveal className="mx-auto max-w-2xl text-center">
-                <h2 className="text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                <h2 className="text-balance text-3xl font-bold tracking-tight text-mk-ink sm:text-4xl">
                   The audit log wasn&apos;t built for this
                 </h2>
-                <p className="mt-4 text-lg text-slate-600">
+                <p className="mt-4 text-lg text-mk-soft">
                   Microsoft records changes - in raw JSON, across three portals, with
                   retention measured in weeks.
                 </p>
@@ -162,12 +162,12 @@ export default function JournalFeaturePage() {
               <div className="mt-12 grid gap-5 md:grid-cols-3">
                 {auditLogPains.map((item, i) => (
                   <Reveal key={item.title} delay={i * 0.08}>
-                    <div className="h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+                    <div className="h-full rounded-2xl border border-mk-line bg-white p-6 shadow-sm">
+                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-mk-amber-wash text-mk-amber-deep">
                         <item.icon className="h-5 w-5" strokeWidth={1.9} />
                       </span>
-                      <h3 className="mt-4 font-bold text-slate-900">{item.title}</h3>
-                      <p className="mt-2 text-sm text-slate-600">{item.body}</p>
+                      <h3 className="mt-4 font-bold text-mk-ink">{item.title}</h3>
+                      <p className="mt-2 text-sm text-mk-soft">{item.body}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -179,30 +179,30 @@ export default function JournalFeaturePage() {
           <section className="bg-white py-20">
             <div className="mx-auto max-w-6xl px-6">
               <Reveal className="mx-auto max-w-2xl text-center">
-                <h2 className="text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                <h2 className="text-balance text-3xl font-bold tracking-tight text-mk-ink sm:text-4xl">
                   How the Journal works
                 </h2>
               </Reveal>
               <div className="mt-12 grid gap-5 md:grid-cols-3">
                 {steps.map((step, i) => (
                   <Reveal key={step.title} delay={i * 0.08}>
-                    <div className="h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <div className="h-full rounded-2xl border border-mk-line bg-white p-6 shadow-sm">
                       <div className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-mk-amber-wash text-mk-amber-deep">
                           <step.icon className="h-5 w-5" strokeWidth={1.9} />
                         </span>
-                        <span className="text-sm font-semibold text-slate-400">
+                        <span className="text-sm font-semibold text-mk-faint">
                           Step {i + 1}
                         </span>
                       </div>
-                      <h3 className="mt-4 font-bold text-slate-900">{step.title}</h3>
-                      <p className="mt-2 text-sm text-slate-600">{step.body}</p>
+                      <h3 className="mt-4 font-bold text-mk-ink">{step.title}</h3>
+                      <p className="mt-2 text-sm text-mk-soft">{step.body}</p>
                     </div>
                   </Reveal>
                 ))}
               </div>
               <Reveal className="mx-auto mt-10 max-w-2xl text-center">
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-mk-muted">
                   Tracks Conditional Access policies, named locations, authorization &
                   authentication methods policies, and Intune compliance & configuration
                   profiles.
@@ -212,19 +212,19 @@ export default function JournalFeaturePage() {
           </section>
 
           {/* FAQ */}
-          <section className="bg-slate-50 py-20">
+          <section className="bg-mk-panel py-20">
             <div className="mx-auto max-w-3xl px-6">
               <Reveal className="text-center">
-                <h2 className="text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                <h2 className="text-balance text-3xl font-bold tracking-tight text-mk-ink sm:text-4xl">
                   Journal FAQ
                 </h2>
               </Reveal>
               <div className="mt-10 space-y-4">
                 {FAQ.map((item, i) => (
                   <Reveal key={item.q} delay={i * 0.05}>
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                      <h3 className="font-semibold text-slate-900">{item.q}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.a}</p>
+                    <div className="rounded-2xl border border-mk-line bg-white p-6 shadow-sm">
+                      <h3 className="font-semibold text-mk-ink">{item.q}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-mk-soft">{item.a}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -236,16 +236,16 @@ export default function JournalFeaturePage() {
           <section className="bg-white py-20">
             <div className="mx-auto max-w-3xl px-6 text-center">
               <Reveal>
-                <h2 className="text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                <h2 className="text-balance text-3xl font-bold tracking-tight text-mk-ink sm:text-4xl">
                   Your tenant is changing. Start the record.
                 </h2>
-                <p className="mt-4 text-lg text-slate-600">
+                <p className="mt-4 text-lg text-mk-soft">
                   The Journal starts capturing from your very first scan - history you
                   can&apos;t backfill later.
                 </p>
                 <a
                   href="/signup"
-                  className="btn-primary mt-8 inline-flex items-center justify-center rounded-xl px-8 py-3.5 text-sm font-semibold shadow-none hover:shadow-md"
+                  className="mk-btn mt-8 inline-flex items-center justify-center rounded-xl px-8 py-3.5 text-sm font-semibold shadow-none hover:shadow-md"
                 >
                   Start free scan
                 </a>

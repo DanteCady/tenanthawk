@@ -32,25 +32,25 @@ export function ContentShell({
     meta.category === "overview" ? "/learn" : `/learn/${meta.category}`;
 
   return (
-    <div className="learn-page min-h-screen bg-white text-slate-900">
+    <div className="marketing-v2 min-h-screen">
       <Navbar />
 
       <main className="mx-auto max-w-3xl px-6 pb-12 pt-28">
-        <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
+        <nav aria-label="Breadcrumb" className="text-sm text-mk-muted">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
-              <Link href="/learn" className="hover:text-slate-800">
+              <Link href="/learn" className="hover:text-mk-ink2">
                 Learn
               </Link>
             </li>
             <li aria-hidden="true">/</li>
             <li>
-              <Link href={categoryHref} className="hover:text-slate-800">
+              <Link href={categoryHref} className="hover:text-mk-ink2">
                 {CONTENT_CATEGORY_LABEL[meta.category]}
               </Link>
             </li>
             <li aria-hidden="true">/</li>
-            <li className="text-slate-700">{meta.title}</li>
+            <li className="text-mk-ink2">{meta.title}</li>
           </ol>
         </nav>
 
@@ -60,13 +60,13 @@ export function ContentShell({
           >
             {CONTENT_CATEGORY_LABEL[meta.category]}
           </span>
-          <span className="text-xs text-slate-400">{meta.readTime}</span>
+          <span className="text-xs text-mk-faint">{meta.readTime}</span>
         </div>
 
-        <h1 className="mt-4 text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <h1 className="mt-4 text-balance text-3xl font-bold tracking-tight text-mk-ink sm:text-4xl">
           {meta.title}
         </h1>
-        <p className="mt-4 text-lg leading-relaxed text-slate-600">{meta.description}</p>
+        <p className="mt-4 text-lg leading-relaxed text-mk-soft">{meta.description}</p>
 
         <div className="mt-8 space-y-8">
           <QuickAnswer>{meta.quickAnswer}</QuickAnswer>
@@ -85,8 +85,8 @@ export function ContentShell({
         </div>
 
         {related.length > 0 && (
-          <aside className="mt-14 border-t border-slate-200 pt-10">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-500">
+          <aside className="mt-14 border-t border-mk-line pt-10">
+            <h2 className="mk-eyebrow">
               Related guides
             </h2>
             <ul className="mt-4 space-y-3">
@@ -94,7 +94,7 @@ export function ContentShell({
                 <li key={g.meta.slug}>
                   <Link
                     href={`/learn/guides/${g.meta.slug}`}
-                    className="font-medium text-blue-700 hover:underline"
+                    className="font-medium text-mk-amber-deep hover:underline"
                   >
                     {g.meta.title}
                   </Link>

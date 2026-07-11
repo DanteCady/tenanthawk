@@ -38,13 +38,13 @@ export function LicenseSavingsCalculator() {
     proAnnualCost > 0 ? Math.round((annualWaste / proAnnualCost) * 10) / 10 : 0;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <div className="rounded-2xl border border-mk-line bg-white p-6 shadow-sm sm:p-8">
       <div className="space-y-8">
         <div>
-          <label htmlFor="calc-users" className="text-sm font-medium text-slate-900">
+          <label htmlFor="calc-users" className="text-sm font-medium text-mk-ink">
             Licensed users in tenant
           </label>
-          <p className="mt-1 text-2xl font-bold tabular-nums text-slate-900">{users}</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums text-mk-ink">{users}</p>
           <input
             id="calc-users"
             type="range"
@@ -55,17 +55,17 @@ export function LicenseSavingsCalculator() {
             onChange={(e) => setUsers(Number(e.target.value))}
             className="mt-3 w-full accent-blue-600"
           />
-          <div className="mt-1 flex justify-between text-xs text-slate-500">
+          <div className="mt-1 flex justify-between text-xs text-mk-muted">
             <span>25</span>
             <span>5,000</span>
           </div>
         </div>
 
         <div>
-          <label htmlFor="calc-waste" className="text-sm font-medium text-slate-900">
+          <label htmlFor="calc-waste" className="text-sm font-medium text-mk-ink">
             Estimated license waste (%)
           </label>
-          <p className="mt-1 text-2xl font-bold tabular-nums text-slate-900">{wastePercent}%</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums text-mk-ink">{wastePercent}%</p>
           <input
             id="calc-waste"
             type="range"
@@ -76,13 +76,13 @@ export function LicenseSavingsCalculator() {
             onChange={(e) => setWastePercent(Number(e.target.value))}
             className="mt-3 w-full accent-blue-600"
           />
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-mk-muted">
             Industry range is often 5–15% from inactive, never-signed-in, and oversized SKUs.
           </p>
         </div>
 
         <div>
-          <span className="text-sm font-medium text-slate-900">Average license cost</span>
+          <span className="text-sm font-medium text-mk-ink">Average license cost</span>
           <div className="mt-3 flex flex-wrap gap-2">
             {LICENSE_PRESETS.map((preset) => (
               <button
@@ -91,15 +91,15 @@ export function LicenseSavingsCalculator() {
                 onClick={() => setLicenseMonthly(preset.monthly)}
                 className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
                   licenseMonthly === preset.monthly
-                    ? "border-blue-600 bg-blue-50 text-blue-800"
-                    : "border-slate-200 text-slate-600 hover:border-slate-300"
+                    ? "border-blue-600 bg-mk-amber-wash text-blue-800"
+                    : "border-mk-line text-mk-soft hover:border-mk-line2"
                 }`}
               >
                 ${preset.monthly}/mo · {preset.label.replace("Microsoft 365 ", "")}
               </button>
             ))}
           </div>
-          <label htmlFor="calc-license" className="mt-4 block text-xs text-slate-500">
+          <label htmlFor="calc-license" className="mt-4 block text-xs text-mk-muted">
             Custom $/seat/month: ${licenseMonthly}
           </label>
           <input
@@ -117,11 +117,11 @@ export function LicenseSavingsCalculator() {
 
       <div className="mt-10 rounded-xl border border-amber-200/80 bg-gradient-to-b from-amber-50 to-white px-6 py-6 text-center">
         <p className="text-sm font-medium text-amber-900">Estimated recoverable spend</p>
-        <p className="mt-2 text-4xl font-bold tabular-nums text-slate-900">
+        <p className="mt-2 text-4xl font-bold tabular-nums text-mk-ink">
           ${formatUsd(monthlyWaste)}
-          <span className="text-lg font-semibold text-slate-500">/mo</span>
+          <span className="text-lg font-semibold text-mk-muted">/mo</span>
         </p>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-mk-soft">
           ${formatUsd(annualWaste)}/year at {wastePercent}% waste across {users} users
         </p>
         {roiMultiple >= 1 && (
@@ -131,7 +131,7 @@ export function LicenseSavingsCalculator() {
         )}
       </div>
 
-      <p className="mt-6 text-xs leading-relaxed text-slate-500">
+      <p className="mt-6 text-xs leading-relaxed text-mk-muted">
         Estimates use list pricing and your slider inputs. A free Tenant Hawk scan surfaces
         actual unused seats, never-signed-in users, and disabled accounts with dollar impact
         from your tenant.
@@ -139,7 +139,7 @@ export function LicenseSavingsCalculator() {
 
       <Link
         href="/signup"
-        className="group btn-primary mt-6 inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 sm:w-auto"
+        className="group mk-btn mt-6 inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 sm:w-auto"
       >
         Run a free scan for your real number
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

@@ -57,12 +57,12 @@ export default function ExpiryMonitoringPage() {
   return (
     <>
       <JsonLd data={faqPageSchema(FAQ)} />
-      <div className="marketing-page min-h-screen bg-white text-slate-900">
+      <div className="marketing-v2 min-h-screen">
         <Navbar />
         <main className="flex-1">
           <FeatureHero
             eyebrow="Expiry monitoring · Free"
-            eyebrowClass="text-blue-600"
+            eyebrowClass="text-mk-amber-deep"
             title="The app secret expires Friday. Nobody knows."
             lede="Entra ID won't email you before an app registration secret or SSO certificate expires - you find out when sign-ins break. Tenant Hawk watches every secret, certificate, and domain in your tenant and warns you first. Free, forever, on one tenant."
             ctaLabel="Start monitoring free"
@@ -72,7 +72,7 @@ export default function ExpiryMonitoringPage() {
           <PainGrid
             title="How this outage usually happens"
             lede="Every M365 shop has lived some version of this."
-            iconClass="bg-blue-50 text-blue-600"
+            iconClass="bg-mk-amber-wash text-mk-amber-deep"
             items={[
               {
                 icon: KeyRound,
@@ -94,7 +94,7 @@ export default function ExpiryMonitoringPage() {
 
           <PainGrid
             title="What Tenant Hawk watches"
-            iconClass="bg-blue-50 text-blue-600"
+            iconClass="bg-mk-amber-wash text-mk-amber-deep"
             items={[
               {
                 icon: KeyRound,

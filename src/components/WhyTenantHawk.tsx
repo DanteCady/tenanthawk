@@ -39,7 +39,7 @@ const MICROSOFT_GAPS = [
 const DIFFERENTIATORS = [
   {
     icon: Layers,
-    chip: "bg-blue-50 text-blue-600",
+    chip: "bg-mk-amber-wash text-mk-amber-deep",
     title: "One score, four pillars",
     body: "Security, cost, reliability, and hygiene in a single scan and dashboard, not four portals and four scores.",
   },
@@ -57,7 +57,7 @@ const DIFFERENTIATORS = [
   },
   {
     icon: Shield,
-    chip: "bg-sky-50 text-sky-600",
+    chip: "bg-mk-amber-wash text-mk-amber-deep",
     title: "Reliability before the outage",
     body: "Expiring app secrets, certificates, and domains, surfaced in one list before integrations break.",
   },
@@ -76,17 +76,17 @@ export function WhyTenantHawk() {
   return (
     <>
       <section className="relative overflow-hidden pt-32 pb-16">
-        <div className="theme-aura pointer-events-none absolute inset-0 -z-10" />
+        <div className="hidden pointer-events-none absolute inset-0 -z-10" />
         <div className="mx-auto max-w-3xl px-6 text-center">
           <Reveal>
-            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
+            <p className="mk-eyebrow">
               Why Tenant Hawk
             </p>
-            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-mk-ink sm:text-5xl">
               Microsoft gives you dashboards.{" "}
-              <span className="text-gradient">We give you a checklist.</span>
+              <span className="text-mk-amber">We give you a checklist.</span>
             </h1>
-            <p className="mt-5 text-lg leading-relaxed text-slate-600">
+            <p className="mt-5 text-lg leading-relaxed text-mk-soft">
               Tenant Hawk is the independent health layer for Microsoft 365: one
               read-only scan that turns years of tenant drift into a single score, a
               prioritized fix list, and recoverable spend.
@@ -95,43 +95,43 @@ export function WhyTenantHawk() {
         </div>
       </section>
 
-      <section className="border-y border-slate-200 bg-slate-50 py-20">
+      <section className="border-y border-mk-line bg-mk-panel py-20">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-mk-ink sm:text-3xl">
               The problem isn&apos;t missing data
             </h2>
-            <p className="mt-3 text-slate-600">
+            <p className="mt-3 text-mk-soft">
               Microsoft&apos;s tooling is powerful, but fragmented. Every admin knows
               the feeling: something is wrong somewhere, but which portal do you open
               first?
             </p>
           </Reveal>
 
-          <div className="mt-12 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="mt-12 overflow-hidden rounded-2xl border border-mk-line bg-white shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[640px] text-left text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50">
-                    <th className="px-5 py-3 font-semibold text-slate-900">
+                  <tr className="border-b border-mk-line bg-mk-panel">
+                    <th className="px-5 py-3 font-semibold text-mk-ink">
                       Microsoft tool
                     </th>
-                    <th className="px-5 py-3 font-semibold text-slate-900">
+                    <th className="px-5 py-3 font-semibold text-mk-ink">
                       What it does
                     </th>
-                    <th className="px-5 py-3 font-semibold text-slate-900">
+                    <th className="px-5 py-3 font-semibold text-mk-ink">
                       The gap
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-mk-linesoft">
                   {MICROSOFT_GAPS.map((row) => (
                     <tr key={row.tool}>
-                      <td className="px-5 py-4 font-medium text-slate-900">
+                      <td className="px-5 py-4 font-medium text-mk-ink">
                         {row.tool}
                       </td>
-                      <td className="px-5 py-4 text-slate-600">{row.does}</td>
-                      <td className="px-5 py-4 text-slate-600">{row.gap}</td>
+                      <td className="px-5 py-4 text-mk-soft">{row.does}</td>
+                      <td className="px-5 py-4 text-mk-soft">{row.gap}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -144,10 +144,10 @@ export function WhyTenantHawk() {
       <section className="py-20">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-mk-ink sm:text-3xl">
               What Tenant Hawk adds
             </h2>
-            <p className="mt-3 text-slate-600">
+            <p className="mt-3 text-mk-soft">
               One read-only connection. One health score. A fix-it list ranked by risk
               and dollar impact.
             </p>
@@ -156,14 +156,14 @@ export function WhyTenantHawk() {
           <div className="mt-12 grid gap-5 sm:grid-cols-2">
             {DIFFERENTIATORS.map((item, i) => (
               <Reveal key={item.title} delay={i * 0.06}>
-                <div className="h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="h-full rounded-2xl border border-mk-line bg-white p-6 shadow-sm">
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-xl ${item.chip}`}
                   >
                     <item.icon className="h-5 w-5" />
                   </div>
-                  <h3 className="mt-4 text-lg font-bold text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  <h3 className="mt-4 text-lg font-bold text-mk-ink">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-mk-soft">
                     {item.body}
                   </p>
                 </div>
@@ -173,13 +173,13 @@ export function WhyTenantHawk() {
         </div>
       </section>
 
-      <section className="border-y border-slate-200 bg-slate-50 py-20">
+      <section className="border-y border-mk-line bg-mk-panel py-20">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-mk-ink sm:text-3xl">
               Four categories, one scan
             </h2>
-            <p className="mt-3 text-slate-600">
+            <p className="mt-3 text-mk-soft">
               Every finding is graded and grouped so you know where to start.
             </p>
           </Reveal>
@@ -189,10 +189,10 @@ export function WhyTenantHawk() {
               const meta = CATEGORY_META[cat];
               return (
                 <Reveal key={cat} delay={i * 0.05}>
-                  <div className="h-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="h-full rounded-2xl border border-mk-line bg-white p-5 shadow-sm">
                     <CategoryIconChip category={cat} size="md" />
-                    <h3 className="mt-3 font-bold text-slate-900">{meta.label}</h3>
-                    <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                    <h3 className="mt-3 font-bold text-mk-ink">{meta.label}</h3>
+                    <p className="mt-2 text-xs leading-relaxed text-mk-soft">
                       {meta.description}
                     </p>
                   </div>
@@ -207,10 +207,10 @@ export function WhyTenantHawk() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
             <Reveal>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              <h2 className="text-2xl font-bold tracking-tight text-mk-ink sm:text-3xl">
                 Pro: watch the tenant, don&apos;t just audit it once
               </h2>
-              <p className="mt-3 text-slate-600">
+              <p className="mt-3 text-mk-soft">
                 Free gets you the score and a taste of what&apos;s wrong. Pro is for
                 teams that need ongoing visibility: drift alerts, exports, and
                 leadership-ready reports.
@@ -219,7 +219,7 @@ export function WhyTenantHawk() {
                 {PRO_EXTRAS.map((feature) => (
                   <li
                     key={feature}
-                    className="flex items-start gap-2.5 text-sm text-slate-700"
+                    className="flex items-start gap-2.5 text-sm text-mk-ink2"
                   >
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
                     {feature}
@@ -229,30 +229,30 @@ export function WhyTenantHawk() {
             </Reveal>
 
             <Reveal delay={0.08}>
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              <div className="rounded-2xl border border-mk-line bg-white p-6 shadow-sm">
+                <p className="text-sm font-semibold uppercase tracking-wide text-mk-muted">
                   Built for
                 </p>
                 <ul className="mt-4 space-y-4">
                   <li>
-                    <p className="font-semibold text-slate-900">
+                    <p className="font-semibold text-mk-ink">
                       Solo &amp; small IT teams
                     </p>
-                    <p className="mt-1 text-sm text-slate-600">
+                    <p className="mt-1 text-sm text-mk-soft">
                       20 to 500 users who inherited a messy tenant and need a starting
                       point, not another enterprise suite.
                     </p>
                   </li>
                   <li>
-                    <p className="font-semibold text-slate-900">MSPs &amp; consultants</p>
-                    <p className="mt-1 text-sm text-slate-600">
+                    <p className="font-semibold text-mk-ink">MSPs &amp; consultants</p>
+                    <p className="mt-1 text-sm text-mk-soft">
                       Portfolio roll-ups, client scorecards, and per-tenant switching
                       on Enterprise - Pro stays for a single internal tenant.
                     </p>
                   </li>
                   <li>
-                    <p className="font-semibold text-slate-900">Owners &amp; CFOs</p>
-                    <p className="mt-1 text-sm text-slate-600">
+                    <p className="font-semibold text-mk-ink">Owners &amp; CFOs</p>
+                    <p className="mt-1 text-sm text-mk-soft">
                       Plain-language answers: are we exposed, and are we wasting money?
                     </p>
                   </li>
@@ -263,10 +263,10 @@ export function WhyTenantHawk() {
         </div>
       </section>
 
-      <section className="border-t border-slate-200 bg-slate-50 py-20">
+      <section className="border-t border-mk-line bg-mk-panel py-20">
         <div className="mx-auto max-w-3xl px-6">
           <Reveal className="text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-mk-ink sm:text-3xl">
               Common questions
             </h2>
           </Reveal>
@@ -274,9 +274,9 @@ export function WhyTenantHawk() {
           <dl className="mt-10 space-y-6">
             {WHY_FAQ.map((item, i) => (
               <Reveal key={item.q} delay={i * 0.05}>
-                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <dt className="font-semibold text-slate-900">{item.q}</dt>
-                  <dd className="mt-2 text-sm leading-relaxed text-slate-600">
+                <div className="rounded-2xl border border-mk-line bg-white p-5 shadow-sm">
+                  <dt className="font-semibold text-mk-ink">{item.q}</dt>
+                  <dd className="mt-2 text-sm leading-relaxed text-mk-soft">
                     {item.a}
                   </dd>
                 </div>
@@ -289,32 +289,32 @@ export function WhyTenantHawk() {
       <section className="py-20">
         <div className="mx-auto max-w-3xl px-6">
           <Reveal>
-            <div className="surface-highlight px-8 py-10 text-center">
-              <div className="mx-auto flex max-w-sm items-center justify-center gap-6 text-sm text-slate-600">
+            <div className="rounded-2xl border border-mk-amber-line bg-mk-amber-wash/60 px-8 py-10 text-center">
+              <div className="mx-auto flex max-w-sm items-center justify-center gap-6 text-sm text-mk-soft">
                 <span className="inline-flex items-center gap-1.5">
                   <Check className="h-4 w-4 text-green-600" />
                   Read-only
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <X className="h-4 w-4 text-slate-400" />
+                  <X className="h-4 w-4 text-mk-faint" />
                   Not a Microsoft replacement
                 </span>
               </div>
-              <h2 className="mt-6 text-balance text-2xl font-bold text-slate-900 sm:text-3xl">
+              <h2 className="mt-6 text-balance text-2xl font-bold text-mk-ink sm:text-3xl">
                 See what&apos;s hiding in your tenant
               </h2>
-              <p className="mx-auto mt-3 max-w-lg text-slate-600">
+              <p className="mx-auto mt-3 max-w-lg text-mk-soft">
                 Connect read-only in two minutes. Get one score and a prioritized list
                 before lunch.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <Link href="/signup" className="group btn-primary">
+                <Link href="/signup" className="group mk-btn">
                   Run a free scan
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
                 <Link
                   href="/#pricing"
-                  className="inline-flex items-center rounded-xl border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-400"
+                  className="inline-flex items-center rounded-xl border border-mk-line2 px-5 py-3 text-sm font-semibold text-mk-ink2 transition-colors hover:border-mk-faint"
                 >
                   View pricing
                 </Link>

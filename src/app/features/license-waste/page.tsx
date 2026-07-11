@@ -65,7 +65,7 @@ export default function LicenseWastePage() {
   return (
     <>
       <JsonLd data={faqPageSchema(FAQ)} />
-      <div className="marketing-page min-h-screen bg-white text-slate-900">
+      <div className="marketing-v2 min-h-screen">
         <Navbar />
         <main className="flex-1">
           <FeatureHero
@@ -107,10 +107,10 @@ export default function LicenseWastePage() {
                   <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-green-700">
                     <Calculator className="h-5 w-5" strokeWidth={1.9} />
                   </span>
-                  <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900">
+                  <h2 className="mt-4 text-2xl font-bold tracking-tight text-mk-ink">
                     Estimate your recoverable spend first
                   </h2>
-                  <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">
+                  <p className="mx-auto mt-2 max-w-md text-sm text-mk-soft">
                     Plug your seat counts into the free calculator for a back-of-napkin
                     number - then run a scan to see the real one.
                   </p>

@@ -33,13 +33,13 @@ export function WaitlistForm({ compact = false }: { compact?: boolean }) {
         className="flex flex-col items-center gap-3 rounded-2xl border border-green-200 bg-green-50 px-6 py-7 text-center"
       >
         <CheckCircle2 className="h-9 w-9 text-green-600" strokeWidth={1.75} />
-        <p className="text-lg font-semibold text-slate-900">{message}</p>
+        <p className="text-lg font-semibold text-mk-ink">{message}</p>
         {position && (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-mk-soft">
             You&apos;re{" "}
             <span className="font-semibold text-green-700">#{position}</span> in
             line. We&apos;ll email{" "}
-            <span className="font-medium text-slate-900">{email}</span> when your
+            <span className="font-medium text-mk-ink">{email}</span> when your
             tenant&apos;s spot opens.
           </p>
         )}
@@ -57,12 +57,12 @@ export function WaitlistForm({ compact = false }: { compact?: boolean }) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@company.com"
           aria-label="Work email address"
-          className="w-full flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-hawk-500 focus:ring-2 focus:ring-hawk-500/25"
+          className="w-full flex-1 rounded-xl border border-mk-line2 bg-white px-4 py-3 text-mk-ink placeholder:text-mk-faint outline-none transition-colors focus:border-hawk-500 focus:ring-2 focus:ring-hawk-500/25"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="group btn-primary w-full sm:w-auto shadow-none hover:shadow-md"
+          className="group mk-btn w-full sm:w-auto shadow-none hover:shadow-md"
         >
           {status === "loading" ? (
             <>
@@ -83,7 +83,7 @@ export function WaitlistForm({ compact = false }: { compact?: boolean }) {
           value={segment}
           onChange={(e) => setSegment(e.target.value)}
           aria-label="What describes you best?"
-          className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-600 outline-none transition-colors focus:border-hawk-500 focus:ring-2 focus:ring-hawk-500/25"
+          className="mt-2 w-full rounded-xl border border-mk-line2 bg-white px-4 py-3 text-mk-soft outline-none transition-colors focus:border-hawk-500 focus:ring-2 focus:ring-hawk-500/25"
         >
           <option value="">What describes you best? (optional)</option>
           {segments.map((s) => (
@@ -107,7 +107,7 @@ export function WaitlistForm({ compact = false }: { compact?: boolean }) {
         )}
       </AnimatePresence>
 
-      <p className="mt-3 text-xs text-slate-500">
+      <p className="mt-3 text-xs text-mk-muted">
         Read-only access · no credentials stored · we&apos;ll only email you about the beta.
       </p>
     </form>

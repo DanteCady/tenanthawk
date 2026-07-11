@@ -66,12 +66,12 @@ export default function MspPage() {
   return (
     <>
       <JsonLd data={faqPageSchema(FAQ)} />
-      <div className="marketing-page min-h-screen bg-white text-slate-900">
+      <div className="marketing-v2 min-h-screen">
         <Navbar />
         <main className="flex-1">
           <FeatureHero
             eyebrow="For MSPs & consultants"
-            eyebrowClass="text-blue-600"
+            eyebrowClass="text-mk-amber-deep"
             title="Every client tenant. One console. Flat rate."
             lede={`Stop rotating through ten admin centers. Tenant Hawk rolls every client's health score, open findings, and reclaimable license spend into one portfolio view - with per-client scorecards ready for your next QBR. $${ENTERPRISE_MONTHLY_USD}/month, up to ${ENTERPRISE_CLIENT_CAP_DEFAULT} clients.`}
             ctaLabel="Get started"
@@ -84,7 +84,7 @@ export default function MspPage() {
           <PainGrid
             title="Built for the client conversation"
             lede="The console runs your day; the scorecards run your reviews."
-            iconClass="bg-blue-50 text-blue-600"
+            iconClass="bg-mk-amber-wash text-mk-amber-deep"
             items={[
               {
                 icon: Presentation,

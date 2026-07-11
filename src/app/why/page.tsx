@@ -17,7 +17,7 @@ export default function WhyPage() {
   return (
     <>
       <JsonLd data={faqPageSchema(WHY_FAQ)} />
-      <div className="marketing-page min-h-screen bg-white text-slate-900">
+      <div className="marketing-v2 min-h-screen">
         <Navbar />
         <main className="flex-1">
           <WhyTenantHawk />

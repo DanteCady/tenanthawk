@@ -40,22 +40,22 @@ export default function LearnIndexPage() {
   const guides = getAllGuides();
 
   return (
-    <div className="learn-page min-h-screen bg-white text-slate-900">
+    <div className="marketing-v2 min-h-screen">
       <Navbar />
       <main className="flex-1 pt-32 pb-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
+            <p className="mk-eyebrow">
               Learn
             </p>
-            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-mk-ink sm:text-5xl">
               M365 cleanup &amp; tenant health guides
             </h1>
-            <p className="mt-4 text-lg text-slate-600">
+            <p className="mt-4 text-lg text-mk-soft">
               Practical guides for cleaning up Microsoft 365: inactive users,
               license waste, security drift, and tenant hygiene. Run the same
               checks automatically with a{" "}
-              <Link href="/signup" className="font-medium text-blue-700 hover:underline">
+              <Link href="/signup" className="font-medium text-mk-amber-deep hover:underline">
                 free Tenant Hawk scan
               </Link>
               .
@@ -67,10 +67,10 @@ export default function LearnIndexPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-2xl border border-blue-100 bg-blue-50/50 px-5 py-4 transition-colors hover:border-blue-200 hover:bg-blue-50"
+                className="rounded-2xl border border-mk-amber-line bg-mk-amber-wash px-5 py-4 transition-colors hover:border-mk-amber-line hover:bg-mk-amber-wash"
               >
-                <h2 className="font-semibold text-slate-900">{item.title}</h2>
-                <p className="mt-1 text-sm text-slate-600">{item.description}</p>
+                <h2 className="font-semibold text-mk-ink">{item.title}</h2>
+                <p className="mt-1 text-sm text-mk-soft">{item.description}</p>
               </Link>
             ))}
           </div>
@@ -80,12 +80,12 @@ export default function LearnIndexPage() {
               <Link
                 key={category}
                 href={`/learn/${category}`}
-                className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 transition-colors hover:border-slate-300 hover:bg-white"
+                className="rounded-2xl border border-mk-line bg-mk-panel px-5 py-4 transition-colors hover:border-mk-line2 hover:bg-white"
               >
-                <h2 className="font-semibold text-slate-900">
+                <h2 className="font-semibold text-mk-ink">
                   {CONTENT_CATEGORY_LABEL[category]}
                 </h2>
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="mt-1 text-sm text-mk-soft">
                   {CONTENT_CATEGORY_DESCRIPTION[category]}
                 </p>
               </Link>

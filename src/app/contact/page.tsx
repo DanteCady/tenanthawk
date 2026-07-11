@@ -13,45 +13,45 @@ export const metadata = buildPageMetadata({
 
 export default function ContactPage() {
   return (
-    <div className="marketing-page min-h-screen bg-white text-slate-900">
+    <div className="marketing-v2 min-h-screen">
       <Navbar />
       <main className="mx-auto max-w-3xl flex-1 px-6 py-24">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Contact us</h1>
-        <p className="mt-4 text-lg text-slate-600">
+        <p className="mt-4 text-lg text-mk-soft">
           We respond to most messages within one business day.
         </p>
 
         <div className="mt-10 space-y-8">
           <section>
-            <h2 className="text-lg font-semibold text-slate-900">Product &amp; support</h2>
-            <p className="mt-2 text-slate-600">
+            <h2 className="text-lg font-semibold text-mk-ink">Product &amp; support</h2>
+            <p className="mt-2 text-mk-soft">
               Scans, billing, MSP console, and account help.
             </p>
             <a
               href={`mailto:${SUPPORT_EMAIL}`}
-              className="mt-2 inline-block font-medium text-blue-700 hover:underline"
+              className="mt-2 inline-block font-medium text-mk-amber-deep hover:underline"
             >
               {SUPPORT_EMAIL}
             </a>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-slate-900">Legal &amp; privacy</h2>
-            <p className="mt-2 text-slate-600">Terms, privacy, and data handling questions.</p>
+            <h2 className="text-lg font-semibold text-mk-ink">Legal &amp; privacy</h2>
+            <p className="mt-2 text-mk-soft">Terms, privacy, and data handling questions.</p>
             <a
               href={`mailto:${LEGAL_EMAIL}`}
-              className="mt-2 inline-block font-medium text-blue-700 hover:underline"
+              className="mt-2 inline-block font-medium text-mk-amber-deep hover:underline"
             >
               {LEGAL_EMAIL}
             </a>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-slate-900">MSP &amp; enterprise</h2>
-            <p className="mt-2 text-slate-600">
+            <h2 className="text-lg font-semibold text-mk-ink">MSP &amp; enterprise</h2>
+            <p className="mt-2 text-mk-soft">
               Multi-tenant console, SSO, volume pricing, and client scorecards.
             </p>
-            <Link href="/msp" className="mt-2 inline-block font-medium text-blue-700 hover:underline">
+            <Link href="/msp" className="mt-2 inline-block font-medium text-mk-amber-deep hover:underline">
               See MSP features
             </Link>
           </section>

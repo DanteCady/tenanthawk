@@ -19,18 +19,18 @@ export const metadata = buildPageMetadata({
 
 export default function GlossaryIndexPage() {
   return (
-    <div className="learn-page min-h-screen bg-white text-slate-900">
+    <div className="marketing-v2 min-h-screen">
       <Navbar />
       <main className="flex-1 pt-32 pb-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
+            <p className="mk-eyebrow">
               Glossary
             </p>
-            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-mk-ink sm:text-5xl">
               M365 &amp; Entra ID terms, defined
             </h1>
-            <p className="mt-4 text-lg text-slate-600">
+            <p className="mt-4 text-lg text-mk-soft">
               Short definitions for the vocabulary admins use in audits, QBRs, and cleanup
               projects. Each term links to guides and scanner checks where relevant.
             </p>
@@ -42,7 +42,7 @@ export default function GlossaryIndexPage() {
               const chip = CONTENT_CATEGORY_CHIP[category];
               return (
                 <section key={category}>
-                  <h2 className="flex items-center gap-2 text-xl font-bold text-slate-900">
+                  <h2 className="flex items-center gap-2 text-xl font-bold text-mk-ink">
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${chip.chip} ${chip.text}`}
                     >
@@ -54,10 +54,10 @@ export default function GlossaryIndexPage() {
                       <li key={term.slug}>
                         <Link
                           href={`/glossary/${term.slug}`}
-                          className="block rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-colors hover:border-slate-300 hover:bg-white"
+                          className="block rounded-xl border border-mk-line bg-mk-panel px-4 py-3 transition-colors hover:border-mk-line2 hover:bg-white"
                         >
-                          <span className="font-semibold text-slate-900">{term.term}</span>
-                          <p className="mt-1 line-clamp-2 text-sm text-slate-600">
+                          <span className="font-semibold text-mk-ink">{term.term}</span>
+                          <p className="mt-1 line-clamp-2 text-sm text-mk-soft">
                             {term.definition}
                           </p>
                         </Link>

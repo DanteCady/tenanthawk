@@ -45,22 +45,22 @@ export default async function LearnCategoryPage({ params }: Props) {
   const guides = getGuidesByCategory(cat);
 
   return (
-    <div className="learn-page min-h-screen bg-white text-slate-900">
+    <div className="marketing-v2 min-h-screen">
       <Navbar />
       <main className="flex-1 pt-32 pb-24">
         <div className="mx-auto max-w-6xl px-6">
-          <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
-            <Link href="/learn" className="hover:text-slate-800">
+          <nav aria-label="Breadcrumb" className="text-sm text-mk-muted">
+            <Link href="/learn" className="hover:text-mk-ink2">
               Learn
             </Link>
             <span className="mx-1.5">/</span>
-            <span className="text-slate-700">{CONTENT_CATEGORY_LABEL[cat]}</span>
+            <span className="text-mk-ink2">{CONTENT_CATEGORY_LABEL[cat]}</span>
           </nav>
 
-          <h1 className="mt-6 text-4xl font-bold tracking-tight text-slate-900">
+          <h1 className="mt-6 text-4xl font-bold tracking-tight text-mk-ink">
             {CONTENT_CATEGORY_LABEL[cat]} guides
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-slate-600">
+          <p className="mt-4 max-w-2xl text-lg text-mk-soft">
             {CONTENT_CATEGORY_DESCRIPTION[cat]}
           </p>
 
@@ -71,7 +71,7 @@ export default async function LearnCategoryPage({ params }: Props) {
           </div>
 
           {guides.length === 0 && (
-            <p className="mt-8 text-slate-600">More guides in this category are on the way.</p>
+            <p className="mt-8 text-mk-soft">More guides in this category are on the way.</p>
           )}
 
           <div className="mx-auto mt-16 max-w-3xl">

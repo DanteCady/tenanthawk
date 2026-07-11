@@ -16,18 +16,18 @@ export function GlossaryTermShell({ term }: { term: GlossaryTerm }) {
   const guideLink = term.checkId ? getGuideLinkForCheck(term.checkId) : null;
 
   return (
-    <div className="learn-page min-h-screen bg-white text-slate-900">
+    <div className="marketing-v2 min-h-screen">
       <Navbar />
       <main className="mx-auto max-w-3xl px-6 pb-16 pt-28">
-        <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
+        <nav aria-label="Breadcrumb" className="text-sm text-mk-muted">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
-              <Link href="/glossary" className="hover:text-slate-800">
+              <Link href="/glossary" className="hover:text-mk-ink2">
                 Glossary
               </Link>
             </li>
             <li aria-hidden="true">/</li>
-            <li className="text-slate-700">{term.term}</li>
+            <li className="text-mk-ink2">{term.term}</li>
           </ol>
         </nav>
 
@@ -39,14 +39,14 @@ export function GlossaryTermShell({ term }: { term: GlossaryTerm }) {
           </span>
         </div>
 
-        <h1 className="mt-4 text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <h1 className="mt-4 text-balance text-3xl font-bold tracking-tight text-mk-ink sm:text-4xl">
           {term.term}
         </h1>
 
-        <p className="mt-6 text-lg leading-relaxed text-slate-700">{term.definition}</p>
+        <p className="mt-6 text-lg leading-relaxed text-mk-ink2">{term.definition}</p>
 
         {term.body && (
-          <div className="prose-th mt-8 space-y-4 text-slate-600">
+          <div className="prose-th mt-8 space-y-4 text-mk-soft">
             {term.body.split("\n\n").map((paragraph) => (
               <p key={paragraph.slice(0, 40)}>{paragraph}</p>
             ))}
@@ -54,11 +54,11 @@ export function GlossaryTermShell({ term }: { term: GlossaryTerm }) {
         )}
 
         {(term.relatedGuideSlug || guideLink) && (
-          <aside className="mt-10 rounded-xl border border-slate-200 bg-slate-50 px-5 py-4">
-            <p className="text-sm font-semibold text-slate-900">Related guide</p>
+          <aside className="mt-10 rounded-xl border border-mk-line bg-mk-panel px-5 py-4">
+            <p className="text-sm font-semibold text-mk-ink">Related guide</p>
             <Link
               href={`/learn/guides/${term.relatedGuideSlug ?? guideLink!.slug}`}
-              className="mt-2 inline-block text-sm font-medium text-blue-700 hover:underline"
+              className="mt-2 inline-block text-sm font-medium text-mk-amber-deep hover:underline"
             >
               Read the full guide →
             </Link>
@@ -66,8 +66,8 @@ export function GlossaryTermShell({ term }: { term: GlossaryTerm }) {
         )}
 
         {related.length > 0 && (
-          <aside className="mt-10 border-t border-slate-200 pt-10">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-500">
+          <aside className="mt-10 border-t border-mk-line pt-10">
+            <h2 className="mk-eyebrow">
               Related terms
             </h2>
             <ul className="mt-4 flex flex-wrap gap-2">
@@ -75,7 +75,7 @@ export function GlossaryTermShell({ term }: { term: GlossaryTerm }) {
                 <li key={r.slug}>
                   <Link
                     href={`/glossary/${r.slug}`}
-                    className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm font-medium text-slate-700 hover:border-slate-300"
+                    className="rounded-full border border-mk-line bg-white px-3 py-1 text-sm font-medium text-mk-ink2 hover:border-mk-line2"
                   >
                     {r.term}
                   </Link>

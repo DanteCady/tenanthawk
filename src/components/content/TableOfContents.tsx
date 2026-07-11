@@ -6,9 +6,9 @@ export function TableOfContents({ headings }: { headings: ContentHeading[] }) {
   return (
     <nav
       aria-label="Table of contents"
-      className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-4"
+      className="rounded-xl border border-mk-line bg-mk-panel px-5 py-4"
     >
-      <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+      <p className="text-xs font-semibold uppercase tracking-widest text-mk-muted">
         On this page
       </p>
       <ol className="mt-3 space-y-2 text-sm">
@@ -16,7 +16,7 @@ export function TableOfContents({ headings }: { headings: ContentHeading[] }) {
           <li key={h.id}>
             <a
               href={`#${h.id}`}
-              className="text-blue-700 hover:text-blue-800 hover:underline"
+              className="text-mk-amber-deep hover:text-mk-amber hover:underline"
             >
               {h.title}
             </a>

@@ -54,12 +54,12 @@ const rows = [
 
 export function JournalShowcase() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl shadow-slate-900/40">
-      <div className="flex items-center justify-between border-b border-slate-800 px-5 py-3">
-        <p className="text-sm font-semibold text-slate-200">Journal</p>
-        <p className="text-xs text-slate-500">contoso.com · this week</p>
+    <div className="overflow-hidden rounded-2xl border border-mk-night-line bg-mk-night shadow-2xl shadow-black/40">
+      <div className="flex items-center justify-between border-b border-mk-night-line px-5 py-3">
+        <p className="text-sm font-semibold text-mk-cream">Journal</p>
+        <p className="text-xs text-mk-muted">contoso.com · this week</p>
       </div>
-      <div className="divide-y divide-slate-800/70">
+      <div className="divide-y divide-mk-night-line">
         {rows.map((row) => (
           <div key={`${row.title}-${row.when}`} className="px-5 py-3.5">
             <div className="flex items-center gap-3">
@@ -70,7 +70,7 @@ export function JournalShowcase() {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                  <span className="truncate text-sm font-medium text-slate-100">
+                  <span className="truncate text-sm font-medium text-mk-cream">
                     {row.title}
                   </span>
                   <span
@@ -85,7 +85,7 @@ export function JournalShowcase() {
                     </span>
                   )}
                 </div>
-                <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[11px] text-slate-500">
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[11px] text-mk-muted">
                   <span>{row.type}</span>
                   <span className="inline-flex items-center gap-1">
                     <UserRound className="h-3 w-3" />
@@ -96,12 +96,12 @@ export function JournalShowcase() {
               </div>
             </div>
             {row.diff && (
-              <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-slate-900 px-3 py-2 font-mono text-[11px]">
-                <span className="text-slate-400">{row.diff.path}</span>
+              <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-mk-ink px-3 py-2 font-mono text-[11px]">
+                <span className="text-mk-faint">{row.diff.path}</span>
                 <span className="text-red-400/90 line-through decoration-red-500/50">
                   {row.diff.before}
                 </span>
-                <span className="text-slate-600">→</span>
+                <span className="text-mk-soft">→</span>
                 <span className="font-semibold text-emerald-400">{row.diff.after}</span>
               </div>
             )}

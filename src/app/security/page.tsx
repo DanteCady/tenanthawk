@@ -149,8 +149,9 @@ export default function SecurityPage() {
             </p>
             <p>
               Tenant Hawk runs on Amazon Web Services. All traffic is encrypted in transit
-              with TLS. Payments are handled by Stripe; we never see card numbers. The full
-              subprocessor list is in the <Link href="/privacy" className="font-medium text-mk-amber-deep hover:underline">privacy policy</Link>.
+              with TLS, and the database is encrypted at rest. Payments are handled by
+              Stripe; we never see card numbers. The full subprocessor list is in the{" "}
+              <Link href="/privacy" className="font-medium text-mk-amber-deep hover:underline">privacy policy</Link>.
             </p>
           </div>
         </section>

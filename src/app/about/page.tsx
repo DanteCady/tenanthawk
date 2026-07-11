@@ -8,7 +8,6 @@ import { buildPageMetadata } from "@/lib/seo/site";
 const FOUNDER = {
   name: "Dante Cady",
   role: "Founder & engineer",
-  // TODO(dante): replace with your real LinkedIn profile URL before deploy.
   linkedin: "https://www.linkedin.com/in/dantecady",
 };
 

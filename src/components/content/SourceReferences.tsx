@@ -5,11 +5,11 @@ export function SourceReferences({ sources }: { sources: SourceReference[] }) {
   if (validSources.length === 0) return null;
 
   return (
-    <section className="mt-14 border-t border-slate-200 pt-10">
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-500">
+    <section className="mt-14 border-t border-mk-line pt-10">
+      <h2 className="mk-eyebrow">
         Source references
       </h2>
-      <p className="mt-3 text-sm leading-relaxed text-slate-600">
+      <p className="mt-3 text-sm leading-relaxed text-mk-soft">
         Manual steps in this guide are based on current Microsoft Learn documentation.
       </p>
       <ul className="mt-5 space-y-3">
@@ -18,12 +18,12 @@ export function SourceReferences({ sources }: { sources: SourceReference[] }) {
             <a
               href={source.url}
               rel="noreferrer"
-              className="font-medium text-blue-700 hover:underline"
+              className="font-medium text-mk-amber-deep hover:underline"
             >
               {source.title}
             </a>
             {source.publisher && (
-              <span className="ml-2 text-slate-500">{source.publisher}</span>
+              <span className="ml-2 text-mk-muted">{source.publisher}</span>
             )}
           </li>
         ))}

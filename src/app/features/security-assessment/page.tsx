@@ -60,7 +60,7 @@ export default function SecurityAssessmentPage() {
   return (
     <>
       <JsonLd data={faqPageSchema(FAQ)} />
-      <div className="marketing-page min-h-screen bg-white text-slate-900">
+      <div className="marketing-v2 min-h-screen">
         <Navbar />
         <main className="flex-1">
           <FeatureHero
@@ -104,8 +104,8 @@ export default function SecurityAssessmentPage() {
           <section className="bg-white py-16">
             <div className="mx-auto max-w-3xl px-6">
               <Reveal>
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-8 py-6 text-center">
-                  <p className="text-sm text-slate-600">
+                <div className="rounded-2xl border border-mk-line bg-mk-panel px-8 py-6 text-center">
+                  <p className="text-sm text-mk-soft">
                     Already watching Microsoft Secure Score?{" "}
                     <Link
                       href="/compare/microsoft-secure-score"

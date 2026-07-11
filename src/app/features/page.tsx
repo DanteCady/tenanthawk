@@ -32,8 +32,8 @@ const featurePages = [
     icon: CalendarClock,
     title: "Expiry monitoring",
     tag: "Free",
-    tagClass: "bg-blue-100 text-blue-700",
-    chip: "bg-blue-50 text-blue-600",
+    tagClass: "bg-mk-amber-wash text-mk-amber-deep",
+    chip: "bg-mk-amber-wash text-mk-amber-deep",
     body: "App secrets, SSO certificates, and domains - warned before they expire, not after sign-ins break. Free on one tenant, forever.",
   },
   {
@@ -50,8 +50,8 @@ const featurePages = [
     icon: Sparkles,
     title: "Scan coverage map",
     tag: "All plans",
-    tagClass: "bg-purple-100 text-purple-700",
-    chip: "bg-purple-50 text-purple-600",
+    tagClass: "bg-mk-amber-wash text-mk-amber-deep",
+    chip: "bg-mk-amber-wash text-mk-amber-deep",
     body: "Every automated check across Identity, Teams, SharePoint, Exchange, Devices, Apps, and Copilot — plus what's explicitly out of scope.",
   },
   {
@@ -77,8 +77,8 @@ const featurePages = [
     icon: Building2,
     title: "MSP portfolio console",
     tag: "Enterprise",
-    tagClass: "bg-slate-200 text-slate-700",
-    chip: "bg-slate-100 text-slate-600",
+    tagClass: "bg-mk-tint text-mk-ink2",
+    chip: "bg-mk-tint text-mk-soft",
     body: "Every client tenant in one roll-up: needs-attention queue, per-client QBR scorecards, branded subdomain with SSO. Flat rate.",
   },
 ];
@@ -118,20 +118,20 @@ const tableStakes = [
 
 export default function FeaturesPage() {
   return (
-    <div className="marketing-page min-h-screen bg-white text-slate-900">
+    <div className="marketing-v2 min-h-screen">
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
         <section className="bg-white pb-16 pt-28 sm:pt-32">
           <div className="mx-auto max-w-3xl px-6 text-center">
             <Reveal>
-              <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
+              <p className="mk-eyebrow">
                 Features
               </p>
-              <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+              <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-mk-ink sm:text-5xl">
                 One read-only scan. Everything it unlocks.
               </h1>
-              <p className="mt-5 text-lg text-slate-600">
+              <p className="mt-5 text-lg text-mk-soft">
                 Tenant Hawk connects to your tenant once - read-only, two minutes - and
                 turns that access into a health score, a change journal, recovered license
                 spend, and reports you can put in front of anyone.
@@ -144,10 +144,10 @@ export default function FeaturesPage() {
         <JournalSection />
 
         {/* Deep-dive feature cards */}
-        <section className="bg-slate-50 py-20">
+        <section className="bg-mk-panel py-20">
           <div className="mx-auto max-w-6xl px-6">
             <Reveal className="mx-auto max-w-2xl text-center">
-              <h2 className="text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              <h2 className="text-balance text-3xl font-bold tracking-tight text-mk-ink sm:text-4xl">
                 Go deeper on each one
               </h2>
             </Reveal>
@@ -156,7 +156,7 @@ export default function FeaturesPage() {
                 <Reveal key={f.href} delay={(i % 2) * 0.08}>
                   <Link
                     href={f.href}
-                    className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-7 shadow-sm transition-all hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/60"
+                    className="group flex h-full flex-col rounded-2xl border border-mk-line bg-white p-7 shadow-sm transition-all hover:border-mk-line2 hover:shadow-lg hover:shadow-slate-200/60"
                   >
                     <div className="flex items-center gap-3">
                       <span
@@ -165,7 +165,7 @@ export default function FeaturesPage() {
                         <f.icon className="h-5 w-5" strokeWidth={1.9} />
                       </span>
                       <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-bold text-slate-900">{f.title}</h3>
+                        <h3 className="text-lg font-bold text-mk-ink">{f.title}</h3>
                         <span
                           className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${f.tagClass}`}
                         >
@@ -173,8 +173,8 @@ export default function FeaturesPage() {
                         </span>
                       </div>
                     </div>
-                    <p className="mt-4 flex-1 text-sm text-slate-600">{f.body}</p>
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 group-hover:text-blue-800">
+                    <p className="mt-4 flex-1 text-sm text-mk-soft">{f.body}</p>
+                    <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-mk-amber-deep group-hover:text-mk-amber">
                       Learn more
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </span>
@@ -189,19 +189,19 @@ export default function FeaturesPage() {
         <section className="bg-white py-20">
           <div className="mx-auto max-w-6xl px-6">
             <Reveal className="mx-auto max-w-2xl text-center">
-              <h2 className="text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              <h2 className="text-balance text-3xl font-bold tracking-tight text-mk-ink sm:text-4xl">
                 And the parts you&apos;d expect
               </h2>
             </Reveal>
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {tableStakes.map((f, i) => (
                 <Reveal key={f.title} delay={(i % 3) * 0.06}>
-                  <div className="h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+                  <div className="h-full rounded-2xl border border-mk-line bg-white p-6 shadow-sm">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-mk-tint text-mk-soft">
                       <f.icon className="h-5 w-5" strokeWidth={1.9} />
                     </span>
-                    <h3 className="mt-4 font-bold text-slate-900">{f.title}</h3>
-                    <p className="mt-2 text-sm text-slate-600">{f.body}</p>
+                    <h3 className="mt-4 font-bold text-mk-ink">{f.title}</h3>
+                    <p className="mt-2 text-sm text-mk-soft">{f.body}</p>
                   </div>
                 </Reveal>
               ))}

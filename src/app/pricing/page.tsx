@@ -12,14 +12,14 @@ export const metadata = buildPageMetadata({
 
 export default function PricingPage() {
   return (
-    <div className="marketing-page marketing-landing min-h-screen">
+    <div className="marketing-v2 marketing-landing min-h-screen">
       <Navbar />
       <main className="flex-1 pt-24">
         <div className="mx-auto max-w-6xl px-6 pb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-mk-ink sm:text-4xl">
             Simple pricing for every M365 operator
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-mk-soft">
             Start with a free read-only scan. Upgrade when you need monitoring, exports, or
             multi-tenant MSP tooling.
           </p>

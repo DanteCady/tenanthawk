@@ -27,13 +27,13 @@ export function JournalSection() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <Reveal>
-            <p className="text-sm font-semibold uppercase tracking-widest text-purple-600">
+            <p className="mk-eyebrow">
               The Journal · Pro
             </p>
-            <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight text-mk-ink sm:text-5xl">
               Every change in your tenant, recorded.
             </h2>
-            <p className="mt-4 text-lg text-slate-600">
+            <p className="mt-4 text-lg text-mk-soft">
               Someone disabled an MFA policy on Tuesday. Would you know? Tenant Hawk
               journals every Conditional Access, authentication, and Intune policy
               change - who, what, and when - with a diff you can actually read.
@@ -41,19 +41,19 @@ export function JournalSection() {
             <ul className="mt-8 space-y-5">
               {points.map((p) => (
                 <li key={p.title} className="flex items-start gap-3.5">
-                  <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+                  <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-mk-amber-wash text-mk-amber-deep">
                     <p.icon className="h-4.5 w-4.5" strokeWidth={1.9} />
                   </span>
                   <div>
-                    <p className="font-semibold text-slate-900">{p.title}</p>
-                    <p className="mt-0.5 text-sm text-slate-600">{p.body}</p>
+                    <p className="font-semibold text-mk-ink">{p.title}</p>
+                    <p className="mt-0.5 text-sm text-mk-soft">{p.body}</p>
                   </div>
                 </li>
               ))}
             </ul>
             <Link
               href="/features/journal"
-              className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-purple-700 hover:text-purple-800"
+              className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-mk-amber-deep hover:text-mk-amber"
             >
               How the Journal works
               <ArrowRight className="h-4 w-4" />

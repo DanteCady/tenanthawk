@@ -13,18 +13,18 @@ export const metadata = buildPageMetadata({
 
 export default function LicenseSavingsCalculatorPage() {
   return (
-    <div className="marketing-page min-h-screen bg-white text-slate-900">
+    <div className="marketing-v2 min-h-screen">
       <Navbar />
       <main className="flex-1 pt-32 pb-24">
         <div className="mx-auto max-w-3xl px-6">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">
+            <p className="mk-eyebrow">
               Free tool
             </p>
-            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-mk-ink sm:text-5xl">
               M365 license waste calculator
             </h1>
-            <p className="mt-4 text-lg text-slate-600">
+            <p className="mt-4 text-lg text-mk-soft">
               Ballpark how much unused and misassigned Microsoft 365 seats might cost you
               each month. Sliders only, no sign-in. For real findings, run a free Tenant
               Hawk scan.
