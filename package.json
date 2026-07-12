@@ -16,7 +16,8 @@
     "capture:hero": "node scripts/capture-hero-dashboard.mjs",
     "capture:hero:install": "playwright install chromium",
     "export:guides": "node --experimental-strip-types scripts/export-guides-to-mdx.mjs",
-    "validate:checks": "vitest run src/lib/scan/checks/registry.test.ts"
+    "validate:checks": "vitest run src/lib/scan/checks/registry.test.ts",
+    "indexnow": "node scripts/submit-indexnow.mjs"
   },
   "dependencies": {
     "@better-auth/sso": "^1.6.22",
