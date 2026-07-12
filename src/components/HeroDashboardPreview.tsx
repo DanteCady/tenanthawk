@@ -1,3 +1,5 @@
+import { HawkMark } from "@/components/Logo";
+
 const SIDE_NAV = [
   { icon: "≡", label: "Findings" },
   { icon: "↝", label: "Roadmap" },
@@ -44,7 +46,7 @@ export function HeroDashboardPreview() {
         {/* sidebar */}
         <div className="hidden flex-col gap-0.5 border-r border-mk-line3 bg-mk-panel px-3 py-5 sm:flex">
           <div className="flex items-center gap-2 px-2.5 pb-[18px] pt-1.5">
-            <img src="/brand/tenanthawk-mark.svg" alt="" className="h-5 w-5 object-contain" />
+            <HawkMark className="h-5 w-5" />
             <span className="text-[13.5px] font-[650]">Tenant Hawk</span>
           </div>
           <div className="flex items-center gap-2 rounded-[7px] bg-[#efebe1] px-2.5 py-2 text-[13px] font-[550] text-mk-ink">

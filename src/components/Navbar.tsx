@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { HawkMark } from "@/components/Logo";
 
 const links = [
   { href: "/why", label: "Why Tenant Hawk" },
@@ -47,11 +48,7 @@ export function Navbar() {
           aria-label="Tenant Hawk home"
           className="flex shrink-0 items-center gap-2.5"
         >
-          <img
-            src="/brand/tenanthawk-mark.svg"
-            alt=""
-            className="h-[30px] w-[30px] object-contain"
-          />
+          <HawkMark className="h-[30px] w-[30px]" />
           <span className="text-[17px] font-[650] tracking-[-0.01em] text-mk-ink">
             Tenant Hawk
           </span>

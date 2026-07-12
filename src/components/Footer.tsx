@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HawkMark } from "@/components/Logo";
 import { copyrightLine, SUPPORT_EMAIL } from "@/lib/brand";
 import { COMPARISON_PAGES } from "@/lib/content/comparisons/data";
 import { getAllGuides } from "@/lib/content/loader";
@@ -40,11 +41,7 @@ export async function Footer() {
         <div className="mb-14 grid gap-12 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
             <div className="mb-3.5 flex items-center gap-2.5">
-              <img
-                src="/brand/tenanthawk-mark.svg"
-                alt=""
-                className="h-6 w-6 object-contain"
-              />
+              <HawkMark className="h-6 w-6" />
               <span className="text-[15.5px] font-[650] text-mk-ink">Tenant Hawk</span>
             </div>
             <p className="max-w-[260px] text-[13.5px] leading-[1.6] text-mk-muted">
