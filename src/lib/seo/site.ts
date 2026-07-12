@@ -7,8 +7,9 @@ export const SITE_NAME = "Tenant Hawk";
 export const DEFAULT_TITLE =
   "Tenant Hawk | M365 tenant health score & license waste scanner";
 
+/** Keep ~120–155 chars — Bing flags under 25 or over ~160. */
 export const DEFAULT_DESCRIPTION =
-  "M365 tenant health, without the detective work. One read-only scan, one health score, dollar impact on every finding, and a prioritized fix list for admins, consultants, and MSPs.";
+  "One read-only M365 scan. One health score. Dollar impact on every finding, plus a prioritized fix list for admins and MSPs.";
 
 export const OG_IMAGE_ALT =
   "Tenant Hawk - M365 tenant health score and license waste scanner for admins and MSPs";

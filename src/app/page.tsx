@@ -14,7 +14,7 @@ import { MspConsoleSection } from "@/components/MspConsoleSection";
 import { Pricing } from "@/components/Pricing";
 import { WaitlistSection } from "@/components/WaitlistSection";
 import { Footer } from "@/components/Footer";
-import { buildPageMetadata, HOMEPAGE_KEYWORDS } from "@/lib/seo/site";
+import { buildPageMetadata, DEFAULT_DESCRIPTION, HOMEPAGE_KEYWORDS } from "@/lib/seo/site";
 import {
   organizationSchema,
   softwareApplicationSchema,
@@ -23,8 +23,7 @@ import {
 
 export const metadata = buildPageMetadata({
   title: "M365 tenant health score & license waste scanner",
-  description:
-    "M365 tenant health, without the detective work. One read-only scan, one health score, dollar impact on every finding, and a prioritized fix list for admins, consultants, and MSPs.",
+  description: DEFAULT_DESCRIPTION,
   path: "/",
   keywords: HOMEPAGE_KEYWORDS,
 });
